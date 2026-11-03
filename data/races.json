@@ -1,0 +1,90 @@
+[
+  {
+    "id": "human",
+    "name": "Human",
+    "leaning": "Balanced",
+    "notes": "Highest stat caps overall. Adaptable to any calling.",
+    "baseStats": {
+      "str": 10,
+      "dex": 10,
+      "int": 10,
+      "wis": 10
+    },
+    "maxStats": {
+      "str": 20,
+      "dex": 20,
+      "int": 20,
+      "wis": 20
+    },
+    "bonuses": {
+      "ac": 0,
+      "hp": 0
+    }
+  },
+  {
+    "id": "elf",
+    "name": "Elf",
+    "leaning": "DEX, INT",
+    "notes": "Graceful and arcane-attuned, but slight of frame (lower STR cap).",
+    "baseStats": {
+      "str": 8,
+      "dex": 12,
+      "int": 12,
+      "wis": 9
+    },
+    "maxStats": {
+      "str": 16,
+      "dex": 22,
+      "int": 22,
+      "wis": 18
+    },
+    "bonuses": {
+      "ac": 0,
+      "hp": 0
+    }
+  },
+  {
+    "id": "dwarf",
+    "name": "Dwarf",
+    "leaning": "STR, WIS",
+    "notes": "Stout and resolute with deep spiritual grit (lower DEX cap).",
+    "baseStats": {
+      "str": 12,
+      "dex": 8,
+      "int": 9,
+      "wis": 12
+    },
+    "maxStats": {
+      "str": 22,
+      "dex": 16,
+      "int": 18,
+      "wis": 22
+    },
+    "bonuses": {
+      "ac": 0,
+      "hp": 1
+    }
+  },
+  {
+    "id": "halfling",
+    "name": "Halfling",
+    "leaning": "DEX, WIS",
+    "notes": "Nimble and lucky (+1 base AC dodge bonus, +1 HP), lower STR cap.",
+    "baseStats": {
+      "str": 7,
+      "dex": 13,
+      "int": 10,
+      "wis": 11
+    },
+    "maxStats": {
+      "str": 15,
+      "dex": 22,
+      "int": 18,
+      "wis": 20
+    },
+    "bonuses": {
+      "ac": 1,
+      "hp": 1
+    }
+  }
+]

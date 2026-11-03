@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chronicles of the Triad — Ultima III–Style RPG</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <script type="module" src="./js/app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+<body>
+  <div class="app-shell" x-data="rpgFoundationApp" x-cloak>
+    <!-- Top Header -->
+    <header class="top-bar">
+      <div class="brand-title">
+        <h1>Chronicles of the Triad</h1>
+        <span class="step-badge">Step 5: Magic, Grimoire &amp; Status Effects</span>
+      </div>
+      <div class="top-stats">
+        <span>Roster: <strong x-text="`${state.roster.length}/${maxRosterSize}`"></strong></span>
+        <span>Party: <strong x-text="`${state.party.length}/${maxPartySize}`"></strong></span>
+        <span>Pack: <strong x-text="totalPackItemCount"></strong></span>
+        <span>Gold: <strong x-text="state.gold"></strong> GP</span>
+        <button
+          type="button"
+          class="btn-sm"
+          :disabled="state.roster.length === 0 || screen === 'combat'"
+          @click="openSpellModal()"
+        >
+          [C] Spells
+        </button>
+        <button
+          type="button"
+          class="btn-sm btn-primary"
+          :disabled="state.roster.length === 0 || screen === 'combat'"
+          @click="openInventoryModal()"
+        >
+          [I] Pack &amp; Gear
+        </button>
+        <button type="button" class="btn-sm" @click="openSaveModal()">Save / JSON</button>
+      </div>
+    </header>
+
+    <!-- Status / Event Log Line -->
+    <div class="status-banner" role="status" aria-live="polite">
+      <span x-text="`> ${statusBanner}`"></span>
+      <div style="display: flex; gap: 0.4rem;" x-show="screen !== 'combat'">
+        <button type="button" class="btn-sm" x-show="screen !== 'title'" @click="goToScreen('title')">Title</button>
+        <button type="button" class="btn-sm" x-show="screen !== 'tavern'" @click="goToScreen('tavern')">Tavern Roster</button>
+        <button type="button" class="btn-sm btn-success" x-show="screen !== 'overworld' && canEmbark" @click="goToScreen('overworld')">Explore</button>
+      </div>
+    </div>
+
+    <main id="main-content">
+    <!-- Error / Loading State -->
+    <template x-if="loading">
+      <section class="rpg-panel">
+        <p>Loading scrolls of Avalon...</p>
+      </section>
+    </template>
+
+    <template x-if="loadError">
+      <section class="rpg-panel">
+        <p style="color: var(--accent-red);" x-text="loadError"></p>
+      </section>
+    </template>
+
+    <!-- ==================== SCREEN 1: TITLE SCREEN ==================== -->
+    <section class="rpg-panel gold-frame title-hero" x-show="!loading && !loadError && screen === 'title'">
+      <pre class="ascii-banner" aria-hidden="true">
+   ______ _                      _      _                   __   _   _            _____     _           _ 
+  / ____/| |__   _ __ ___  _ __ (_) ___| | ___  ___   ___  / _| | |_| |__   ___  |_   _| __(_) __ _  __| |
+ | |     | '_ \ | '__/ _ \| '_ \| |/ __| |/ _ \/ __| / _ \| |_  | __| '_ \ / _ \   | || '__| |/ _` |/ _` |
+ | |____ | | | || | | (_) | | | | | (__| |  __/\__ \| (_) |  _| | |_| | | |  __/   | || |  | | (_| | (_| |
+  \_____||_| |_||_|  \___/|_| |_|_|\___|_|\___||___/ \___/|_|    \__|_| |_|\___|   |_||_|  |_|\__,_|\__,_|
+      </pre>
+      <p class="title-subtitle">
+        A classic party-based CRPG inspired by <em>Ultima III: Exodus</em>, <em>The Bard's Tale</em>, and <em>Wasteland</em>.
+        Form your roster of up to 20 heroes, organize a party of 4–6 into front and back rows, and venture forth.
+      </p>
+
+      <div class="save-summary-box">
+        <div class="summary-stat">
+          <span>Roster Heroes</span>
+          <strong x-text="`${state.roster.length} / ${maxRosterSize}`"></strong>
+        </div>
+        <div class="summary-stat">
+          <span>Active Party</span>
+          <strong x-text="`${state.party.length} / ${maxPartySize}`"></strong>
+        </div>
+        <div class="summary-stat">
+          <span>Party Gold</span>
+          <strong x-text="`${state.gold} GP`"></strong>
+        </div>
+      </div>
+
+      <div class="title-actions">
+        <button type="button" class="btn-primary" @click="goToScreen('tavern')">
+          Enter Gilgamesh's Tavern (Manage Roster &amp; Party)
+        </button>
+        <button type="button" class="btn-success" :disabled="!canEmbark" @click="goToScreen('overworld_stub')">
+          Embark to Overworld
+        </button>
+        <button type="button" @click="openSaveModal()">
+          Import / Export Save
+        </button>
+        <button type="button" class="btn-danger" @click="document.querySelector('#wipe-dialog').showModal()">
+          Wipe Save Data
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 2: TAVERN ROSTER & PARTY ==================== -->
+    <div class="tavern-grid" x-show="!loading && !loadError && screen === 'tavern'">
+      <!-- Left Column: Active Party (4 to 6, Front / Back Rows) -->
+      <section class="rpg-panel gold-frame">
+        <div class="panel-header">
+          <h2>Active Party (<span x-text="state.party.length"></span>/<span x-text="maxPartySize"></span>)</h2>
+          <div style="display: flex; gap: 0.4rem;">
+            <button type="button" class="btn-sm" x-show="state.roster.length > 0" @click="openInventoryModal()">Pack &amp; Gear</button>
+            <button type="button" class="btn-sm" x-show="state.party.length > 0" @click="disbandParty()">Disband</button>
+            <button type="button" class="btn-sm btn-success" :disabled="!canEmbark" @click="goToScreen('overworld_stub')">
+              Embark &rarr;
+            </button>
+          </div>
+        </div>
+
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0;">
+          Requires <strong>4 to 6</strong> members. Front row (max 2) engages in melee and draws most enemy attacks; back row attacks with ranged or reach weapons.
+        </p>
+
+        <!-- Front Row -->
+        <div class="row-group">
+          <div class="row-label">
+            <span>Front Row (Melee Line)</span>
+            <span x-text="`${frontRowMembers.length} / ${maxFrontRow} Slots`"></span>
+          </div>
+          <div class="party-slot-list">
+            <template x-if="frontRowMembers.length === 0">
+              <div class="empty-box">No heroes in the Front Row. At least 1 front-liner is required to embark.</div>
+            </template>
+            <template x-for="member in frontRowMembers" :key="member.id">
+              <div class="party-card front-row">
+                <div class="char-main-info">
+                  <div class="char-name-line" x-text="member.name"></div>
+                  <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className} • ${getItemName(member.equipment?.weapon, 'Unarmed')} / ${getItemName(member.equipment?.armor, 'Unarmored')}`"></div>
+                  <div class="char-vitals">
+                    <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
+                    <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
+                    <span class="vital-ac" x-text="`AC ${member.derived.ac}`"></span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button type="button" class="btn-sm" title="Move to Back Row" @click="togglePartyRow(member.id)">&darr; Back</button>
+                  <button type="button" class="btn-sm btn-primary" @click="openInventoryModal(member)">Gear</button>
+                  <button type="button" class="btn-sm" @click="openInspectModal(member)">Stats</button>
+                  <button type="button" class="btn-sm btn-danger" title="Remove from Party" @click="removeFromParty(member.id)">&times;</button>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Back Row -->
+        <div class="row-group">
+          <div class="row-label">
+            <span>Back Row (Ranged, Reach &amp; Casters)</span>
+            <span x-text="`${backRowMembers.length} Slots`"></span>
+          </div>
+          <div class="party-slot-list">
+            <template x-if="backRowMembers.length === 0">
+              <div class="empty-box">No heroes assigned to the Back Row.</div>
+            </template>
+            <template x-for="member in backRowMembers" :key="member.id">
+              <div class="party-card back-row">
+                <div class="char-main-info">
+                  <div class="char-name-line" x-text="member.name"></div>
+                  <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className} • ${getItemName(member.equipment?.weapon, 'Unarmed')} / ${getItemName(member.equipment?.armor, 'Unarmored')}`"></div>
+                  <div class="char-vitals">
+                    <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
+                    <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
+                    <span class="vital-ac" x-text="`AC ${member.derived.ac}`"></span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button
+                    type="button"
+                    class="btn-sm"
+                    :disabled="frontRowMembers.length >= maxFrontRow"
+                    title="Move to Front Row"
+                    @click="togglePartyRow(member.id)"
+                  >&uarr; Front</button>
+                  <button type="button" class="btn-sm btn-primary" @click="openInventoryModal(member)">Gear</button>
+                  <button type="button" class="btn-sm" @click="openInspectModal(member)">Stats</button>
+                  <button type="button" class="btn-sm btn-danger" title="Remove from Party" @click="removeFromParty(member.id)">&times;</button>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Character Roster (Up to 20) -->
+      <section class="rpg-panel">
+        <div class="panel-header">
+          <h2>Guild Roster (<span x-text="state.roster.length"></span>/<span x-text="maxRosterSize"></span>)</h2>
+          <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
+            <button
+              type="button"
+              class="btn-sm"
+              :disabled="state.roster.length > maxRosterSize - 4"
+              @click="quickRollParty()"
+            >
+              Quick-Roll 4 Heroes
+            </button>
+            <button
+              type="button"
+              class="btn-sm btn-primary"
+              :disabled="state.roster.length >= maxRosterSize"
+              @click="goToScreen('create')"
+            >
+              + Create Hero
+            </button>
+          </div>
+        </div>
+
+        <template x-if="state.roster.length === 0">
+          <div class="empty-box" style="padding: 2rem 1rem;">
+            <p style="margin-top: 0;">The tavern ledger is empty.</p>
+            <div style="display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap;">
+              <button type="button" class="btn-primary" @click="goToScreen('create')">Create First Character</button>
+              <button type="button" @click="quickRollParty()">Quick-Roll Default Party</button>
+            </div>
+          </div>
+        </template>
+
+        <div class="roster-list" x-show="state.roster.length > 0">
+          <template x-for="char in state.roster" :key="char.id">
+            <div class="roster-item" :class="{ 'in-party': isInParty(char.id) }">
+              <div class="char-main-info">
+                <div class="char-name-line">
+                  <span x-text="char.name"></span>
+                  <template x-if="isInParty(char.id)">
+                    <span class="badge-party" x-text="`IN PARTY (${getPartyRow(char.id).toUpperCase()})`"></span>
+                  </template>
+                </div>
+                <div class="char-meta-line">
+                  <span x-text="`Lv ${char.level} ${char.raceName} ${char.className}`"></span>
+                  &bull;
+                  <span x-text="`${getItemName(char.equipment?.weapon, 'Unarmed')} | ${getItemName(char.equipment?.armor, 'Unarmored')}`"></span>
+                </div>
+                <div class="char-vitals">
+                  <span class="vital-hp" x-text="`HP ${char.derived.hp}/${char.derived.maxHp}`"></span>
+                  <span class="vital-mp" x-text="`MP ${char.derived.mp}/${char.derived.maxMp}`"></span>
+                  <span class="vital-ac" x-text="`AC ${char.derived.ac}`"></span>
+                </div>
+              </div>
+
+              <div class="card-actions">
+                <template x-if="!isInParty(char.id)">
+                  <button
+                    type="button"
+                    class="btn-sm btn-primary"
+                    :disabled="state.party.length >= maxPartySize"
+                    @click="addToParty(char.id)"
+                  >
+                    + Join Party
+                  </button>
+                </template>
+                <template x-if="isInParty(char.id)">
+                  <button type="button" class="btn-sm" @click="removeFromParty(char.id)">Leave Party</button>
+                </template>
+                <button type="button" class="btn-sm" @click="openInventoryModal(char)">Gear</button>
+                <button type="button" class="btn-sm" @click="openInspectModal(char)">Inspect</button>
+                <button type="button" class="btn-sm" @click="openRenameModal(char)">Rename</button>
+                <button type="button" class="btn-sm btn-danger" @click="openDeleteModal(char)">Delete</button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== SCREEN 3: CHARACTER CREATION ==================== -->
+    <section class="create-grid" x-show="!loading && !loadError && screen === 'create'">
+      <!-- Left Column: Race & Class Picker -->
+      <div class="rpg-panel">
+        <div class="panel-header">
+          <h2>1. Choose Race &amp; Class</h2>
+          <button type="button" class="btn-sm" @click="goToScreen('tavern')">&larr; Back to Tavern</button>
+        </div>
+
+        <h3 style="font-size: 0.85rem; color: var(--accent-cyan); text-transform: uppercase; margin: 0 0 0.5rem;">
+          Select Race
+        </h3>
+        <div class="selector-grid">
+          <template x-for="race in races" :key="race.id">
+            <button
+              type="button"
+              class="choice-card"
+              :class="{ 'selected': draft.raceId === race.id }"
+              @click="selectRace(race.id)"
+            >
+              <span class="choice-title" x-text="race.name"></span>
+              <span class="choice-sub" x-text="`Leaning: ${race.leaning}`"></span>
+              <span class="choice-sub" x-text="`Base: S${race.baseStats.str} D${race.baseStats.dex} I${race.baseStats.int} W${race.baseStats.wis}`"></span>
+              <span class="choice-sub" x-text="race.notes"></span>
+            </button>
+          </template>
+        </div>
+
+        <h3 style="font-size: 0.85rem; color: var(--accent-cyan); text-transform: uppercase; margin: 0 0 0.5rem;">
+          Select Class
+        </h3>
+        <div class="selector-grid">
+          <template x-for="cls in classes" :key="cls.id">
+            <button
+              type="button"
+              class="choice-card"
+              :class="{ 'selected': draft.classId === cls.id }"
+              :disabled="!isClassValidForSelectedRace(cls)"
+              @click="selectClass(cls.id)"
+            >
+              <span class="choice-title" x-text="cls.name"></span>
+              <span class="choice-sub" x-text="cls.role"></span>
+              <span class="choice-sub" x-text="`Magic: ${cls.magic}`"></span>
+              <span class="choice-sub" x-text="`Gear: ${cls.weaponsArmor}`"></span>
+              <template x-if="!isClassValidForSelectedRace(cls)">
+                <span class="choice-invalid" x-text="`Restricted for ${selectedRace?.name}`"></span>
+              </template>
+            </button>
+          </template>
+        </div>
+      </div>
+
+      <!-- Right Column: Point Allocation, Derived Preview, Name & Confirm -->
+      <div class="rpg-panel gold-frame">
+        <div class="panel-header">
+          <h2>2. Allocate Attributes &amp; Name</h2>
+          <button type="button" class="btn-sm" @click="resetDraft()">Reset</button>
+        </div>
+
+        <div class="point-pool-banner">
+          <div>
+            <strong style="display: block; font-size: 0.85rem; text-transform: uppercase;">Bonus Point Pool</strong>
+            <span style="font-size: 0.76rem; color: var(--text-muted);">Class minimums are pre-allocated automatically.</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span class="points-count" x-text="`${pointsRemaining} / ${bonusPoolTotal} pts`"></span>
+            <button
+              type="button"
+              class="btn-sm"
+              :disabled="pointsRemaining <= 0"
+              @click="autoSpendRemainingPoints()"
+            >
+              Auto-Spend
+            </button>
+          </div>
+        </div>
+
+        <div class="stat-allocation-list">
+          <template x-for="key in statKeys" :key="key">
+            <div class="stat-row">
+              <div>
+                <div class="stat-name" x-text="key.toUpperCase()"></div>
+                <div class="stat-limits" x-text="`Min ${getStatFloor(key)} / Cap ${selectedRace?.maxStats[key]}`"></div>
+              </div>
+              <div style="font-size: 0.76rem; color: var(--text-muted);">
+                <span x-show="key === 'str'">Melee dmg &amp; max HP</span>
+                <span x-show="key === 'dex'">Hit, dodge AC, initiative</span>
+                <span x-show="key === 'int'">Arcane MP &amp; spell power</span>
+                <span x-show="key === 'wis'">Divine MP &amp; spell power</span>
+              </div>
+              <div class="stat-controls">
+                <button
+                  type="button"
+                  class="btn-sm"
+                  :disabled="!canDecrementStat(key)"
+                  @click="adjustStat(key, -1)"
+                  :aria-label="`Decrease ${key.toUpperCase()}`"
+                >&minus;</button>
+                <span class="stat-val" x-text="draftFinalStats[key]"></span>
+                <span class="stat-mod" x-text="`(${formatMod(draftFinalStats[key])})`"></span>
+                <button
+                  type="button"
+                  class="btn-sm"
+                  :disabled="!canIncrementStat(key)"
+                  @click="adjustStat(key, 1)"
+                  :aria-label="`Increase ${key.toUpperCase()}`"
+                >+</button>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <h3 style="font-size: 0.85rem; color: var(--accent-cyan); text-transform: uppercase; margin: 0 0 0.5rem;">
+          Derived Level 1 Vitals &amp; Starting Kit
+        </h3>
+        <div class="derived-preview-grid">
+          <div class="derived-box">
+            <span>Hit Points (HP)</span>
+            <strong x-text="draftDerived.maxHp"></strong>
+            <small x-text="`Base ${selectedClass?.baseHp || 0} + STR mod`"></small>
+          </div>
+          <div class="derived-box">
+            <span>Magic Pool (MP)</span>
+            <strong style="color: var(--accent-cyan);" x-text="draftDerived.maxMp"></strong>
+            <small x-text="draftMpFormulaNote"></small>
+          </div>
+          <div class="derived-box">
+            <span>Armor Class (AC)</span>
+            <strong style="color: var(--accent-gold);" x-text="draftDerived.ac"></strong>
+            <small>10 + DEX + Armor</small>
+          </div>
+        </div>
+
+        <div class="starter-kit-callout">
+          <span>Starting Weapon: <strong x-text="`${getItemName(draftStarterKit.weapon)} (${getItemSummary(draftStarterKit.weapon)})`"></strong></span>
+          <span>Starting Armor: <strong x-text="`${getItemName(draftStarterKit.armor)} (${getItemSummary(draftStarterKit.armor)})`"></strong></span>
+        </div>
+
+        <!-- Character Name Form -->
+        <form @submit.prevent="submitNewCharacter()">
+          <div class="field-group">
+            <label for="char-name-input">3. Hero Name</label>
+            <span id="char-name-hint" class="field-hint">1 to 16 characters. Every legend needs a name.</span>
+            <div class="input-row">
+              <input
+                type="text"
+                id="char-name-input"
+                x-model="draft.name"
+                required
+                minlength="1"
+                maxlength="16"
+                pattern=".*\S.*"
+                aria-describedby="char-name-hint"
+                aria-errormessage="char-name-error"
+                placeholder="Enter hero name..."
+              >
+              <button type="button" @click="rollRandomName()">Random</button>
+            </div>
+            <div id="char-name-error" class="field-error-msg">
+              Please enter a non-empty name (1–16 characters).
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-top: 1.2rem;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);" x-show="!draftValidation.valid" x-text="draftValidation.errors[0]"></span>
+            <span style="font-size: 0.8rem; color: var(--accent-green);" x-show="draftValidation.valid">Ready to inscribe into Roster!</span>
+            <button type="submit" class="btn-primary" :disabled="!draftValidation.valid">
+              Inscribe Hero
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 4: OVERWORLD & TOWN EXPLORATION ==================== -->
+    <div class="exploration-grid" x-show="!loading && !loadError && screen === 'overworld'">
+      <!-- Left Column: Viewport Map + Message Log -->
+      <section class="rpg-panel gold-frame">
+        <div class="panel-header">
+          <div>
+            <h2 x-text="currentMap?.name || 'Realm of Avalon'"></h2>
+            <div class="location-subline">
+              <span class="mode-pill" x-text="(currentMap?.mode || 'overworld').toUpperCase()"></span>
+              <span x-text="`Terrain: ${currentTrigger ? currentTrigger.name : (currentTile?.name || 'Grasslands')}`"></span>
+              <template x-if="(state.location?.lightSteps || 0) > 0">
+                <span class="badge-party" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" x-text="`☼ Lumina (${state.location.lightSteps} steps)`"></span>
+              </template>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+            <button
+              type="button"
+              class="btn-sm btn-primary"
+              x-show="currentTrigger"
+              @click="enterOrInteract()"
+              x-text="currentTrigger?.type === 'town' || currentTrigger?.type === 'castle' ? `Enter ${currentTrigger.name} [E]` : `Interact [E]`"
+            ></button>
+            <button
+              type="button"
+              class="btn-sm"
+              x-show="currentMap?.mode === 'town'"
+              @click="leaveCurrentTown()"
+            >
+              Leave Town [X]
+            </button>
+            <button type="button" class="btn-sm" @click="openSpellModal()">Spells [C]</button>
+            <button type="button" class="btn-sm" @click="openInventoryModal()">Pack [I]</button>
+            <button type="button" class="btn-sm" @click="goToScreen('tavern')">Tavern Roster</button>
+          </div>
+        </div>
+
+        <!-- 11x11 Centered Tile Viewport -->
+        <div class="viewport-stage">
+          <div
+            class="tile-viewport"
+            role="grid"
+            :aria-label="`${currentMap?.name || 'Map'} viewport`"
+          >
+            <template x-for="row in viewportRows" :key="row.rowKey">
+              <div class="tile-row" role="row">
+                <template x-for="cell in row.cells" :key="cell.key">
+                  <div
+                    class="tile-cell"
+                    role="gridcell"
+                    :class="{
+                      'is-party': cell.isParty,
+                      'has-trigger': !!cell.trigger,
+                      'out-of-bounds': !cell.inBounds
+                    }"
+                    :style="`background-color: ${cell.tile.bg}; color: ${cell.isParty ? '#ffffff' : cell.tile.fg};`"
+                    :title="describeCell(cell)"
+                  >
+                    <span class="tile-glyph" :title="describeCell(cell)" x-text="cell.isParty ? '@' : cell.tile.glyph"></span>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          <!-- Map Legend & Context Banner -->
+          <div class="viewport-sidebar">
+            <div class="poi-callout" x-show="currentTrigger">
+              <strong x-text="currentTrigger?.name"></strong>
+              <p x-text="currentTrigger?.message"></p>
+              <button type="button" class="btn-sm btn-primary" @click="enterOrInteract()">
+                Press [E] / Activate
+              </button>
+            </div>
+
+            <div class="poi-callout" x-show="!currentTrigger && adjacentTriggers.length > 0">
+              <strong>Nearby Interest</strong>
+              <template x-for="adj in adjacentTriggers" :key="`${adj.x},${adj.y}`">
+                <p style="margin: 0.2rem 0;" x-text="`${adj.direction}: ${adj.name}`"></p>
+              </template>
+              <button type="button" class="btn-sm" @click="talkNearby()">
+                Talk [T]
+              </button>
+            </div>
+
+            <div class="legend-card">
+              <h3>Map Legend</h3>
+              <ul class="legend-list" role="list">
+                <li><span class="legend-glyph" style="color: #fff;">@</span> Your Party</li>
+                <li><span class="legend-glyph" style="color: #f0c45a;">⌂</span> Town Gate [E]</li>
+                <li><span class="legend-glyph" style="color: #5ce1e6;">♜</span> Royal Castle [E]</li>
+                <li><span class="legend-glyph" style="color: #f25f5c;">Ω</span> Dungeon Maw</li>
+                <li><span class="legend-glyph" style="color: #f0c45a;">G</span> Guild / Roster [E]</li>
+                <li><span class="legend-glyph" style="color: #5ce1e6;">I</span> Wayfarer's Inn [E]</li>
+                <li><span class="legend-glyph" style="color: #52d681;">S</span> Armory Shop [E]</li>
+                <li><span class="legend-glyph" style="color: #e298ff;">†</span> Temple [E]</li>
+                <li><span class="legend-glyph" style="color: #ffd875;">☺</span> Townsperson [T]</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scrolling Adventure Log -->
+        <div class="log-panel">
+          <div class="log-header">
+            <span>Chronicle Log</span>
+            <small>WASD/Arrows move, [E] Enter, [C] Cast Spell, [I] Pack &amp; Gear, [T] Talk, [X] Exit Town</small>
+          </div>
+          <div id="exploration-log" class="log-entries" role="log" aria-live="polite">
+            <template x-for="item in messageLog" :key="item.id">
+              <div class="log-line" x-text="`> ${item.text}`"></div>
+            </template>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Controls & Active Party HUD -->
+      <aside class="exploration-hud">
+        <!-- Compass & Command Deck -->
+        <section class="rpg-panel">
+          <div class="panel-header">
+            <h3>Command Deck</h3>
+          </div>
+
+          <div class="compass-pad" aria-label="Movement Controls">
+            <div></div>
+            <button type="button" @click="moveParty('N')" title="Move North (W or Up Arrow)">&uarr; N</button>
+            <div></div>
+            <button type="button" @click="moveParty('W')" title="Move West (A or Left Arrow)">&larr; W</button>
+            <button type="button" class="btn-sm" @click="waitTurn()" title="Wait / Pass Turn (Space or P)">Pass</button>
+            <button type="button" @click="moveParty('E')" title="Move East (D or Right Arrow)">E &rarr;</button>
+            <div></div>
+            <button type="button" @click="moveParty('S')" title="Move South (S or Down Arrow)">&darr; S</button>
+            <div></div>
+          </div>
+
+          <div class="command-btn-grid">
+            <button
+              type="button"
+              class="btn-primary"
+              :disabled="!currentTrigger"
+              @click="enterOrInteract()"
+            >
+              [E] Enter / Use
+            </button>
+            <button
+              type="button"
+              @click="openSpellModal()"
+            >
+              [C] Cast Spell
+            </button>
+            <button
+              type="button"
+              @click="openInventoryModal()"
+            >
+              [I] Pack (<span x-text="totalPackItemCount"></span>)
+            </button>
+            <button
+              type="button"
+              :disabled="adjacentTriggers.length === 0 && !currentTrigger"
+              @click="talkNearby()"
+            >
+              [T] Talk
+            </button>
+            <button
+              type="button"
+              x-show="currentMap?.mode === 'town'"
+              @click="leaveCurrentTown()"
+            >
+              [X] Exit Town
+            </button>
+          </div>
+        </section>
+
+        <!-- Party Status Panel -->
+        <section class="rpg-panel gold-frame">
+          <div class="panel-header">
+            <h3>Party</h3>
+            <span style="font-size: 0.85rem; color: var(--accent-gold);" x-text="`${state.gold} GP`"></span>
+          </div>
+
+          <div class="party-slot-list">
+            <template x-for="(member, idx) in partyMembersDetailed" :key="member.id">
+              <div class="party-card" :class="member.row === 'front' ? 'front-row' : 'back-row'">
+                <div class="char-main-info">
+                  <div class="char-name-line">
+                    <span x-text="`${idx + 1}. ${member.name}`"></span>
+                    <span class="badge-party" x-text="member.row.toUpperCase()"></span>
+                    <span class="status-pill" :class="getStatusBadgeClass(member.status)" x-text="member.status"></span>
+                  </div>
+                  <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className} • ${getHeroMagicSchoolLabel(member)}`"></div>
+                  <div class="char-vitals">
+                    <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
+                    <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
+                    <span class="vital-ac" x-text="`AC ${member.derived.ac}`"></span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button type="button" class="btn-sm btn-primary" @click="openInventoryModal(member)">Gear</button>
+                  <button type="button" class="btn-sm" x-show="member.derived.maxMp > 0" @click="openSpellModal(member)">Spells</button>
+                  <button type="button" class="btn-sm" @click="openInspectModal(member)">Stats</button>
+                </div>
+              </div>
+            </template>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <!-- ==================== SCREEN 5: COMBAT ENCOUNTER (BARD'S TALE / WASTELAND STYLE) ==================== -->
+    <template x-if="!loading && !loadError && screen === 'combat' && combat">
+      <div class="exploration-grid">
+        <!-- Left Column: Enemy Formation, Round Input Deck, and Combat Log -->
+        <section class="rpg-panel gold-frame">
+          <div class="panel-header">
+            <div>
+              <h2 x-text="`Combat — ${combat.terrainName}`"></h2>
+              <div class="location-subline">
+                <span class="mode-pill" x-text="`ROUND ${combat.round}`"></span>
+                <template x-if="combat.surprise === 'party'">
+                  <span class="badge-party" style="border-color: var(--accent-green); color: var(--accent-green);">SURPRISE! ENEMIES STUNNED</span>
+                </template>
+                <template x-if="combat.partyBuffs?.activeNames?.length > 0">
+                  <span class="badge-party" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" x-text="`BUFFS: ${combat.partyBuffs.activeNames.join(', ')} (+${combat.partyBuffs.acBonus} AC${combat.partyBuffs.hitBonus ? ', +' + combat.partyBuffs.hitBonus + ' Hit' : ''})`"></span>
+                </template>
+                <template x-if="frontLineCollapsed">
+                  <span class="badge-party" style="border-color: var(--accent-red); color: var(--accent-red);">FRONT LINE COLLAPSED — BACK ROW EXPOSED</span>
+                </template>
+              </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              <span x-show="combat.phase === 'input'">Declare actions, then resolve in Initiative order</span>
+              <span x-show="combat.phase === 'victory'" style="color: var(--accent-green); font-weight: 700;">VICTORY!</span>
+              <span x-show="combat.phase === 'fled'" style="color: var(--accent-cyan); font-weight: 700;">ESCAPED!</span>
+              <span x-show="combat.phase === 'defeat'" style="color: var(--accent-red); font-weight: 700;">PARTY DEFEATED</span>
+            </div>
+          </div>
+
+          <!-- Enemy Groups Stage (1 to 3 Groups) -->
+          <div class="enemy-groups-grid">
+            <template x-for="(group, gIdx) in combat.groups" :key="group.id">
+              <div
+                class="enemy-group-card"
+                :class="{
+                  'defeated': getGroupLivingCount(group) === 0,
+                  'targetable': combat.phase === 'input' && !allCombatActionsQueued && activeHeroAttackProfile.canAttack && getGroupLivingCount(group) > 0
+                }"
+              >
+                <div class="enemy-group-header">
+                  <div style="display: flex; align-items: center; gap: 0.55rem;">
+                    <span
+                      class="enemy-glyph-box"
+                      :style="`color: ${group.color}; border-color: ${group.color};`"
+                      x-text="group.glyph"
+                    ></span>
+                    <div>
+                      <div class="enemy-group-title" x-text="`${group.label}: ${getGroupLivingCount(group)} / ${group.units.length} ${group.units.length === 1 ? group.name : group.pluralName}`"></div>
+                      <div class="enemy-group-meta" x-text="`AC ${group.ac} • ${group.attackName} (${group.damageDice})`"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Individual Monster HP List -->
+                <ul class="enemy-unit-list" role="list">
+                  <template x-for="unit in group.units" :key="unit.id">
+                    <li class="enemy-unit-row" :class="{ 'unit-dead': !unit.alive }">
+                      <span>
+                        <span x-text="unit.name"></span>
+                        <template x-if="unit.alive && unit.status && unit.status !== 'OK'">
+                          <span class="status-pill" :class="getStatusBadgeClass(unit.status)" x-text="unit.status"></span>
+                        </template>
+                      </span>
+                      <span
+                        :style="`color: ${unit.alive ? 'var(--accent-green)' : 'var(--text-muted)'}`"
+                        x-text="unit.alive ? `HP ${unit.hp}/${unit.maxHp}` : 'SLAIN'"
+                      ></span>
+                    </li>
+                  </template>
+                </ul>
+
+                <!-- Direct Target Attack / Spell Button -->
+                <template x-if="combat.phase === 'input' && !allCombatActionsQueued && getGroupLivingCount(group) > 0">
+                  <button
+                    type="button"
+                    class="btn-sm btn-primary"
+                    style="width: 100%; margin-top: 0.45rem;"
+                    :disabled="combat.selectingSpell ? !(selectedCombatSpellEntry?.canCast && (selectedCombatSpellEntry?.spell.targetType === 'enemy_single' || selectedCombatSpellEntry?.spell.targetType === 'enemy_group')) : !activeHeroAttackProfile.canAttack"
+                    @click="selectCombatTargetGroup(group.id)"
+                    x-text="combat.selectingSpell && selectedCombatSpellEntry?.canCast && (selectedCombatSpellEntry?.spell.targetType === 'enemy_single' || selectedCombatSpellEntry?.spell.targetType === 'enemy_group') ? `[${gIdx + 1}] Cast ${selectedCombatSpellEntry.spell.name} -> ${group.label}` : `[${gIdx + 1}] Attack ${group.label}`"
+                  ></button>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          <!-- Round Action Input Box -->
+          <div class="combat-command-box">
+            <!-- Phase: Choosing Hero Actions -->
+            <template x-if="combat.phase === 'input' && !allCombatActionsQueued && activeCombatHero">
+              <div>
+                <div class="combat-prompt-header">
+                  <div>
+                    <span style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Declare Order For</span>
+                    <h3 style="margin: 0.1rem 0; color: var(--accent-gold);" x-text="`${activeCombatHero.name} — Lv ${activeCombatHero.level} ${activeCombatHero.raceName} ${activeCombatHero.className} (${getHeroCombatRowLabel(activeCombatHero)})`"></h3>
+                  </div>
+                  <div style="text-align: right; font-size: 0.8rem;">
+                    <span style="color: var(--accent-cyan);" x-text="`Weapon: ${activeHeroAttackProfile.weaponName}`"></span>
+                    <div style="font-size: 0.74rem; color: var(--text-muted);" x-text="activeHeroAttackProfile.reason"></div>
+                  </div>
+                </div>
+
+                <template x-if="!activeHeroAttackProfile.canAttack">
+                  <div class="backrow-notice">
+                    <strong>Back Row Restriction:</strong> <span x-text="activeCombatHero.name"></span> has no ranged or reach weapon equipped and cannot reach the enemy in melee. Choose <strong>Cast Spell</strong>, <strong>Defend</strong>, <strong>Use Item</strong>, or <strong>Run</strong>.
+                  </div>
+                </template>
+
+                <template x-if="combat.selectingTarget">
+                  <div class="target-select-banner">
+                    <span>Select which Enemy Group <strong x-text="activeCombatHero.name"></strong> will attack (Click a group above or press 1–3):</span>
+                    <button type="button" class="btn-sm" @click="combat.selectingTarget = false">Cancel</button>
+                  </div>
+                </template>
+
+                <template x-if="combat.selectingSpell">
+                  <div class="combat-item-picker">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+                      <strong style="color: var(--accent-cyan); font-size: 0.82rem; text-transform: uppercase;">
+                        1. Choose Spell (<span x-text="`${activeCombatHero.name}: ${activeCombatHero.derived.mp}/${activeCombatHero.derived.maxMp} MP`"></span>):
+                      </strong>
+                      <button type="button" class="btn-sm" @click="combat.selectingSpell = false">Cancel</button>
+                    </div>
+                    <div class="combat-consumable-pills">
+                      <template x-for="entry in activeHeroCombatSpells" :key="entry.spell.id">
+                        <button
+                          type="button"
+                          class="btn-sm"
+                          :class="{ 'btn-primary': selectedCombatSpellEntry?.spell.id === entry.spell.id }"
+                          :disabled="!entry.canCast"
+                          :title="entry.reason || entry.spell.description"
+                          @click="selectCombatSpellPill(entry.spell.id)"
+                          x-text="`${entry.spell.name} (${entry.spell.mpCost} MP)`"
+                        ></button>
+                      </template>
+                    </div>
+
+                    <template x-if="selectedCombatSpellEntry">
+                      <div style="margin-top: 0.55rem; padding-top: 0.45rem; border-top: 1px dashed var(--border-dim);">
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+                          <strong style="color: var(--accent-gold);" x-text="selectedCombatSpellEntry.spell.name"></strong>:
+                          <span x-text="selectedCombatSpellEntry.summary"></span>
+                        </div>
+
+                        <!-- Target Type: Single Ally -->
+                        <template x-if="selectedCombatSpellEntry.spell.targetType === 'ally_single'">
+                          <div>
+                            <strong style="color: var(--accent-gold); font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 0.35rem;">2. Select Party Member Target:</strong>
+                            <div class="combat-consumable-pills">
+                              <template x-for="ally in partyMembersDetailed" :key="ally.id">
+                                <button
+                                  type="button"
+                                  class="btn-sm btn-success"
+                                  :disabled="!selectedCombatSpellEntry.canCast"
+                                  @click="queueCombatSpellTargetAlly(ally.id)"
+                                  x-text="`${ally.name} (${ally.status}, HP ${ally.derived.hp}/${ally.derived.maxHp})`"
+                                ></button>
+                              </template>
+                            </div>
+                          </div>
+                        </template>
+
+                        <!-- Target Type: Enemy Single / Group -->
+                        <template x-if="selectedCombatSpellEntry.spell.targetType === 'enemy_single' || selectedCombatSpellEntry.spell.targetType === 'enemy_group'">
+                          <div>
+                            <strong style="color: var(--accent-gold); font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 0.35rem;">2. Select Enemy Group Target (or press 1–3):</strong>
+                            <div class="combat-consumable-pills">
+                              <template x-for="(grp, gIdx) in combat.groups" :key="grp.id">
+                                <button
+                                  type="button"
+                                  class="btn-sm btn-primary"
+                                  x-show="getGroupLivingCount(grp) > 0"
+                                  :disabled="!selectedCombatSpellEntry.canCast"
+                                  @click="selectCombatTargetGroup(grp.id)"
+                                  x-text="`[${gIdx + 1}] ${grp.label}: ${grp.pluralName} (${getGroupLivingCount(grp)} alive)`"
+                                ></button>
+                              </template>
+                            </div>
+                          </div>
+                        </template>
+
+                        <!-- Target Type: Party or All Enemies -->
+                        <template x-if="selectedCombatSpellEntry.spell.targetType === 'party' || selectedCombatSpellEntry.spell.targetType === 'enemy_all'">
+                          <div>
+                            <button
+                              type="button"
+                              class="btn-sm btn-success"
+                              :disabled="!selectedCombatSpellEntry.canCast"
+                              @click="queueCombatSpellOnPartyOrAll()"
+                              x-text="`Cast ${selectedCombatSpellEntry.spell.name} (${selectedCombatSpellEntry.spell.targetType === 'enemy_all' ? 'All Enemies' : 'Entire Party'})`"
+                            ></button>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+
+                <template x-if="combat.selectingItem">
+                  <div class="combat-item-picker">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+                      <strong style="color: var(--accent-cyan); font-size: 0.82rem; text-transform: uppercase;">1. Choose Consumable from Party Pack:</strong>
+                      <button type="button" class="btn-sm" @click="combat.selectingItem = false">Cancel</button>
+                    </div>
+                    <div class="combat-consumable-pills">
+                      <template x-for="entry in combatAvailableConsumables" :key="entry.itemId">
+                        <button
+                          type="button"
+                          class="btn-sm"
+                          :class="{ 'btn-primary': combat.selectedCombatItemId === entry.itemId }"
+                          @click="combat.selectedCombatItemId = entry.itemId"
+                          x-text="`${entry.item.name} (x${entry.availableQty}) — ${entry.summary}`"
+                        ></button>
+                      </template>
+                    </div>
+                    <div style="margin-top: 0.55rem;">
+                      <strong style="color: var(--accent-gold); font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 0.35rem;">2. Select Party Member Target:</strong>
+                      <div class="combat-consumable-pills">
+                        <template x-for="ally in partyMembersDetailed" :key="ally.id">
+                          <button
+                            type="button"
+                            class="btn-sm btn-success"
+                            @click="queueCombatItemTarget(ally.id)"
+                            x-text="`${ally.name} (HP ${ally.derived.hp}/${ally.derived.maxHp}${ally.derived.maxMp > 0 ? ', MP ' + ally.derived.mp + '/' + ally.derived.maxMp : ''})`"
+                          ></button>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <div class="combat-action-buttons">
+                  <button
+                    type="button"
+                    class="btn-primary"
+                    :disabled="!activeHeroAttackProfile.canAttack"
+                    @click="chooseCombatAttack()"
+                  >
+                    [A] Attack
+                  </button>
+                  <button
+                    type="button"
+                    :disabled="activeHeroCastableCombatSpells.length === 0 || activeCombatHero.status === 'Silence'"
+                    :title="activeCombatHero.status === 'Silence' ? 'Silenced — cannot cast spells' : ''"
+                    @click="chooseCombatCast()"
+                  >
+                    [C] Cast Spell (<span x-text="`${activeCombatHero.derived.mp} MP`"></span>)
+                  </button>
+                  <button
+                    type="button"
+                    @click="chooseCombatDefend()"
+                  >
+                    [D] Defend (+2 AC, &frac12; Dmg)
+                  </button>
+                  <button
+                    type="button"
+                    :disabled="combatAvailableConsumables.length === 0"
+                    @click="chooseCombatUseItem()"
+                  >
+                    [U] Use Item (<span x-text="combatAvailableConsumables.reduce((s, e) => s + e.availableQty, 0)"></span>)
+                  </button>
+                  <button
+                    type="button"
+                    @click="chooseCombatRun()"
+                  >
+                    [R] Run (Flee)
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-sm"
+                    x-show="combat.activeHeroIndex > 0"
+                    @click="prevCombatHero()"
+                  >
+                    &larr; Prev Hero [Backspace]
+                  </button>
+                </div>
+              </div>
+            </template>
+
+            <!-- Phase: All Heroes Queued -> Ready to Resolve Round -->
+            <template x-if="combat.phase === 'input' && allCombatActionsQueued">
+              <div class="combat-ready-banner">
+                <div>
+                  <strong style="color: var(--accent-gold); display: block; text-transform: uppercase;">All Orders Declared for Round <span x-text="combat.round"></span></strong>
+                  <span style="font-size: 0.82rem; color: var(--text-muted);">Press Enter / Space or click Execute Round to resolve actions in Initiative order.</span>
+                </div>
+                <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                  <button type="button" @click="prevCombatHero()">&larr; Revise Orders</button>
+                  <button type="button" class="btn-success" @click="executeCombatRound()">
+                    [Enter] Execute Round &rarr;
+                  </button>
+                </div>
+              </div>
+            </template>
+
+            <!-- Phase: Victory & Level-Up Summary -->
+            <template x-if="combat.phase === 'victory'">
+              <div class="combat-outcome-box victory">
+                <div>
+                  <strong style="color: var(--accent-green); font-size: 1rem; text-transform: uppercase;">Victory in the Field!</strong>
+                  <p style="margin: 0.35rem 0; font-size: 0.86rem;" x-show="combat.rewards">
+                    Each surviving hero gains <strong style="color: var(--accent-cyan);" x-text="`${combat.rewards?.xpEach || 0} XP`"></strong>
+                    and the party loots <strong style="color: var(--accent-gold);" x-text="`${combat.rewards?.goldTotal || 0} GP`"></strong>!
+                  </p>
+                  <template x-if="combat.rewards?.lootDrops?.length > 0">
+                    <p style="margin: 0.25rem 0; font-size: 0.84rem; color: var(--accent-gold);">
+                      Item Drops Added to Pack:
+                      <strong x-text="combat.rewards.lootDrops.map(d => `${d.name}${d.qty > 1 ? ' x' + d.qty : ''}`).join(', ')"></strong>
+                    </p>
+                  </template>
+                  <template x-if="combat.rewards?.levelUps?.length > 0">
+                    <div class="levelup-callout-list">
+                      <template x-for="up in combat.rewards.levelUps" :key="`${up.charId}_${up.newLevel}`">
+                        <div class="levelup-pill">
+                          <span x-text="`★ ${up.charName} advanced to LEVEL ${up.newLevel}! (+${up.hpGain} HP${up.mpGain > 0 ? ', +' + up.mpGain + ' MP' : ''}${up.statBump ? ', +1 ' + up.statBump : ''})`"></span>
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+                </div>
+                <button type="button" class="btn-success" @click="finishCombat()">
+                  [Enter] Continue Journey &rarr;
+                </button>
+              </div>
+            </template>
+
+            <!-- Phase: Fled -->
+            <template x-if="combat.phase === 'fled'">
+              <div class="combat-outcome-box">
+                <div>
+                  <strong style="color: var(--accent-cyan); text-transform: uppercase;">Retreat Successful</strong>
+                  <p style="margin: 0.3rem 0; font-size: 0.85rem; color: var(--text-muted);">Your party broke contact and slipped away into the wilderness.</p>
+                </div>
+                <button type="button" class="btn-primary" @click="finishCombat()">
+                  [Enter] Return to Overworld &rarr;
+                </button>
+              </div>
+            </template>
+
+            <!-- Phase: Defeat -->
+            <template x-if="combat.phase === 'defeat'">
+              <div class="combat-outcome-box defeat">
+                <div>
+                  <strong style="color: var(--accent-red); text-transform: uppercase;">The Party Has Fallen!</strong>
+                  <p style="margin: 0.3rem 0; font-size: 0.85rem; color: var(--text-muted);">
+                    Wandering acolytes of the Triad can carry your fallen heroes back to Oakhaven Temple in exchange for half your gold.
+                  </p>
+                </div>
+                <button type="button" class="btn-danger" @click="revivePartyAfterDefeat()">
+                  [Enter] Revive at Oakhaven Temple &rarr;
+                </button>
+              </div>
+            </template>
+          </div>
+
+          <!-- Combat Round Log -->
+          <div class="log-panel">
+            <div class="log-header">
+              <span>Combat Chronicle</span>
+              <small>Shortcuts: [A] Attack, [C] Cast, [D] Defend, [U] Use Item, [R] Run, [1–3] Target Group, [Enter] Resolve</small>
+            </div>
+            <div id="combat-log" class="log-entries combat-log-entries" role="log" aria-live="polite">
+              <template x-for="entry in combat.log" :key="entry.id">
+                <div
+                  class="log-line"
+                  :class="`log-tone-${entry.tone || 'info'}`"
+                  x-text="`> ${entry.text}`"
+                ></div>
+              </template>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Column: Party Combat Status & Queued Orders -->
+        <aside class="exploration-hud">
+          <section class="rpg-panel gold-frame">
+            <div class="panel-header">
+              <h3>Party Formation</h3>
+              <span style="font-size: 0.85rem; color: var(--accent-gold);" x-text="`${state.gold} GP`"></span>
+            </div>
+
+            <div class="party-slot-list">
+              <template x-for="(member, idx) in partyMembersDetailed" :key="member.id">
+                <div
+                  class="party-card"
+                  :class="{
+                    'front-row': member.row === 'front',
+                    'back-row': member.row === 'back',
+                    'combat-active-hero': combat.phase === 'input' && activeCombatHero?.id === member.id,
+                    'combat-dead-hero': member.status === 'Dead' || member.derived.hp <= 0
+                  }"
+                >
+                  <div class="char-main-info" style="width: 100%;">
+                    <div class="char-name-line" style="display: flex; justify-content: space-between; align-items: center;">
+                      <div>
+                        <span x-text="`${idx + 1}. ${member.name}`"></span>
+                        <span class="badge-party" x-text="getHeroCombatRowLabel(member)"></span>
+                        <span class="status-pill" :class="getStatusBadgeClass(member.status)" x-text="member.status"></span>
+                      </div>
+                      <template x-if="combat.phase === 'input' && activeCombatHero?.id === member.id">
+                        <span class="step-badge" style="font-size: 0.68rem;">ORDERS</span>
+                      </template>
+                    </div>
+                    <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className} • ${getItemName(member.equipment?.weapon, 'Unarmed')}`"></div>
+                    <div class="char-vitals">
+                      <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
+                      <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
+                      <span class="vital-ac" x-text="`AC ${member.derived.ac}`"></span>
+                    </div>
+                    <div class="combat-order-line">
+                      <template x-if="member.status === 'Dead' || member.derived.hp <= 0">
+                        <span style="color: var(--accent-red); font-weight: 700;">STATUS: FALLEN (DEAD)</span>
+                      </template>
+                      <template x-if="member.status !== 'Dead' && member.derived.hp > 0">
+                        <span
+                          :style="`color: ${combat.queuedActions[member.id] ? 'var(--accent-gold)' : 'var(--text-muted)'}`"
+                          x-text="`Order: ${getHeroQueuedActionLabel(member.id)}`"
+                        ></span>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </template>
+    </main>
+
+    <!-- ==================== NATIVE <dialog> MODALS ==================== -->
+
+    <!-- Inspect Character Dialog -->
+    <dialog id="inspect-dialog" closedby="any" aria-labelledby="inspect-dialog-title">
+      <template x-if="inspectTarget">
+        <div>
+          <div class="panel-header">
+            <h2 id="inspect-dialog-title" x-text="`${inspectTarget.name} — Lv ${inspectTarget.level} ${inspectTarget.raceName} ${inspectTarget.className}`"></h2>
+          </div>
+          <div class="derived-preview-grid">
+            <div class="derived-box">
+              <span>HP</span>
+              <strong x-text="`${inspectTarget.derived.hp}/${inspectTarget.derived.maxHp}`"></strong>
+            </div>
+            <div class="derived-box">
+              <span>MP</span>
+              <strong style="color: var(--accent-cyan);" x-text="`${inspectTarget.derived.mp}/${inspectTarget.derived.maxMp}`"></strong>
+            </div>
+            <div class="derived-box">
+              <span>AC / Status</span>
+              <strong style="color: var(--accent-gold);" x-text="`${inspectTarget.derived.ac} / ${inspectTarget.status}`"></strong>
+            </div>
+          </div>
+          <div class="save-summary-box" style="margin: 0.75rem 0;">
+            <div class="summary-stat">
+              <span>STR</span>
+              <strong x-text="getEffectiveHeroStats(inspectTarget).str"></strong>
+            </div>
+            <div class="summary-stat">
+              <span>DEX</span>
+              <strong x-text="getEffectiveHeroStats(inspectTarget).dex"></strong>
+            </div>
+            <div class="summary-stat">
+              <span>INT</span>
+              <strong x-text="getEffectiveHeroStats(inspectTarget).int"></strong>
+            </div>
+            <div class="summary-stat">
+              <span>WIS</span>
+              <strong x-text="getEffectiveHeroStats(inspectTarget).wis"></strong>
+            </div>
+          </div>
+          <div class="equip-slots-box">
+            <div>
+              <span>Weapon:</span>
+              <strong x-text="inspectTarget.equipment?.weapon ? `${getItemName(inspectTarget.equipment.weapon)} (${getItemSummary(inspectTarget.equipment.weapon)})` : 'Bare Fists'"></strong>
+            </div>
+            <div>
+              <span>Armor:</span>
+              <strong x-text="inspectTarget.equipment?.armor ? `${getItemName(inspectTarget.equipment.armor)} (${getItemSummary(inspectTarget.equipment.armor)})` : 'Unarmored'"></strong>
+            </div>
+            <div>
+              <span>Accessory:</span>
+              <strong x-text="inspectTarget.equipment?.accessory ? `${getItemName(inspectTarget.equipment.accessory)} (${getItemSummary(inspectTarget.equipment.accessory)})` : 'None'"></strong>
+            </div>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0;">
+            Experience: <strong x-text="`${inspectTarget.xp} / ${xpForNextLevel(inspectTarget.level)} XP`"></strong>
+          </p>
+          <div class="dialog-actions">
+            <button
+              type="button"
+              class="btn-primary"
+              @click="document.querySelector('#inspect-dialog').close(); openInventoryModal(inspectTarget);"
+            >
+              Manage Gear
+            </button>
+            <form method="dialog">
+              <button type="submit" value="close" autofocus>Close</button>
+            </form>
+          </div>
+        </div>
+      </template>
+    </dialog>
+
+    <!-- Shared Party Pack & 3-Slot Equipment Dialog -->
+    <dialog id="inventory-dialog" class="dialog-wide" closedby="any" aria-labelledby="inventory-dialog-title">
+      <div class="panel-header">
+        <div>
+          <h2 id="inventory-dialog-title">Party Pack &amp; Equipment</h2>
+          <small style="color: var(--text-muted);">3 Slots per Hero (Weapon, Armor, Accessory) &bull; Shared Party Pack</small>
+        </div>
+        <span style="color: var(--accent-gold); font-weight: 700;" x-text="`Gold: ${state.gold} GP`"></span>
+      </div>
+
+      <!-- Hero Selector Strip -->
+      <div class="hero-tab-strip" role="tablist" aria-label="Select Hero">
+        <template x-for="hero in gearControllableHeroes" :key="hero.id">
+          <button
+            type="button"
+            class="hero-tab-btn"
+            :class="{ 'active': activeGearHero?.id === hero.id }"
+            @click="activeGearHeroId = hero.id"
+          >
+            <strong x-text="hero.name"></strong>
+            <span x-text="`Lv ${hero.level} ${hero.className} • AC ${hero.derived.ac}`"></span>
+            <span style="color: var(--accent-green);" x-text="`HP ${hero.derived.hp}/${hero.derived.maxHp}${hero.derived.maxMp > 0 ? ' • MP ' + hero.derived.mp + '/' + hero.derived.maxMp : ''}`"></span>
+          </button>
+        </template>
+      </div>
+
+      <template x-if="activeGearHero">
+        <div class="inventory-modal-grid">
+          <!-- Left: Selected Hero's 3 Equipment Slots -->
+          <div class="hero-gear-column">
+            <div class="subpanel-title">
+              <span x-text="`${activeGearHero.name}'s Equipped Gear`"></span>
+              <span class="badge-party" x-text="`AC ${activeGearHero.derived.ac}`"></span>
+            </div>
+
+            <div class="slot-card-list">
+              <!-- Weapon Slot -->
+              <div class="slot-card">
+                <div class="slot-card-header">
+                  <span class="slot-label">WEAPON SLOT</span>
+                  <template x-if="activeGearHero.equipment?.weapon">
+                    <button type="button" class="btn-sm" @click="unequipHeroSlot('weapon')">Unequip</button>
+                  </template>
+                </div>
+                <div class="slot-item-name" x-text="getItemName(activeGearHero.equipment?.weapon, 'Bare Fists (Unarmed)')"></div>
+                <div class="slot-item-desc" x-text="activeGearHero.equipment?.weapon ? getItemSummary(activeGearHero.equipment.weapon) : '1d3 + STR mod (Front Row only)'"></div>
+              </div>
+
+              <!-- Armor Slot -->
+              <div class="slot-card">
+                <div class="slot-card-header">
+                  <span class="slot-label">ARMOR SLOT</span>
+                  <template x-if="activeGearHero.equipment?.armor">
+                    <button type="button" class="btn-sm" @click="unequipHeroSlot('armor')">Unequip</button>
+                  </template>
+                </div>
+                <div class="slot-item-name" x-text="getItemName(activeGearHero.equipment?.armor, 'Unarmored')"></div>
+                <div class="slot-item-desc" x-text="activeGearHero.equipment?.armor ? getItemSummary(activeGearHero.equipment.armor) : '+0 AC'"></div>
+              </div>
+
+              <!-- Accessory Slot -->
+              <div class="slot-card">
+                <div class="slot-card-header">
+                  <span class="slot-label">ACCESSORY SLOT (RING / AMULET)</span>
+                  <template x-if="activeGearHero.equipment?.accessory">
+                    <button type="button" class="btn-sm" @click="unequipHeroSlot('accessory')">Unequip</button>
+                  </template>
+                </div>
+                <div class="slot-item-name" x-text="getItemName(activeGearHero.equipment?.accessory, 'Empty Slot')"></div>
+                <div class="slot-item-desc" x-text="activeGearHero.equipment?.accessory ? getItemSummary(activeGearHero.equipment.accessory) : 'Equip a ring, cloak, or talisman'"></div>
+              </div>
+            </div>
+
+            <div class="effective-stat-strip">
+              <span x-text="`STR ${getEffectiveHeroStats(activeGearHero).str}`"></span>
+              <span x-text="`DEX ${getEffectiveHeroStats(activeGearHero).dex}`"></span>
+              <span x-text="`INT ${getEffectiveHeroStats(activeGearHero).int}`"></span>
+              <span x-text="`WIS ${getEffectiveHeroStats(activeGearHero).wis}`"></span>
+            </div>
+          </div>
+
+          <!-- Right: Shared Party Pack -->
+          <div class="party-pack-column">
+            <div class="subpanel-title">
+              <span>Shared Party Pack (<span x-text="totalPackItemCount"></span> items)</span>
+              <div style="display: flex; gap: 0.3rem;">
+                <button type="button" class="btn-sm" :class="{ 'btn-primary': packFilter === 'all' }" @click="packFilter = 'all'">All</button>
+                <button type="button" class="btn-sm" :class="{ 'btn-primary': packFilter === 'equipment' }" @click="packFilter = 'equipment'">Gear</button>
+                <button type="button" class="btn-sm" :class="{ 'btn-primary': packFilter === 'consumable' }" @click="packFilter = 'consumable'">Consumables</button>
+              </div>
+            </div>
+
+            <template x-if="filteredPackEntries.length === 0">
+              <div class="empty-box">No matching items in the shared party pack. Visit a Town Armory to stock up!</div>
+            </template>
+
+            <div class="pack-item-list" x-show="filteredPackEntries.length > 0">
+              <template x-for="entry in filteredPackEntries" :key="entry.itemId">
+                <div class="pack-item-row">
+                  <div class="pack-item-info">
+                    <div class="pack-item-title">
+                      <span x-text="entry.item.name"></span>
+                      <span class="badge-party" x-text="`x${entry.qty}`"></span>
+                      <span class="slot-tag" x-text="entry.item.slot.toUpperCase()"></span>
+                    </div>
+                    <div class="pack-item-meta" x-text="entry.summary"></div>
+                    <div class="pack-item-desc" x-text="entry.item.description"></div>
+                  </div>
+                  <div class="pack-item-actions">
+                    <template x-if="entry.item.slot !== 'consumable'">
+                      <button
+                        type="button"
+                        class="btn-sm btn-primary"
+                        :disabled="!canHeroEquip(activeGearHero, entry.item).ok"
+                        :title="canHeroEquip(activeGearHero, entry.item).reason || `Equip on ${activeGearHero.name}`"
+                        @click="equipPackItemOnHero(entry.itemId)"
+                        x-text="canHeroEquip(activeGearHero, entry.item).ok ? `Equip on ${activeGearHero.name}` : canHeroEquip(activeGearHero, entry.item).reason"
+                      ></button>
+                    </template>
+                    <template x-if="entry.item.slot === 'consumable'">
+                      <button
+                        type="button"
+                        class="btn-sm btn-success"
+                        @click="usePackConsumable(entry.itemId)"
+                        x-text="`Use on ${activeGearHero.name}`"
+                      ></button>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" autofocus>Close [Esc]</button>
+      </form>
+    </dialog>
+
+    <!-- Town Armory & Outfitter Shop Dialog -->
+    <dialog id="shop-dialog" class="dialog-wide" closedby="any" aria-labelledby="shop-dialog-title">
+      <div class="panel-header">
+        <div>
+          <h2 id="shop-dialog-title" x-text="shopName"></h2>
+          <small style="color: var(--text-muted);">Buy weapons, armor, accessories &amp; potions, or sell spare gear from your pack</small>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="color: var(--accent-gold); font-weight: 700;" x-text="`Party Gold: ${state.gold} GP`"></span>
+          <div style="display: flex; gap: 0.35rem;">
+            <button type="button" class="btn-sm" :class="{ 'btn-primary': shopTab === 'buy' }" @click="shopTab = 'buy'">Buy Wares</button>
+            <button type="button" class="btn-sm" :class="{ 'btn-primary': shopTab === 'sell' }" @click="shopTab = 'sell'">Sell from Pack (<span x-text="totalPackItemCount"></span>)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUY TAB -->
+      <div x-show="shopTab === 'buy'">
+        <div class="shop-toolbar">
+          <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+            <button type="button" class="btn-sm" :class="{ 'btn-primary': shopCategory === 'all' }" @click="shopCategory = 'all'">All</button>
+            <button type="button" class="btn-sm" :class="{ 'btn-primary': shopCategory === 'weapon' }" @click="shopCategory = 'weapon'">Weapons</button>
+            <button type="button" class="btn-sm" :class="{ 'btn-primary': shopCategory === 'armor' }" @click="shopCategory = 'armor'">Armor</button>
+            <button type="button" class="btn-sm" :class="{ 'btn-primary': shopCategory === 'accessory' }" @click="shopCategory = 'accessory'">Accessories</button>
+            <button type="button" class="btn-sm" :class="{ 'btn-primary': shopCategory === 'consumable' }" @click="shopCategory = 'consumable'">Consumables</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem;">
+            <span style="color: var(--text-muted);">Outfitting Hero:</span>
+            <template x-for="hero in gearControllableHeroes" :key="hero.id">
+              <button
+                type="button"
+                class="btn-sm"
+                :class="{ 'btn-primary': shopTargetHero?.id === hero.id }"
+                @click="shopTargetHeroId = hero.id"
+                x-text="`${hero.name} (${hero.className})`"
+              ></button>
+            </template>
+          </div>
+        </div>
+
+        <div class="shop-item-list">
+          <template x-for="item in filteredShopCatalog" :key="item.id">
+            <div class="pack-item-row">
+              <div class="pack-item-info">
+                <div class="pack-item-title">
+                  <span x-text="item.name"></span>
+                  <span class="slot-tag" x-text="item.slot.toUpperCase()"></span>
+                  <span style="color: var(--accent-gold); font-weight: 700;" x-text="`${item.price} GP`"></span>
+                  <template x-if="getOwnedAndEquippedCount(item.id).total > 0">
+                    <span class="badge-party" x-text="`Owned: ${getOwnedAndEquippedCount(item.id).total}`"></span>
+                  </template>
+                </div>
+                <div class="pack-item-meta" x-text="getItemSummary(item)"></div>
+                <div class="pack-item-desc" x-text="item.description"></div>
+              </div>
+              <div class="pack-item-actions">
+                <button
+                  type="button"
+                  class="btn-sm"
+                  :disabled="state.gold < item.price"
+                  @click="buyItemToPack(item.id)"
+                >
+                  Buy to Pack
+                </button>
+                <template x-if="item.slot !== 'consumable' && shopTargetHero">
+                  <button
+                    type="button"
+                    class="btn-sm btn-primary"
+                    :disabled="state.gold < item.price || !canHeroEquip(shopTargetHero, item).ok"
+                    @click="buyAndEquipItem(item.id)"
+                    x-text="canHeroEquip(shopTargetHero, item).ok ? `Buy & Equip (${shopTargetHero.name})` : `Restricted (${shopTargetHero.className})`"
+                  ></button>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- SELL TAB -->
+      <div x-show="shopTab === 'sell'">
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0;">
+          Merchants pay 50% of base value for unequipped items in your Party Pack. (Unequip an item first if you want to sell it.)
+        </p>
+        <template x-if="packEntriesDetailed.length === 0">
+          <div class="empty-box">Your shared Party Pack is empty.</div>
+        </template>
+        <div class="shop-item-list" x-show="packEntriesDetailed.length > 0">
+          <template x-for="entry in packEntriesDetailed" :key="entry.itemId">
+            <div class="pack-item-row">
+              <div class="pack-item-info">
+                <div class="pack-item-title">
+                  <span x-text="entry.item.name"></span>
+                  <span class="badge-party" x-text="`x${entry.qty}`"></span>
+                  <span class="slot-tag" x-text="entry.item.slot.toUpperCase()"></span>
+                </div>
+                <div class="pack-item-meta" x-text="entry.summary"></div>
+              </div>
+              <div class="pack-item-actions">
+                <button
+                  type="button"
+                  class="btn-sm btn-primary"
+                  @click="sellPackItem(entry.itemId)"
+                  x-text="`Sell 1 (+${entry.sellPrice} GP)`"
+                ></button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" autofocus>Leave Shop [Esc]</button>
+      </form>
+    </dialog>
+
+    <!-- Wayfarer's Inn Dialog -->
+    <dialog id="inn-dialog" closedby="any" aria-labelledby="inn-dialog-title">
+      <div class="panel-header">
+        <h2 id="inn-dialog-title" x-text="innName"></h2>
+        <span style="color: var(--accent-gold); font-weight: 700;" x-text="`${state.gold} GP`"></span>
+      </div>
+      <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0;">
+        Rest your weary party by the hearth. Resting restores living heroes' HP and MP and records your chronicle.
+      </p>
+
+      <div class="service-options-list">
+        <div class="service-option-card">
+          <div>
+            <strong style="color: var(--accent-cyan);">Common Bunkroom (10 GP)</strong>
+            <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+              Straw mattresses and warm broth. Restores 50% Max HP and 50% Max MP (min 5) to all living heroes.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn-sm"
+            :disabled="state.gold < 10"
+            @click="restAtInn('bunk')"
+          >
+            Rest (10 GP)
+          </button>
+        </div>
+
+        <div class="service-option-card">
+          <div>
+            <strong style="color: var(--accent-gold);">Royal Suite &amp; Banquet (25 GP)</strong>
+            <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+              Featherbeds and roast venison. Restores 100% Full HP and MP to all living heroes.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn-sm btn-primary"
+            :disabled="state.gold < 25"
+            @click="restAtInn('suite')"
+          >
+            Full Rest (25 GP)
+          </button>
+        </div>
+      </div>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" autofocus>Leave Inn</button>
+      </form>
+    </dialog>
+
+    <!-- Temple of the Triad Dialog -->
+    <dialog id="temple-dialog" closedby="any" aria-labelledby="temple-dialog-title">
+      <div class="panel-header">
+        <h2 id="temple-dialog-title" x-text="templeName"></h2>
+        <span style="color: var(--accent-gold); font-weight: 700;" x-text="`${state.gold} GP`"></span>
+      </div>
+      <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0;">
+        The High Priests of the Triad offer resurrection for the fallen and restorative blessings for the wounded.
+      </p>
+
+      <div class="service-options-list">
+        <div class="service-option-card">
+          <div>
+            <strong style="color: var(--accent-green);">Hymn of Full Restoration (20 GP)</strong>
+            <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+              Restores all living party members to 100% HP and cleanses ailments.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn-sm btn-success"
+            :disabled="state.gold < 20"
+            @click="blessPartyAtTemple()"
+          >
+            Donate 20 GP
+          </button>
+        </div>
+
+        <template x-for="member in partyMembersDetailed" :key="`purify_${member.id}`">
+          <div class="service-option-card" x-show="member.status !== 'OK' && member.status !== 'Dead' && member.status !== 'Ashes' && member.derived.hp > 0">
+            <div>
+              <strong style="color: var(--accent-cyan);" x-text="`Rite of Purification: ${member.name} (${member.status})`"></strong>
+              <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+                Cleanses Poison or other lingering status ailments from this hero.
+              </p>
+            </div>
+            <button
+              type="button"
+              class="btn-sm"
+              :disabled="state.gold < 10"
+              @click="purifyHeroAtTemple(member.id)"
+            >
+              Purify (10 GP)
+            </button>
+          </div>
+        </template>
+
+        <template x-for="member in partyMembersDetailed" :key="member.id">
+          <div class="service-option-card" x-show="member.status === 'Dead' || member.status === 'Ashes' || member.derived.hp <= 0">
+            <div>
+              <strong style="color: var(--accent-red);" x-text="`${member.status === 'Ashes' ? 'Grand Rite of Reconstitution (Ashes)' : 'Rite of Returning (Dead)'}: ${member.name} (Lv ${member.level} ${member.className})`"></strong>
+              <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);" x-text="member.status === 'Ashes' ? 'Restores a hero from Ashes to full HP.' : 'Resurrects fallen hero from death with 50% HP.'"></p>
+            </div>
+            <button
+              type="button"
+              class="btn-sm btn-primary"
+              :disabled="state.gold < getResurrectCost(member)"
+              @click="resurrectHeroAtTemple(member.id)"
+              x-text="`Resurrect (${getResurrectCost(member)} GP)`"
+            ></button>
+          </div>
+        </template>
+      </div>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" autofocus>Depart Temple</button>
+      </form>
+    </dialog>
+
+    <!-- Spellbook & Field Magic Dialog -->
+    <dialog id="spell-dialog" class="dialog-wide" closedby="any" aria-labelledby="spell-dialog-title">
+      <div class="panel-header">
+        <div>
+          <h2 id="spell-dialog-title">Grimoire &amp; Field Magic</h2>
+          <small style="color: var(--text-muted);">Arcane (INT) &amp; Divine (WIS) Schools &bull; Cast Field Spells or Review Known Spells</small>
+        </div>
+        <template x-if="(state.location?.lightSteps || 0) > 0">
+          <span class="badge-party" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" x-text="`☼ Lumina Active (${state.location.lightSteps} steps)`"></span>
+        </template>
+      </div>
+
+      <!-- Hero Selector Strip -->
+      <div class="hero-tab-strip" role="tablist" aria-label="Select Spellcaster">
+        <template x-for="hero in gearControllableHeroes" :key="hero.id">
+          <button
+            type="button"
+            class="hero-tab-btn"
+            :class="{ 'active': activeSpellHero?.id === hero.id }"
+            :disabled="!doesHeroHaveMagic(hero)"
+            :title="doesHeroHaveMagic(hero) ? `View ${hero.name}'s Grimoire` : `${hero.name} (${hero.className}) cannot cast spells.`"
+            @click="selectSpellModalHero(hero.id)"
+          >
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong x-text="hero.name"></strong>
+              <span class="status-pill" :class="getStatusBadgeClass(hero.status)" x-text="hero.status"></span>
+            </div>
+            <span x-text="`Lv ${hero.level} ${hero.className} • ${getHeroMagicSchoolLabel(hero)}`"></span>
+            <span style="color: var(--accent-cyan);" x-text="`MP ${hero.derived.mp}/${hero.derived.maxMp} • HP ${hero.derived.hp}/${hero.derived.maxHp}`"></span>
+          </button>
+        </template>
+      </div>
+
+      <template x-if="!activeSpellHero">
+        <div class="empty-box">
+          None of the heroes in your current party practice Arcane or Divine magic.
+        </div>
+      </template>
+
+      <template x-if="activeSpellHero">
+        <div>
+          <template x-if="activeHeroSpellbook.length === 0">
+            <div class="empty-box">
+              <strong style="color: var(--accent-gold);" x-text="`${activeSpellHero.name} (${activeSpellHero.className})`"></strong>
+              does not practice Arcane or Divine magic. Select a Wizard, Cleric, Paladin, or Ranger above.
+            </div>
+          </template>
+
+          <template x-if="activeHeroSpellbook.length > 0">
+            <div class="grimoire-modal-grid">
+              <!-- Left: Hero's Known Spells -->
+              <div class="party-pack-column">
+                <div class="subpanel-title">
+                  <span x-text="`${activeSpellHero.name}'s ${getHeroMagicSchoolLabel(activeSpellHero)} Grimoire`"></span>
+                  <span style="color: var(--accent-cyan);" x-text="`MP: ${activeSpellHero.derived.mp}/${activeSpellHero.derived.maxMp}`"></span>
+                </div>
+
+                <div class="pack-item-list">
+                  <template x-for="entry in activeHeroSpellbook" :key="entry.spell.id">
+                    <button
+                      type="button"
+                      class="spell-card"
+                      :class="{ 'selected': selectedFieldSpellEntry?.spell.id === entry.spell.id }"
+                      @click="selectedFieldSpellId = entry.spell.id"
+                    >
+                      <div class="spell-card-header">
+                        <div class="spell-header-left">
+                          <span class="spell-title-name" x-text="entry.spell.name"></span>
+                          <span class="spell-mp-cost" x-text="`${entry.spell.mpCost} MP`"></span>
+                        </div>
+                        <div class="spell-header-right">
+                          <span
+                            class="spell-scope-tag"
+                            :class="entry.spell.usableIn.includes('field') ? 'scope-field' : 'scope-combat'"
+                            x-text="entry.spell.usableIn.includes('field') ? 'FIELD' : 'COMBAT'"
+                          ></span>
+                        </div>
+                      </div>
+                      <div class="pack-item-meta" x-text="entry.summary"></div>
+                      <div class="pack-item-desc" x-text="entry.spell.description"></div>
+                    </button>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Right: Field Casting Target Panel -->
+              <div class="hero-gear-column">
+                <div class="subpanel-title">
+                  <span>Field Invocation</span>
+                </div>
+
+                <template x-if="selectedFieldSpellEntry">
+                  <div class="slot-card" style="display: flex; flex-direction: column; gap: 0.65rem;">
+                    <div>
+                      <div class="slot-card-header">
+                        <span class="slot-label" x-text="`${selectedFieldSpellEntry.spell.mpCost} MP COST`"></span>
+                        <span
+                          style="font-size: 0.74rem;"
+                          :style="`color: ${selectedFieldSpellEntry.canCast ? 'var(--accent-green)' : 'var(--accent-red)'}`"
+                          x-text="selectedFieldSpellEntry.canCast ? 'Ready to Cast' : selectedFieldSpellEntry.reason"
+                        ></span>
+                      </div>
+                      <div class="slot-item-name" x-text="selectedFieldSpellEntry.spell.name"></div>
+                      <div class="slot-item-desc" x-text="selectedFieldSpellEntry.summary"></div>
+                      <p style="font-size: 0.76rem; color: var(--text-muted); margin: 0.35rem 0 0;" x-text="selectedFieldSpellEntry.spell.description"></p>
+                    </div>
+
+                    <template x-if="selectedFieldSpellEntry.spell.targetType === 'ally_single'">
+                      <div>
+                        <span class="slot-label" style="display: block; margin-bottom: 0.4rem;">CHOOSE PARTY MEMBER TARGET:</span>
+                        <div class="party-slot-list">
+                          <template x-for="ally in gearControllableHeroes" :key="ally.id">
+                            <button
+                              type="button"
+                              class="btn-sm btn-success"
+                              style="display: flex; justify-content: space-between; align-items: center; width: 100%;"
+                              :disabled="!selectedFieldSpellEntry.canCast"
+                              @click="castSelectedFieldSpell(ally)"
+                            >
+                              <span x-text="`${ally.name} (${ally.status})`"></span>
+                              <span x-text="`HP ${ally.derived.hp}/${ally.derived.maxHp}`"></span>
+                            </button>
+                          </template>
+                        </div>
+                      </div>
+                    </template>
+
+                    <template x-if="selectedFieldSpellEntry.spell.targetType === 'party'">
+                      <div>
+                        <button
+                          type="button"
+                          class="btn-primary"
+                          style="width: 100%;"
+                          :disabled="!selectedFieldSpellEntry.canCast"
+                          @click="castSelectedFieldSpell(null)"
+                          x-text="`Cast ${selectedFieldSpellEntry.spell.name} (-${selectedFieldSpellEntry.spell.mpCost} MP)`"
+                        ></button>
+                      </div>
+                    </template>
+
+                    <template x-if="!selectedFieldSpellEntry.spell.usableIn.includes('field')">
+                      <div class="empty-box" style="padding: 0.65rem;">
+                        This spell can only be invoked during a combat encounter.
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" autofocus>Close Grimoire [Esc]</button>
+      </form>
+    </dialog>
+
+    <!-- Rename Character Dialog -->
+    <dialog id="rename-dialog" closedby="any" aria-labelledby="rename-dialog-title">
+      <div class="panel-header">
+        <h2 id="rename-dialog-title">Rename Character</h2>
+      </div>
+      <form @submit.prevent="confirmRename()">
+        <div class="field-group">
+          <label for="rename-char-input">New Name</label>
+          <span id="rename-char-hint" class="field-hint">Enter 1 to 16 characters.</span>
+          <input
+            type="text"
+            id="rename-char-input"
+            x-model="renameInput"
+            required
+            minlength="1"
+            maxlength="16"
+            pattern=".*\S.*"
+            aria-describedby="rename-char-hint"
+            autofocus
+          >
+        </div>
+        <div class="dialog-actions">
+          <button type="button" @click="document.querySelector('#rename-dialog').close()">Cancel</button>
+          <button type="submit" class="btn-primary">Save Name</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Delete Confirmation Dialog -->
+    <dialog id="delete-dialog" aria-labelledby="delete-dialog-title">
+      <div class="panel-header">
+        <h2 id="delete-dialog-title">Dismiss Hero from Roster?</h2>
+      </div>
+      <p>
+        Are you sure you want to permanently dismiss <strong style="color: var(--accent-gold);" x-text="deleteTarget?.name"></strong>?
+        This cannot be undone.
+      </p>
+      <div class="dialog-actions">
+        <form method="dialog">
+          <button type="submit" value="cancel" autofocus>Cancel</button>
+        </form>
+        <button type="button" class="btn-danger" @click="confirmDeleteCharacter()">Dismiss Forever</button>
+      </div>
+    </dialog>
+
+    <!-- Save / Import / Export JSON Dialog -->
+    <dialog id="save-dialog" closedby="any" aria-labelledby="save-dialog-title">
+      <div class="panel-header">
+        <h2 id="save-dialog-title">Save Data &amp; JSON Backup</h2>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0;">
+        Your progress is automatically saved to browser <code>localStorage</code>. You can also export or paste a save JSON below.
+      </p>
+      <div class="field-group">
+        <label for="save-json-textarea">Save State JSON</label>
+        <textarea id="save-json-textarea" rows="9" x-model="importJsonText"></textarea>
+        <p x-show="importError" style="color: var(--accent-red); font-size: 0.8rem;" x-text="importError"></p>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" @click="downloadSaveFile()">Export File</button>
+        <button type="button" class="btn-primary" @click="importSaveFromModal()">Import JSON</button>
+        <form method="dialog">
+          <button type="submit" value="close" autofocus>Close</button>
+        </form>
+      </div>
+    </dialog>
+
+    <!-- Wipe Save Confirmation Dialog -->
+    <dialog id="wipe-dialog" aria-labelledby="wipe-dialog-title">
+      <div class="panel-header">
+        <h2 id="wipe-dialog-title">Wipe All Save Data?</h2>
+      </div>
+      <p>This will erase your entire roster, active party, and gold from <code>localStorage</code>.</p>
+      <div class="dialog-actions">
+        <form method="dialog">
+          <button type="submit" value="cancel" autofocus>Cancel</button>
+        </form>
+        <button type="button" class="btn-danger" @click="confirmWipeSave()">Wipe Everything</button>
+      </div>
+    </dialog>
+  </div>
+</body>
+</html>

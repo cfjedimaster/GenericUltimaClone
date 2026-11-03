@@ -1,0 +1,116 @@
+[
+  {
+    "id": "fighter",
+    "name": "Fighter",
+    "role": "Front-line damage",
+    "weaponsArmor": "All weapons (incl. polearms), heavy armor",
+    "magic": "None",
+    "magicSchool": null,
+    "mpRate": 0,
+    "baseHp": 12,
+    "hpPerLevel": 8,
+    "preferredRow": "front",
+    "minStats": {
+      "str": 12,
+      "dex": 8,
+      "int": 6,
+      "wis": 6
+    },
+    "invalidRaces": []
+  },
+  {
+    "id": "paladin",
+    "name": "Paladin",
+    "role": "Tank / support",
+    "weaponsArmor": "Most weapons (incl. polearms), heavy armor",
+    "magic": "Divine (slow)",
+    "magicSchool": "divine",
+    "mpRate": 0.5,
+    "baseHp": 10,
+    "hpPerLevel": 7,
+    "preferredRow": "front",
+    "minStats": {
+      "str": 11,
+      "dex": 8,
+      "int": 8,
+      "wis": 11
+    },
+    "invalidRaces": ["halfling"]
+  },
+  {
+    "id": "thief",
+    "name": "Thief",
+    "role": "Utility / damage",
+    "weaponsArmor": "Light weapons, light armor",
+    "magic": "None; traps, locks, steal",
+    "magicSchool": null,
+    "mpRate": 0,
+    "baseHp": 8,
+    "hpPerLevel": 5,
+    "preferredRow": "back",
+    "minStats": {
+      "str": 7,
+      "dex": 12,
+      "int": 8,
+      "wis": 7
+    },
+    "invalidRaces": []
+  },
+  {
+    "id": "ranger",
+    "name": "Ranger",
+    "role": "Ranged damage",
+    "weaponsArmor": "Bows, medium armor",
+    "magic": "Divine (slow)",
+    "magicSchool": "divine",
+    "mpRate": 0.5,
+    "baseHp": 9,
+    "hpPerLevel": 6,
+    "preferredRow": "back",
+    "minStats": {
+      "str": 9,
+      "dex": 11,
+      "int": 8,
+      "wis": 11
+    },
+    "invalidRaces": []
+  },
+  {
+    "id": "cleric",
+    "name": "Cleric",
+    "role": "Healer",
+    "weaponsArmor": "Blunt, slings & staves, medium armor",
+    "magic": "Divine",
+    "magicSchool": "divine",
+    "mpRate": 1.0,
+    "baseHp": 8,
+    "hpPerLevel": 5,
+    "preferredRow": "back",
+    "minStats": {
+      "str": 8,
+      "dex": 7,
+      "int": 8,
+      "wis": 12
+    },
+    "invalidRaces": []
+  },
+  {
+    "id": "wizard",
+    "name": "Wizard",
+    "role": "Caster",
+    "weaponsArmor": "Staves / daggers, robes",
+    "magic": "Arcane",
+    "magicSchool": "arcane",
+    "mpRate": 1.0,
+    "baseHp": 6,
+    "hpPerLevel": 4,
+    "preferredRow": "back",
+    "minStats": {
+      "str": 6,
+      "dex": 8,
+      "int": 12,
+      "wis": 8
+    },
+    "invalidRaces": ["dwarf"]
+  }
+]

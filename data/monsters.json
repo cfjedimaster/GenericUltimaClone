@@ -1,0 +1,187 @@
+[
+  {
+    "id": "kobold",
+    "name": "Kobold",
+    "pluralName": "Kobolds",
+    "glyph": "k",
+    "color": "#d9a752",
+    "hp": "1d4+2",
+    "ac": 10,
+    "dex": 11,
+    "attackName": "Jagged Spear",
+    "damageDice": "1d3",
+    "xp": 15,
+    "gold": "1d6+2",
+    "drops": [
+      { "itemId": "healing_draught", "chance": 0.14 },
+      { "itemId": "leather_sling", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "goblin",
+    "name": "Goblin",
+    "pluralName": "Goblins",
+    "glyph": "g",
+    "color": "#57b868",
+    "hp": "1d6+2",
+    "ac": 10,
+    "dex": 11,
+    "attackName": "Rusty Shiv",
+    "damageDice": "1d4",
+    "specialAttack": {
+      "name": "Venom-Tipped Dart",
+      "chance": 0.22,
+      "damageDice": "1d3",
+      "status": "Poison",
+      "statusChance": 0.55
+    },
+    "xp": 20,
+    "gold": "2d4+2",
+    "drops": [
+      { "itemId": "healing_draught", "chance": 0.18 },
+      { "itemId": "antidote_herb", "chance": 0.12 },
+      { "itemId": "throwing_dagger", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "wolf",
+    "name": "Forest Wolf",
+    "pluralName": "Forest Wolves",
+    "glyph": "w",
+    "color": "#b0b8c8",
+    "hp": "2d4",
+    "ac": 11,
+    "dex": 13,
+    "attackName": "Feral Bite",
+    "damageDice": "1d4",
+    "xp": 22,
+    "gold": "1d6",
+    "drops": [
+      { "itemId": "healing_draught", "chance": 0.12 }
+    ]
+  },
+  {
+    "id": "giant_spider",
+    "name": "Mire Spider",
+    "pluralName": "Mire Spiders",
+    "glyph": "x",
+    "color": "#a8df65",
+    "hp": "2d4+1",
+    "ac": 11,
+    "dex": 12,
+    "attackName": "Chitin Mandibles",
+    "damageDice": "1d4",
+    "specialAttack": {
+      "name": "Neurotoxic Fang",
+      "chance": 0.35,
+      "damageDice": "1d4",
+      "status": "Poison",
+      "statusChance": 0.7
+    },
+    "xp": 26,
+    "gold": "1d6+3",
+    "drops": [
+      { "itemId": "antidote_herb", "chance": 0.28 },
+      { "itemId": "healing_draught", "chance": 0.12 }
+    ]
+  },
+  {
+    "id": "brigand",
+    "name": "Highway Brigand",
+    "pluralName": "Highway Brigands",
+    "glyph": "b",
+    "color": "#f0c45a",
+    "hp": "2d4+2",
+    "ac": 11,
+    "dex": 11,
+    "attackName": "Notched Cutlass",
+    "damageDice": "1d4+1",
+    "specialAttack": {
+      "name": "Soporific Smoke Bomb",
+      "chance": 0.2,
+      "damageDice": "1d2",
+      "status": "Sleep",
+      "statusChance": 0.55
+    },
+    "xp": 28,
+    "gold": "2d6+6",
+    "drops": [
+      { "itemId": "healing_draught", "chance": 0.22 },
+      { "itemId": "ether_tonic", "chance": 0.1 },
+      { "itemId": "short_sword", "chance": 0.07 }
+    ]
+  },
+  {
+    "id": "skeleton",
+    "name": "Skeleton",
+    "pluralName": "Skeletons",
+    "glyph": "s",
+    "color": "#e8ecf4",
+    "undead": true,
+    "hp": "2d4+2",
+    "ac": 11,
+    "dex": 9,
+    "attackName": "Ancient Scimitar",
+    "damageDice": "1d4+1",
+    "specialAttack": {
+      "name": "Grave-Chill Touch",
+      "chance": 0.25,
+      "damageDice": "1d4",
+      "status": "Paralysis",
+      "statusChance": 0.5
+    },
+    "xp": 30,
+    "gold": "2d6+3",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.15 },
+      { "itemId": "antidote_herb", "chance": 0.12 },
+      { "itemId": "ring_protection", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "dark_acolyte",
+    "name": "Cult Hexer",
+    "pluralName": "Cult Hexers",
+    "glyph": "c",
+    "color": "#c77dff",
+    "hp": "2d4+2",
+    "ac": 11,
+    "dex": 11,
+    "attackName": "Shadow Bolt",
+    "damageDice": "1d4+1",
+    "specialAttack": {
+      "name": "Curse of Mute Tongue",
+      "chance": 0.35,
+      "damageDice": "1d4",
+      "status": "Silence",
+      "statusChance": 0.65,
+      "isSpell": true
+    },
+    "xp": 34,
+    "gold": "2d6+6",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.25 },
+      { "itemId": "antidote_herb", "chance": 0.15 },
+      { "itemId": "apprentice_staff", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "orc",
+    "name": "Orc Marauder",
+    "pluralName": "Orc Marauders",
+    "glyph": "o",
+    "color": "#f25f5c",
+    "hp": "2d6+2",
+    "ac": 12,
+    "dex": 9,
+    "attackName": "Spiked Club",
+    "damageDice": "1d5+1",
+    "xp": 35,
+    "gold": "2d6+8",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.16 },
+      { "itemId": "boar_spear", "chance": 0.07 },
+      { "itemId": "studded_leather", "chance": 0.05 }
+    ]
+  }
+]

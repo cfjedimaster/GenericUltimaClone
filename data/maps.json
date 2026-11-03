@@ -1,0 +1,555 @@
+{
+  "tiles": {
+    "~": {
+      "id": "deep_water",
+      "code": "~",
+      "name": "Deep Ocean",
+      "glyph": "≈",
+      "fg": "#2c6aa8",
+      "bg": "#08172b",
+      "passable": false,
+      "encounterRate": 0,
+      "blockReason": "Deep waters block your path."
+    },
+    "=": {
+      "id": "shallows",
+      "code": "=",
+      "name": "Shallow Water",
+      "glyph": "~",
+      "fg": "#4da6db",
+      "bg": "#0e2744",
+      "passable": false,
+      "encounterRate": 0,
+      "blockReason": "The shallow waters are too deep to wade without a vessel."
+    },
+    ".": {
+      "id": "grass",
+      "code": ".",
+      "name": "Grasslands",
+      "glyph": "·",
+      "fg": "#57b868",
+      "bg": "#102418",
+      "passable": true,
+      "encounterRate": 0.08
+    },
+    "t": {
+      "id": "forest",
+      "code": "t",
+      "name": "Dense Forest",
+      "glyph": "♣",
+      "fg": "#389c4f",
+      "bg": "#0b1c11",
+      "passable": true,
+      "encounterRate": 0.14
+    },
+    "^": {
+      "id": "hills",
+      "code": "^",
+      "name": "Rocky Hills",
+      "glyph": "∩",
+      "fg": "#b89557",
+      "bg": "#211b12",
+      "passable": true,
+      "encounterRate": 0.16
+    },
+    "M": {
+      "id": "mountain",
+      "code": "M",
+      "name": "High Mountains",
+      "glyph": "▲",
+      "fg": "#b0b8c8",
+      "bg": "#232733",
+      "passable": false,
+      "encounterRate": 0,
+      "blockReason": "Impassable mountain peaks tower above you."
+    },
+    ":": {
+      "id": "road",
+      "code": ":",
+      "name": "King's Road",
+      "glyph": "∙",
+      "fg": "#d2b47c",
+      "bg": "#241f17",
+      "passable": true,
+      "encounterRate": 0.04
+    },
+    "B": {
+      "id": "bridge",
+      "code": "B",
+      "name": "Stone Bridge",
+      "glyph": "═",
+      "fg": "#d9a752",
+      "bg": "#2a2013",
+      "passable": true,
+      "encounterRate": 0.05
+    },
+    "T": {
+      "id": "town",
+      "code": "T",
+      "name": "Town Gate",
+      "glyph": "⌂",
+      "fg": "#f0c45a",
+      "bg": "#2e2410",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "C": {
+      "id": "castle",
+      "code": "C",
+      "name": "Royal Castle",
+      "glyph": "♜",
+      "fg": "#5ce1e6",
+      "bg": "#122c30",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "D": {
+      "id": "dungeon",
+      "code": "D",
+      "name": "Dungeon Maw",
+      "glyph": "Ω",
+      "fg": "#f25f5c",
+      "bg": "#2d1114",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "#": {
+      "id": "wall",
+      "code": "#",
+      "name": "Stone Wall",
+      "glyph": "█",
+      "fg": "#6e7a94",
+      "bg": "#363e4f",
+      "passable": false,
+      "encounterRate": 0,
+      "blockReason": "Solid stone wall."
+    },
+    "_": {
+      "id": "floor",
+      "code": "_",
+      "name": "Cobblestone Plaza",
+      "glyph": "·",
+      "fg": "#8a96ad",
+      "bg": "#181d29",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "+": {
+      "id": "door",
+      "code": "+",
+      "name": "Open Doorway",
+      "glyph": "Π",
+      "fg": "#d69e49",
+      "bg": "#241d14",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "F": {
+      "id": "fountain",
+      "code": "F",
+      "name": "Town Fountain",
+      "glyph": "Ψ",
+      "fg": "#5ce1e6",
+      "bg": "#122936",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "G": {
+      "id": "guild",
+      "code": "G",
+      "name": "Gilgamesh's Tavern & Guild",
+      "glyph": "G",
+      "fg": "#f0c45a",
+      "bg": "#332810",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "S": {
+      "id": "shop",
+      "code": "S",
+      "name": "Armory & Outfitter",
+      "glyph": "S",
+      "fg": "#52d681",
+      "bg": "#112b1b",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "I": {
+      "id": "inn",
+      "code": "I",
+      "name": "Wayfarer's Inn",
+      "glyph": "I",
+      "fg": "#5ce1e6",
+      "bg": "#102830",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "P": {
+      "id": "temple",
+      "code": "P",
+      "name": "Temple of the Triad",
+      "glyph": "†",
+      "fg": "#e298ff",
+      "bg": "#271433",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "N": {
+      "id": "npc",
+      "code": "N",
+      "name": "Townsperson",
+      "glyph": "☺",
+      "fg": "#ffd875",
+      "bg": "#181d29",
+      "passable": true,
+      "encounterRate": 0
+    }
+  },
+  "maps": {
+    "avalon": {
+      "id": "avalon",
+      "name": "Realm of Avalon",
+      "mode": "overworld",
+      "width": 32,
+      "height": 32,
+      "defaultSpawn": { "x": 16, "y": 14 },
+      "grid": [
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+        "~~========~~~~~~~~~~~~~=======~~",
+        "~==......===~~~~~~~~~===.....==~",
+        "~=..tttt...==~~~~~~~==..^^^...=~",
+        "~=..tttttt..==~~~~~==..^^MM^..=~",
+        "~=.ttttttttt.=======..^MMMMM^.=~",
+        "~=.ttt...tttt.......^^MMMMMMM.=~",
+        "~=.tt..T..ttt:::::::^^^^^DMMM.=~",
+        "~=.ttt.:.tttt:.....:^MMMMMMM^.=~",
+        "~=..ttt:tttt.:.....:.^^MMMM^^.=~",
+        "~=...tt:ttt..:.....:...^^^^...=~",
+        "~==....:.....:..C..:.........==~",
+        "~~==...:.....:..:..:........==~~",
+        "~~~=...:.....:..T..:.......=~~~~",
+        "~~~=...:::::::..:..:::::...=~~~~",
+        "~~~=............:.....:....=~~~~",
+        "~~==......^^^.........:....==~~~",
+        "~==......^^M^^........:.....==~~",
+        "~=......^^MMM^^.......:..T...==~",
+        "~=..tt...^^M^^...===B===.:....=~",
+        "~=..ttt...^^^...==~~~~~==:....=~",
+        "~=..tttt.......==~~~~~~~==....=~",
+        "~=...ttt......==~~~~~~~~~==...=~",
+        "~==.........===~~~=====~~~==.==~",
+        "~~==...^^^^^==~~~==...==~~~===~~",
+        "~~~=..^MM^MM^=~~==..t..==~~~=~~~",
+        "~~~=..^MM^D^^=~~=..ttt..=~~~=~~~",
+        "~~~=..^MMMMM^====...t...====~~~~",
+        "~~~==..^^^^^...............=~~~~",
+        "~~~~==....................==~~~~",
+        "~~~~~======================~~~~~",
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      ],
+      "triggers": [
+        {
+          "x": 16,
+          "y": 13,
+          "type": "town",
+          "name": "Town of Oakhaven",
+          "targetMapId": "town_oakhaven",
+          "targetX": 8,
+          "targetY": 15,
+          "message": "You stand before the gates of Oakhaven, capital of Avalon. Press [E] or click Enter to step inside."
+        },
+        {
+          "x": 16,
+          "y": 11,
+          "type": "castle",
+          "name": "Castle Avalon",
+          "targetMapId": "town_oakhaven",
+          "targetX": 8,
+          "targetY": 3,
+          "message": "The banners of Castle Avalon flutter overhead. Press [E] to enter the royal courtyard."
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "type": "town",
+          "name": "Forest Town of Yew",
+          "targetMapId": "town_yew",
+          "targetX": 7,
+          "targetY": 13,
+          "message": "Ancient oaks arch over the entrance to Yew. Press [E] to enter the forest town."
+        },
+        {
+          "x": 25,
+          "y": 18,
+          "type": "town",
+          "name": "Coastal Port of Moon",
+          "targetMapId": "town_moon",
+          "targetX": 7,
+          "targetY": 13,
+          "message": "Salt spray rises from the harbor of Moon. Press [E] to enter the port town."
+        },
+        {
+          "x": 25,
+          "y": 7,
+          "type": "dungeon",
+          "name": "Cavern of Despise",
+          "targetMapId": null,
+          "message": "Cold air pours from the Cavern of Despise! (Dungeon exploration unlocks in Step 8)."
+        },
+        {
+          "x": 10,
+          "y": 26,
+          "type": "dungeon",
+          "name": "Abyss of Doom",
+          "targetMapId": null,
+          "message": "Sulfurous smoke billows from the Abyss of Doom! (Dungeon exploration unlocks in Step 8)."
+        }
+      ]
+    },
+    "town_oakhaven": {
+      "id": "town_oakhaven",
+      "name": "Town of Oakhaven",
+      "mode": "town",
+      "width": 17,
+      "height": 17,
+      "defaultSpawn": { "x": 8, "y": 15 },
+      "exitTo": { "mapId": "avalon", "x": 16, "y": 13 },
+      "grid": [
+        "........_........",
+        ".###############.",
+        ".#....._N_.....#.",
+        ".#.#####_#####.#.",
+        ".#.#G..#_#..S#.#.",
+        ".#.#...+.+...#.#.",
+        ".#.#####_#####.#.",
+        ".#..N..___..N..#.",
+        ".#_____FFF_____#.",
+        ".#.....___.....#.",
+        ".#.#####_#####.#.",
+        ".#.#...+.+...#.#.",
+        ".#.#I..#_#..P#.#.",
+        ".#.#####_#####.#.",
+        ".#......_..N...#.",
+        ".#######_#######.",
+        "........_........"
+      ],
+      "triggers": [
+        {
+          "x": 4,
+          "y": 4,
+          "type": "service",
+          "service": "guild",
+          "name": "Gilgamesh's Tavern & Adventurers' Guild",
+          "message": "Gilgamesh raises a tankard: 'Press [E] to manage your Roster and Party!'"
+        },
+        {
+          "x": 12,
+          "y": 4,
+          "type": "service",
+          "service": "shop",
+          "name": "The Royal Armory & Provisions",
+          "message": "Blacksmith Gareth nods: 'Blades, plate, and potions forged for the realm! Press [E] to trade.'"
+        },
+        {
+          "x": 4,
+          "y": 12,
+          "type": "service",
+          "service": "inn",
+          "name": "The Wayfarer's Inn",
+          "message": "Innkeeper Mara smiles: 'Warm beds and hearty stew! Press [E] to rest and save your game.'"
+        },
+        {
+          "x": 12,
+          "y": 12,
+          "type": "service",
+          "service": "temple",
+          "name": "Temple of the Triad",
+          "message": "High Priestess Seraphina chants softly: 'The Triad restores the fallen. Press [E] for a blessing.'"
+        },
+        {
+          "x": 8,
+          "y": 8,
+          "type": "fountain",
+          "name": "Fountain of Valor",
+          "message": "Crystal-clear water sparkles in Oakhaven's central fountain."
+        },
+        {
+          "x": 8,
+          "y": 2,
+          "type": "npc",
+          "name": "Royal Herald of Avalon",
+          "message": "Herald: 'Welcome to Oakhaven! Follow the King's Road northwest to Yew, or east across the bridge to Moon.'"
+        },
+        {
+          "x": 4,
+          "y": 7,
+          "type": "npc",
+          "name": "Veteran Scout",
+          "message": "Scout: 'Beware the Cavern of Despise in the northeastern peaks and the Abyss of Doom in the south!'"
+        },
+        {
+          "x": 12,
+          "y": 7,
+          "type": "npc",
+          "name": "Court Mage",
+          "message": "Mage: 'Keep your stoutest fighters in the Front Row and your casters safely in the Back Row.'"
+        },
+        {
+          "x": 11,
+          "y": 14,
+          "type": "npc",
+          "name": "Gate Guard",
+          "message": "Guard: 'Step off the town's outer border or press [X] at any time to return to the Overworld.'"
+        }
+      ]
+    },
+    "town_yew": {
+      "id": "town_yew",
+      "name": "Forest Town of Yew",
+      "mode": "town",
+      "width": 15,
+      "height": 15,
+      "defaultSpawn": { "x": 7, "y": 13 },
+      "exitTo": { "mapId": "avalon", "x": 7, "y": 7 },
+      "grid": [
+        "ttttttt_ttttttt",
+        "t#####t_t#####t",
+        "t#G..#t_t#..S#t",
+        "t#...+___+...#t",
+        "t#####_N_#####t",
+        "ttt...___...ttt",
+        "tt..t._F_.t..tt",
+        "t..tt.___.tt..t",
+        "tt...._N_....tt",
+        "t#####___#####t",
+        "t#...+___+...#t",
+        "t#I..#t_t#..P#t",
+        "t#####t_t#####t",
+        "ttttttt_ttttttt",
+        "ttttttt_ttttttt"
+      ],
+      "triggers": [
+        {
+          "x": 2,
+          "y": 2,
+          "type": "service",
+          "service": "guild",
+          "name": "Rangers' Lodge & Guild",
+          "message": "Guildmaster Elion greets you: 'Press [E] to reorganize your party or recruit from the Roster.'"
+        },
+        {
+          "x": 12,
+          "y": 2,
+          "type": "service",
+          "service": "shop",
+          "name": "Yew Bowyer & Outfitter",
+          "message": "Fletcher Lyra polishes an ash longbow: 'Fine bows, brigandine, and elven cloaks! Press [E] to trade.'"
+        },
+        {
+          "x": 2,
+          "y": 11,
+          "type": "service",
+          "service": "inn",
+          "name": "The Mossy Bough Inn",
+          "message": "The scent of pine and roasted roots fills the air. Press [E] to rest your party."
+        },
+        {
+          "x": 12,
+          "y": 11,
+          "type": "service",
+          "service": "temple",
+          "name": "Druid Circle of Yew",
+          "message": "Ancient standing stones hum with divine magic. Press [E] to receive a woodland blessing."
+        },
+        {
+          "x": 7,
+          "y": 4,
+          "type": "npc",
+          "name": "Elder Druid",
+          "message": "Druid: 'The deep woods hide many perils, travellers. Tread carefully beyond the roads.'"
+        },
+        {
+          "x": 7,
+          "y": 8,
+          "type": "npc",
+          "name": "Elven Pathfinder",
+          "message": "Pathfinder: 'East across the mountains lies the Cavern of Despise.'"
+        }
+      ]
+    },
+    "town_moon": {
+      "id": "town_moon",
+      "name": "Coastal Port of Moon",
+      "mode": "town",
+      "width": 15,
+      "height": 15,
+      "defaultSpawn": { "x": 7, "y": 13 },
+      "exitTo": { "mapId": "avalon", "x": 25, "y": 18 },
+      "grid": [
+        "~~~~~~~~~~~~~~~",
+        "~~===B===B===~~",
+        "~==.._..._..==~",
+        "~=.####_####.=~",
+        "~=.#G.+_+.S#.=~",
+        "~=.####_####.=~",
+        "~=...._F_....=~",
+        "~=..N.___.N..=~",
+        "~=....___....=~",
+        "~=.####_####.=~",
+        "~=.#I.+_+.P#.=~",
+        "~=.####_####.=~",
+        "~=....._.....=~",
+        "~......_......~",
+        "......._......."
+      ],
+      "triggers": [
+        {
+          "x": 4,
+          "y": 4,
+          "type": "service",
+          "service": "guild",
+          "name": "The Rusty Anchor Guildhall",
+          "message": "Captain Vance grins: 'Press [E] to inspect your Roster or swap party members!'"
+        },
+        {
+          "x": 10,
+          "y": 4,
+          "type": "service",
+          "service": "shop",
+          "name": "Moon Quartermaster",
+          "message": "Quartermaster: 'Crossbows, arcane rods, and sea-salts in stock! Press [E] to trade.'"
+        },
+        {
+          "x": 4,
+          "y": 10,
+          "type": "service",
+          "service": "inn",
+          "name": "Harborview Inn",
+          "message": "The sound of waves lulls weary sailors to sleep. Press [E] to rest your party."
+        },
+        {
+          "x": 10,
+          "y": 10,
+          "type": "service",
+          "service": "temple",
+          "name": "Shrine of the Tides",
+          "message": "Sea-priests chant hymns to the Triad. Press [E] for a blessing."
+        },
+        {
+          "x": 4,
+          "y": 7,
+          "type": "npc",
+          "name": "Old Mariner",
+          "message": "Mariner: 'The stone bridge to the west connects our peninsula to the mainland.'"
+        },
+        {
+          "x": 10,
+          "y": 7,
+          "type": "npc",
+          "name": "Astrologer",
+          "message": "Astrologer: 'Twin moons watch over Avalon. Keep your MP reserves ready for the road ahead.'"
+        }
+      ]
+    }
+  }
+}

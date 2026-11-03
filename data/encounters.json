@@ -1,0 +1,120 @@
+{
+  "road": [
+    {
+      "weight": 40,
+      "groups": [
+        { "monsterId": "kobold", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 35,
+      "groups": [
+        { "monsterId": "goblin", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "brigand", "count": "1d2" },
+        { "monsterId": "kobold", "count": "1d2" }
+      ]
+    }
+  ],
+  "bridge": [
+    {
+      "weight": 50,
+      "groups": [
+        { "monsterId": "brigand", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 50,
+      "groups": [
+        { "monsterId": "goblin", "count": "1d2+1" },
+        { "monsterId": "orc", "count": "1" }
+      ]
+    }
+  ],
+  "grass": [
+    {
+      "weight": 35,
+      "groups": [
+        { "monsterId": "kobold", "count": "1d3" }
+      ]
+    },
+    {
+      "weight": 35,
+      "groups": [
+        { "monsterId": "goblin", "count": "1d2" },
+        { "monsterId": "kobold", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "wolf", "count": "1d2" },
+        { "monsterId": "goblin", "count": "1d2" }
+      ]
+    }
+  ],
+  "forest": [
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "wolf", "count": "1d2+1" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "giant_spider", "count": "1d2" },
+        { "monsterId": "goblin", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "goblin", "count": "1d2+1" },
+        { "monsterId": "wolf", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "brigand", "count": "1d2" },
+        { "monsterId": "dark_acolyte", "count": "1" }
+      ]
+    }
+  ],
+  "hills": [
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "skeleton", "count": "1d2" },
+        { "monsterId": "kobold", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "orc", "count": "1d2" },
+        { "monsterId": "goblin", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "skeleton", "count": "1d2" },
+        { "monsterId": "dark_acolyte", "count": "1" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "orc", "count": "1d2" },
+        { "monsterId": "skeleton", "count": "1d2" },
+        { "monsterId": "kobold", "count": "1d2" }
+      ]
+    }
+  ]
+}
