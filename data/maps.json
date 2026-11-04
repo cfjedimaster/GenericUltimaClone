@@ -19,7 +19,7 @@
       "fg": "#4da6db",
       "bg": "#0e2744",
       "passable": false,
-      "encounterRate": 0,
+      "encounterRate": 0.12,
       "blockReason": "The shallow waters are too deep to wade without a vessel."
     },
     ".": {

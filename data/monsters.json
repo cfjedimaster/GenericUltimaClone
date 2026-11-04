@@ -185,6 +185,150 @@
     ]
   },
   {
+    "id": "sahuagin_raider",
+    "name": "Sahuagin Sea-Devil",
+    "pluralName": "Sahuagin Sea-Devils",
+    "glyph": "s",
+    "color": "#5ce1e6",
+    "hp": "2d6+5",
+    "ac": 12,
+    "dex": 13,
+    "attackName": "Coral Trident",
+    "damageDice": "1d6+2",
+    "specialAttack": {
+      "name": "Barbed Harpoon Net",
+      "chance": 0.28,
+      "damageDice": "1d6+1",
+      "status": "Paralysis",
+      "statusChance": 0.52
+    },
+    "xp": 46,
+    "gold": "3d6+8",
+    "drops": [
+      { "itemId": "healing_draught", "chance": 0.22 },
+      { "itemId": "boar_spear", "chance": 0.1 }
+    ]
+  },
+  {
+    "id": "reef_viper",
+    "name": "Banded Sea Viper",
+    "pluralName": "Banded Sea Vipers",
+    "glyph": "~",
+    "color": "#9be564",
+    "hp": "2d6+4",
+    "ac": 13,
+    "dex": 14,
+    "attackName": "Venomous Sea-Fang",
+    "damageDice": "1d6+2",
+    "specialAttack": {
+      "name": "Neurotoxic Brine Spit",
+      "chance": 0.36,
+      "damageDice": "1d6+2",
+      "status": "Poison",
+      "statusChance": 0.72
+    },
+    "xp": 50,
+    "gold": "2d8+8",
+    "drops": [
+      { "itemId": "antidote_herb", "chance": 0.32 },
+      { "itemId": "greater_healing_draught", "chance": 0.14 }
+    ]
+  },
+  {
+    "id": "siren_enchantress",
+    "name": "Tempest Siren",
+    "pluralName": "Tempest Sirens",
+    "glyph": "S",
+    "color": "#e298ff",
+    "hp": "2d6+5",
+    "ac": 13,
+    "dex": 14,
+    "attackName": "Drowning Embrace",
+    "damageDice": "1d6+2",
+    "specialAttack": {
+      "name": "Lullaby of the Undertow",
+      "chance": 0.38,
+      "damageDice": "1d6+1",
+      "status": "Sleep",
+      "statusChance": 0.65,
+      "isSpell": true
+    },
+    "xp": 54,
+    "gold": "3d6+10",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.28 },
+      { "itemId": "starweave_robe", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "carapace_crusher",
+    "name": "Giant Reef Karkinos",
+    "pluralName": "Giant Reef Karkinos",
+    "glyph": "C",
+    "color": "#ff924c",
+    "hp": "2d8+6",
+    "ac": 14,
+    "dex": 10,
+    "attackName": "Guillotine Pincer",
+    "damageDice": "1d8+2",
+    "xp": 58,
+    "gold": "3d8+10",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.22 },
+      { "itemId": "chain_hauberk", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "kraken_spawn",
+    "name": "Abyssal Kraken-Spawn",
+    "pluralName": "Abyssal Kraken-Spawns",
+    "glyph": "Q",
+    "color": "#4da6db",
+    "hp": "3d6+6",
+    "ac": 13,
+    "dex": 12,
+    "attackName": "Crushing Tentacles",
+    "damageDice": "1d8+2",
+    "specialAttack": {
+      "name": "Blinding Ink Jet",
+      "chance": 0.34,
+      "damageDice": "1d6+2",
+      "status": "Silence",
+      "statusChance": 0.64
+    },
+    "xp": 64,
+    "gold": "3d8+12",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.24 },
+      { "itemId": "ether_tonic", "chance": 0.2 },
+      { "itemId": "ring_protection", "chance": 0.08 }
+    ]
+  },
+  {
+    "id": "sea_serpent",
+    "name": "Tidal Sea Serpent",
+    "pluralName": "Tidal Sea Serpents",
+    "glyph": "J",
+    "color": "#52d681",
+    "hp": "3d6+8",
+    "ac": 14,
+    "dex": 13,
+    "attackName": "Coiling Jaws",
+    "damageDice": "2d4+3",
+    "specialAttack": {
+      "name": "Scalding Geyser Breath",
+      "chance": 0.35,
+      "damageDice": "2d6+2"
+    },
+    "xp": 72,
+    "gold": "4d6+14",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.26 },
+      { "itemId": "repeating_crossbow", "chance": 0.06 },
+      { "itemId": "moonshadow_armor", "chance": 0.04 }
+    ]
+  },
+  {
     "id": "crypt_ghoul",
     "name": "Crypt Ghoul",
     "pluralName": "Crypt Ghouls",

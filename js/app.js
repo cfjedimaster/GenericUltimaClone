@@ -498,6 +498,51 @@ function registerApp() {
           this.refreshDungeonCanvas();
           return `${dest.name} (${this.state.location.x}, ${this.state.location.y})`;
         },
+        goDown: () => {
+          if (!this.isDungeonMode || !this.currentMap) {
+            console.warn('cheat.goDown(): You must be inside a dungeon first.');
+            return null;
+          }
+          const stairsDown = (this.currentMap.triggers || []).find(
+            t => t.type === 'stairs_down' && t.targetMapId
+          );
+          if (!stairsDown) {
+            console.warn(`cheat.goDown(): Already on the bottom floor (${this.currentMap.name}).`);
+            return null;
+          }
+          const dest = getMapById(this.maps, stairsDown.targetMapId);
+          if (!dest) {
+            console.warn(`cheat.goDown(): Target floor "${stairsDown.targetMapId}" not found.`);
+            return null;
+          }
+          const stairsUpOnDest = (dest.triggers || []).find(t => t.type === 'stairs_up');
+          const tx =
+            typeof stairsDown.targetX === 'number'
+              ? stairsDown.targetX
+              : stairsUpOnDest?.x ?? dest.defaultSpawn.x;
+          const ty =
+            typeof stairsDown.targetY === 'number'
+              ? stairsDown.targetY
+              : stairsUpOnDest?.y ?? dest.defaultSpawn.y;
+          const tfacing = normalizeFacing(
+            stairsDown.targetFacing || dest.defaultSpawn?.facing || this.state.location.facing || 'N'
+          );
+
+          this.state.location.mode = dest.mode || 'dungeon';
+          this.state.location.mapId = dest.id;
+          this.state.location.x = tx;
+          this.state.location.y = ty;
+          this.state.location.facing = tfacing;
+          markDungeonTileExplored(this.state, dest.id, tx, ty);
+          this.screen = 'overworld';
+          this.syncDocumentTitle();
+          this.syncMusic();
+          const msg = `Cheat: Descended to ${dest.name} (${tx}, ${ty}).`;
+          this.persist(msg);
+          this.appendLog(msg);
+          this.refreshDungeonCanvas();
+          return `${dest.name} (${tx}, ${ty})`;
+        },
         gold: (amount = 500) => {
           this.state.gold = Math.max(0, (this.state.gold || 0) + Number(amount || 0));
           this.persist(`Cheat: Party gold is now ${this.state.gold} GP.`);
@@ -568,16 +613,20 @@ function registerApp() {
           return `${hero.name}: ${hero.derived.hp}/${hero.derived.maxHp} HP (${hero.status})`;
         },
         help: () => {
-          console.table({
-            'cheat.pickFight(terrainId?)': 'Start a combat encounter (e.g., "grass", "despise_b1", "doom_b3")',
-            'cheat.teleport(mapId, x?, y?, facing?)': 'Teleport to any map (e.g., "dungeon_despise_b1", "dungeon_doom_b1", "avalon")',
+          const doc = {
+            'cheat.goDown()': 'Descend one floor in the current dungeon (places party on the stairs/ladder)',
+            'cheat.teleport(mapId, x?, y?, facing?)': 'Teleport to any map (e.g., "dungeon_despise_b8", "dungeon_doom_b12", "avalon")',
+            'cheat.pickFight(terrainId?)': 'Start a combat encounter (e.g., "grass", "shallows", "despise_b8", "doom_b12")',
             'cheat.gold(amount = 500)': 'Add gold to the party',
             'cheat.xp(amount = 200)': 'Grant XP to active party members',
-            'cheat.give(itemId, qty = 1)': 'Add an item to the shared Party Pack',
+            'cheat.give(itemId, qty = 1)': 'Add an item to the shared Party Pack (e.g., "camping_tent", "malakor_staff")',
             'cheat.status(status, partyIndex)': 'Afflict a hero with Poison, Sleep, Paralysis, Silence, Dead, or Ashes',
             'cheat.hurt(player = 1, amount = 10)': 'Subtract HP from a 1-based party member (marks Dead at 0 HP)',
             'cheat.heal()': 'Restore all heroes to full HP/MP and cure all ailments'
-          });
+          };
+          console.info('%c=== Chronicles of the Triad — Cheat Console ===', 'color: #5ce1e6; font-weight: bold;');
+          console.table(doc);
+          return 'Cheat commands printed above.';
         }
       };
     },
@@ -801,7 +850,7 @@ function registerApp() {
     },
 
     getHeroSpellList(char, context = null) {
-      return getHeroSpellbook(char, this.spells, this.classesById, context);
+      return getHeroSpellbook(char, this.spells, this.classesById, context, this.itemsById);
     },
 
     get activeSpellHero() {
@@ -814,7 +863,7 @@ function registerApp() {
     },
 
     get activeHeroSpellbook() {
-      return getHeroSpellbook(this.activeSpellHero, this.spells, this.classesById, 'field');
+      return getHeroSpellbook(this.activeSpellHero, this.spells, this.classesById, 'field', this.itemsById);
     },
 
     get selectedFieldSpellEntry() {
@@ -1530,7 +1579,7 @@ function registerApp() {
     get activeHeroCombatSpells() {
       const hero = this.activeCombatHero;
       if (!hero) return [];
-      return getHeroSpellbook(hero, this.spells, this.classesById, 'combat');
+      return getHeroSpellbook(hero, this.spells, this.classesById, 'combat', this.itemsById);
     },
 
     get activeHeroCastableCombatSpells() {

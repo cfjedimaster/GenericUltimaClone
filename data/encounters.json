@@ -117,6 +117,36 @@
       ]
     }
   ],
+  "shallows": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "sahuagin_raider", "count": "1d2" },
+        { "monsterId": "reef_viper", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "carapace_crusher", "count": "1d2" },
+        { "monsterId": "siren_enchantress", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "kraken_spawn", "count": "1" },
+        { "monsterId": "sahuagin_raider", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "sea_serpent", "count": "1" },
+        { "monsterId": "reef_viper", "count": "1d2" }
+      ]
+    }
+  ],
   "despise_b1": [
     {
       "weight": 30,

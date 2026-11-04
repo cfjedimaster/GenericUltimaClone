@@ -38,7 +38,7 @@
     "effect": "field_light",
     "durationSteps": 30,
     "statKey": "int",
-    "description": "Conjures a hovering globe of mage-light for 30 steps, illuminating dark dungeons and warding off ambushes."
+    "description": "Conjures a hovering globe of mage-light (30 base steps + 5 per Level + 5 per INT mod), illuminating dark dungeons and warding off ambushes."
   },
   {
     "id": "arc_open",

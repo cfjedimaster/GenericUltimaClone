@@ -18,7 +18,7 @@ export function clamp(val, min, max) {
 }
 
 export function shouldTriggerRandomEncounter(tileDef) {
-  if (!tileDef || !tileDef.passable) return false;
+  if (!tileDef) return false;
   const rate = typeof tileDef.encounterRate === 'number' ? tileDef.encounterRate : 0;
   if (rate <= 0) return false;
   return Math.random() < rate;

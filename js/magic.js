@@ -53,7 +53,17 @@ export function getMaxUnlockedSpellTier(hero, classesById = {}) {
   return maxTier;
 }
 
-export function formatSpellSummary(spell) {
+export function computeFieldSpellSteps(spell, caster = null, itemsById = {}) {
+  const base = spell?.durationSteps || 30;
+  if (!caster) return base;
+  const effStats = getEffectiveStats(caster, itemsById);
+  const statVal = effStats[spell?.statKey || 'int'] || 10;
+  const statMod = Math.max(0, getStatMod(statVal));
+  const level = Math.max(1, caster.level || 1);
+  return base + level * 5 + statMod * 5;
+}
+
+export function formatSpellSummary(spell, hero = null, itemsById = {}) {
   if (!spell) return '';
   const statLabel = (spell.statKey || 'int').toUpperCase();
   if (spell.effect === 'damage') {
@@ -110,13 +120,25 @@ export function formatSpellSummary(spell) {
     return `Revives Dead/Ashes, cures all & heals party ${spell.dice} + ${statLabel} mod HP`;
   }
   if (spell.effect === 'field_light') {
-    return `Mage-Light (${spell.durationSteps || 30} steps)`;
+    if (hero) {
+      const steps = computeFieldSpellSteps(spell, hero, itemsById);
+      return `Mage-Light (${steps} steps — scales w/ Lv & ${statLabel})`;
+    }
+    return `Mage-Light (${spell.durationSteps || 30}+ steps — scales w/ Lv & ${statLabel})`;
   }
   if (spell.effect === 'field_detect') {
-    return `Reveals traps, chests & stairs (${spell.durationSteps || 35} steps)`;
+    if (hero) {
+      const steps = computeFieldSpellSteps(spell, hero, itemsById);
+      return `Reveals traps, chests & stairs (${steps} steps)`;
+    }
+    return `Reveals traps, chests & stairs (${spell.durationSteps || 35}+ steps)`;
   }
   if (spell.effect === 'field_omnisight') {
-    return `Mage-Light + Trap Sight (${spell.durationSteps || 60} steps) + Atlas Reveal`;
+    if (hero) {
+      const steps = computeFieldSpellSteps(spell, hero, itemsById);
+      return `Mage-Light + Trap Sight (${steps} steps) + Atlas Reveal`;
+    }
+    return `Mage-Light + Trap Sight (${spell.durationSteps || 60}+ steps) + Atlas Reveal`;
   }
   if (spell.effect === 'field_open') {
     return `Unlocks barred dungeon door ahead or disarms chest`;
@@ -127,7 +149,7 @@ export function formatSpellSummary(spell) {
   return spell.description || '';
 }
 
-export function getHeroSpellbook(hero, spells = [], classesById = {}, context = null) {
+export function getHeroSpellbook(hero, spells = [], classesById = {}, context = null, itemsById = {}) {
   if (!hero) return [];
   const classDef = classesById[hero.class];
   if (!classDef || !classDef.magicSchool) return [];
@@ -175,7 +197,7 @@ export function getHeroSpellbook(hero, spells = [], classesById = {}, context = 
         enoughMp,
         canCast: unlocked && validContext && enoughMp && !dead && !incapacitated && !silenced,
         reason,
-        summary: formatSpellSummary(spell)
+        summary: formatSpellSummary(spell, hero, itemsById)
       };
     });
 }
@@ -417,19 +439,19 @@ export function castFieldSpell({
   // Field Mage-Light
   if (spell.effect === 'field_light') {
     caster.derived.mp -= spell.mpCost;
-    const steps = (spell.durationSteps || 30) + statMod * 5;
+    const steps = computeFieldSpellSteps(spell, caster, itemsById);
     if (!state.location) state.location = {};
     state.location.lightSteps = Math.max(state.location.lightSteps || 0, steps);
     return {
       ok: true,
-      log: `${caster.name} conjures ${spell.name} (-${spell.mpCost} MP)! A radiant orb illuminates the party for ${state.location.lightSteps} steps.`
+      log: `${caster.name} conjures ${spell.name} (-${spell.mpCost} MP)! A radiant orb illuminates the party for ${state.location.lightSteps} steps (Lv ${caster.level || 1} & INT bonus).`
     };
   }
 
   // Field Detect Peril (Triad Sight)
   if (spell.effect === 'field_detect') {
     caster.derived.mp -= spell.mpCost;
-    const steps = (spell.durationSteps || 35) + statMod * 5;
+    const steps = computeFieldSpellSteps(spell, caster, itemsById);
     if (!state.location) state.location = {};
     state.location.detectSteps = Math.max(state.location.detectSteps || 0, steps);
     return {
@@ -441,7 +463,7 @@ export function castFieldSpell({
   // Field Omnisight (All-Seeing Eye: Mage-Light + Trap Sight + Overworld Atlas Reveal)
   if (spell.effect === 'field_omnisight') {
     caster.derived.mp -= spell.mpCost;
-    const steps = (spell.durationSteps || 60) + statMod * 5;
+    const steps = computeFieldSpellSteps(spell, caster, itemsById);
     if (!state.location) state.location = {};
     state.location.lightSteps = Math.max(state.location.lightSteps || 0, steps);
     state.location.detectSteps = Math.max(state.location.detectSteps || 0, steps);
