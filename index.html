@@ -598,7 +598,7 @@
               <div class="poi-callout">
                 <strong x-text="currentTrigger.name"></strong>
                 <p
-                  x-text="currentTrigger.type === 'chest' && isTriggerConsumed(currentTrigger) ? 'This chest has already been opened and emptied.' : currentTrigger.message"
+                  x-text="currentTrigger.type === 'chest' && isTriggerConsumed(currentTrigger) ? (justLootedChestFlag === currentTrigger.flag ? 'You retrieved the items inside.' : 'This chest has already been opened and emptied.') : currentTrigger.message"
                 ></p>
                 <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                   <template x-if="currentTrigger.type === 'chest' && !isTriggerConsumed(currentTrigger) && currentTrigger.trap && !isChestTrapSafe(currentTrigger)">
@@ -854,8 +854,7 @@
                       x-text="group.glyph"
                     ></span>
                     <div>
-                      <div class="enemy-group-title" x-text="`${group.label}: ${getGroupLivingCount(group)} / ${group.units.length} ${group.units.length === 1 ? group.name : group.pluralName}`"></div>
-                      <div class="enemy-group-meta" x-text="`AC ${group.ac} • ${group.attackName} (${group.damageDice})`"></div>
+                      <div class="enemy-group-title" x-text="group.units.length === 1 ? group.name : group.pluralName"></div>
                     </div>
                   </div>
                 </div>
@@ -883,10 +882,10 @@
                   <button
                     type="button"
                     class="btn-sm btn-primary"
-                    style="width: 100%; margin-top: 0.45rem;"
+                    style="width: 100%; margin-top: auto;"
                     :disabled="combat.selectingSpell ? !(selectedCombatSpellEntry?.canCast && (selectedCombatSpellEntry?.spell.targetType === 'enemy_single' || selectedCombatSpellEntry?.spell.targetType === 'enemy_group')) : !activeHeroAttackProfile.canAttack"
                     @click="selectCombatTargetGroup(group.id)"
-                    x-text="combat.selectingSpell && selectedCombatSpellEntry?.canCast && (selectedCombatSpellEntry?.spell.targetType === 'enemy_single' || selectedCombatSpellEntry?.spell.targetType === 'enemy_group') ? `[${gIdx + 1}] Cast ${selectedCombatSpellEntry.spell.name} -> ${group.label}` : `[${gIdx + 1}] Attack ${group.label}`"
+                    x-text="combat.selectingSpell && selectedCombatSpellEntry?.canCast && (selectedCombatSpellEntry?.spell.targetType === 'enemy_single' || selectedCombatSpellEntry?.spell.targetType === 'enemy_group') ? `[${gIdx + 1}] Cast ${selectedCombatSpellEntry.spell.name}` : `[${gIdx + 1}] Attack`"
                   ></button>
                 </template>
               </div>
@@ -981,7 +980,7 @@
                                   x-show="getGroupLivingCount(grp) > 0"
                                   :disabled="!selectedCombatSpellEntry.canCast"
                                   @click="selectCombatTargetGroup(grp.id)"
-                                  x-text="`[${gIdx + 1}] ${grp.label}: ${grp.pluralName} (${getGroupLivingCount(grp)} alive)`"
+                                  x-text="`[${gIdx + 1}] ${grp.units.length === 1 ? grp.name : grp.pluralName}`"
                                 ></button>
                               </template>
                             </div>
@@ -1489,6 +1488,25 @@
               ></button>
             </template>
           </div>
+          <template x-if="shopTargetHero">
+            <div class="shop-equipped-strip">
+              <span class="shop-equipped-slot" :class="{ 'active-slot': shopCategory === 'weapon' }">
+                <strong class="slot-prefix">WPN:</strong>
+                <span x-text="formatHeroSlotSummary(shopTargetHero, 'weapon')"></span>
+              </span>
+              <span class="shop-equipped-sep">&bull;</span>
+              <span class="shop-equipped-slot" :class="{ 'active-slot': shopCategory === 'armor' }">
+                <strong class="slot-prefix">ARM:</strong>
+                <span x-text="formatHeroSlotSummary(shopTargetHero, 'armor')"></span>
+              </span>
+              <span class="shop-equipped-sep">&bull;</span>
+              <span class="shop-equipped-slot" :class="{ 'active-slot': shopCategory === 'accessory' }">
+                <strong class="slot-prefix">ACC:</strong>
+                <span x-text="formatHeroSlotSummary(shopTargetHero, 'accessory')"></span>
+              </span>
+              <span class="shop-equipped-ac" x-text="`AC ${shopTargetHero.derived.ac}`"></span>
+            </div>
+          </template>
         </div>
 
         <div class="shop-item-list">
@@ -1501,6 +1519,9 @@
                   <span style="color: var(--accent-gold); font-weight: 700;" x-text="`${item.price} GP`"></span>
                   <template x-if="getOwnedAndEquippedCount(item.id).total > 0">
                     <span class="badge-party" x-text="`Owned: ${getOwnedAndEquippedCount(item.id).total}`"></span>
+                  </template>
+                  <template x-if="shopTargetHero && isItemEquippedOnHero(shopTargetHero, item.id)">
+                    <span class="status-pill status-ok" x-text="`EQUIPPED (${shopTargetHero.name.toUpperCase()})`"></span>
                   </template>
                 </div>
                 <div class="pack-item-meta" x-text="getItemSummary(item)"></div>
@@ -1519,10 +1540,10 @@
                   <button
                     type="button"
                     class="btn-sm btn-primary"
-                    :disabled="state.gold < item.price || !canHeroEquip(shopTargetHero, item).ok"
+                    :disabled="state.gold < item.price || !canHeroEquip(shopTargetHero, item).ok || isItemEquippedOnHero(shopTargetHero, item.id)"
                     :title="canHeroEquip(shopTargetHero, item).reason || `Buy and equip on ${shopTargetHero.name}`"
                     @click="buyAndEquipItem(item.id)"
-                    x-text="canHeroEquip(shopTargetHero, item).ok ? `Buy & Equip (${shopTargetHero.name})` : canHeroEquip(shopTargetHero, item).reason"
+                    x-text="getShopEquipButtonLabel(shopTargetHero, item)"
                   ></button>
                 </template>
               </div>

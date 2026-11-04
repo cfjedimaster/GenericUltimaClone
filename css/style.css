@@ -877,7 +877,7 @@ button:focus-visible,
   padding: 0.75rem 0.85rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0.55rem;
   transition: border-color 0.15s ease, opacity 0.15s ease;
 }
@@ -1288,11 +1288,58 @@ dialog.dialog-wide {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.55rem;
   background: #0b0e17;
   border: 1px solid var(--border-dim);
   padding: 0.55rem 0.75rem;
   margin-bottom: 0.75rem;
+}
+
+.shop-equipped-strip {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--border-dim);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.shop-equipped-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.12rem 0.4rem;
+  border: 1px solid transparent;
+  color: var(--text-main);
+}
+
+.shop-equipped-slot .slot-prefix {
+  color: var(--accent-cyan);
+  font-size: 0.72rem;
+}
+
+.shop-equipped-slot.active-slot {
+  background: rgba(240, 196, 90, 0.12);
+  border-color: var(--border-gold);
+  color: var(--accent-gold);
+}
+
+.shop-equipped-slot.active-slot .slot-prefix {
+  color: var(--accent-gold);
+}
+
+.shop-equipped-sep {
+  color: var(--border-dim);
+}
+
+.shop-equipped-ac {
+  margin-left: auto;
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-size: 0.76rem;
 }
 
 .service-options-list {

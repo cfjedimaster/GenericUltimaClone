@@ -193,7 +193,9 @@ export function buildDungeonMinimapRows(map, tiles, state, radius = DUNGEON_MINI
         title: isParty
           ? `Party (${wx},${wy}) Facing ${FACING_META[facing].label}`
           : trigger
-            ? `${trigger.name} (${tile.name})`
+            ? tile.name.includes(trigger.name)
+              ? tile.name
+              : `${trigger.name} (${tile.name})`
             : tile.name
       });
     }
@@ -661,10 +663,16 @@ export function attemptDungeonInteract({
     }
 
     const dirWord = trigger.type === 'stairs_up' ? 'ascend' : 'descend';
+    const destLabel =
+      destMap.mode === 'dungeon'
+        ? trigger.type === 'stairs_up'
+          ? 'to the higher level'
+          : 'to the lower level'
+        : `into ${destMap.name}`;
     return {
       ok: true,
       transitioned: true,
-      log: `You ${dirWord} the stone steps into ${destMap.name}!`
+      log: `You ${dirWord} the stone steps ${destLabel}!`
     };
   }
 

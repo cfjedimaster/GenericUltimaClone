@@ -620,7 +620,7 @@
     },
     "dungeon_despise_b1": {
       "id": "dungeon_despise_b1",
-      "name": "Cavern of Despise — Level B1",
+      "name": "Cavern of Despise — Floor 1",
       "mode": "dungeon",
       "dungeonId": "despise",
       "dungeonDepth": 1,
@@ -660,12 +660,12 @@
           "x": 10,
           "y": 11,
           "type": "stairs_down",
-          "name": "Chasm Stairs to Level B2",
+          "name": "Stairs to the Lower Level",
           "targetMapId": "dungeon_despise_b2",
           "targetX": 10,
           "targetY": 3,
           "targetFacing": "S",
-          "message": "Carved stairs spiral down into Level B2 (Sanctum of Malakor). Press [E] to descend."
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
         },
         {
           "x": 10,
@@ -776,7 +776,7 @@
     },
     "dungeon_despise_b2": {
       "id": "dungeon_despise_b2",
-      "name": "Cavern of Despise — Level B2",
+      "name": "Cavern of Despise — Floor 2",
       "mode": "dungeon",
       "dungeonId": "despise",
       "dungeonDepth": 2,
@@ -806,12 +806,12 @@
           "x": 10,
           "y": 3,
           "type": "stairs_up",
-          "name": "Stairs to Level B1",
+          "name": "Stairs to the Higher Level",
           "targetMapId": "dungeon_despise_b1",
           "targetX": 10,
           "targetY": 11,
           "targetFacing": "W",
-          "message": "Spiral steps ascend back to Level B1 of Despise. Press [E] to climb up."
+          "message": "Spiral steps ascend back to the higher level. Press [E] to climb up."
         },
         {
           "x": 5,
@@ -905,7 +905,7 @@
     },
     "dungeon_doom_b1": {
       "id": "dungeon_doom_b1",
-      "name": "Abyss of Doom — Level B1",
+      "name": "Abyss of Doom — Floor 1",
       "mode": "dungeon",
       "dungeonId": "doom",
       "dungeonDepth": 2,
@@ -945,12 +945,12 @@
           "x": 8,
           "y": 1,
           "type": "stairs_down",
-          "name": "Obsidian Chute to Level B2",
+          "name": "Stairs to the Lower Level",
           "targetMapId": "dungeon_doom_b2",
           "targetX": 10,
           "targetY": 1,
           "targetFacing": "W",
-          "message": "Heat radiates from the staircase descending to Level B2 of the Abyss. Press [E] to descend."
+          "message": "Heat radiates from the staircase descending to the lower level. Press [E] to descend."
         },
         {
           "x": 9,
@@ -1037,7 +1037,7 @@
     },
     "dungeon_doom_b2": {
       "id": "dungeon_doom_b2",
-      "name": "Abyss of Doom — Level B2",
+      "name": "Abyss of Doom — Floor 2",
       "mode": "dungeon",
       "dungeonId": "doom",
       "dungeonDepth": 3,
@@ -1067,23 +1067,23 @@
           "x": 10,
           "y": 1,
           "type": "stairs_up",
-          "name": "Stairs to Level B1",
+          "name": "Stairs to the Higher Level",
           "targetMapId": "dungeon_doom_b1",
           "targetX": 8,
           "targetY": 1,
           "targetFacing": "W",
-          "message": "Obsidian stairs climb back to Level B1. Press [E] to ascend."
+          "message": "Obsidian stairs climb back to the higher level. Press [E] to ascend."
         },
         {
           "x": 6,
           "y": 11,
           "type": "stairs_down",
-          "name": "Descent to Throne of Pyrothrax (B3)",
+          "name": "Stairs to the Lower Level",
           "targetMapId": "dungeon_doom_b3",
           "targetX": 6,
           "targetY": 11,
           "targetFacing": "N",
-          "message": "Roaring flames echo from Level B3 below! Press [E] to descend to the lowest depth."
+          "message": "Roaring flames echo from the lower level below! Press [E] to descend."
         },
         {
           "x": 7,
@@ -1101,7 +1101,7 @@
           "flag": "door_doom_b2_descent",
           "difficulty": 17,
           "name": "Gate of the Lower Abyss",
-          "message": "Heavy black-iron chains bar the staircase down to Level B3! Press [O] to unlock or cast Arcane Knock."
+          "message": "Heavy black-iron chains bar the staircase down to the lower level! Press [O] to unlock or cast Arcane Knock."
         },
         {
           "x": 6,
@@ -1190,7 +1190,7 @@
     },
     "dungeon_doom_b3": {
       "id": "dungeon_doom_b3",
-      "name": "Abyss of Doom — Level B3",
+      "name": "Abyss of Doom — Floor 3",
       "mode": "dungeon",
       "dungeonId": "doom",
       "dungeonDepth": 4,
@@ -1220,12 +1220,12 @@
           "x": 6,
           "y": 11,
           "type": "stairs_up",
-          "name": "Stairs to Level B2",
+          "name": "Stairs to the Higher Level",
           "targetMapId": "dungeon_doom_b2",
           "targetX": 6,
           "targetY": 11,
           "targetFacing": "N",
-          "message": "Stairs ascend back toward Level B2 of the Abyss. Press [E] to climb up."
+          "message": "Stairs ascend back toward the higher level. Press [E] to climb up."
         },
         {
           "x": 6,

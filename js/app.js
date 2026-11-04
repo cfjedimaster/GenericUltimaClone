@@ -187,6 +187,7 @@ function registerApp() {
 
     innName: "The Wayfarer's Inn",
     templeName: 'Temple of the Triad',
+    justLootedChestFlag: null,
 
     async init() {
       try {
@@ -814,8 +815,13 @@ function registerApp() {
     },
 
     get filteredShopCatalog() {
-      if (this.shopCategory === 'all') return this.items;
-      return this.items.filter(item => item.slot === this.shopCategory);
+      const currentTownId = this.state.location?.mapId || 'town_oakhaven';
+      const townItems = this.items.filter(item => {
+        if (!Array.isArray(item.shops) || item.shops.length === 0) return true;
+        return item.shops.includes(currentTownId);
+      });
+      if (this.shopCategory === 'all') return townItems;
+      return townItems.filter(item => item.slot === this.shopCategory);
     },
 
     getOwnedAndEquippedCount(itemId) {
@@ -828,6 +834,33 @@ function registerApp() {
         }
       }
       return { inPack, equipped, total: inPack + equipped };
+    },
+
+    isItemEquippedOnHero(hero, itemId) {
+      if (!hero || !itemId || !hero.equipment) return false;
+      return EQUIPMENT_SLOTS.some(s => hero.equipment[s] === itemId);
+    },
+
+    formatHeroSlotSummary(hero, slot) {
+      if (!hero) return 'None';
+      const itemId = hero.equipment?.[slot];
+      const itemDef = itemId ? this.itemsById[itemId] : null;
+      if (!itemDef) {
+        if (slot === 'weapon') return 'Bare Fists (1d3)';
+        if (slot === 'armor') return 'Unarmored (+0 AC)';
+        return 'None';
+      }
+      return `${itemDef.name} (${formatItemSummary(itemDef)})`;
+    },
+
+    getShopEquipButtonLabel(hero, itemDef) {
+      if (!hero || !itemDef) return 'Buy & Equip';
+      if (this.isItemEquippedOnHero(hero, itemDef.id)) {
+        return `Already Equipped (${hero.name})`;
+      }
+      const check = this.canHeroEquip(hero, itemDef);
+      if (!check.ok) return check.reason;
+      return `Buy & Equip (${hero.name})`;
     },
 
     openShopModal(trigger = null) {
@@ -1138,6 +1171,7 @@ function registerApp() {
 
       let stepNotes = [];
       if (result.moved) {
+        this.justLootedChestFlag = null;
         const tick = tickOverworldStepEffects(this.state);
         stepNotes = tick.notes || [];
       }
@@ -1219,6 +1253,7 @@ function registerApp() {
       const result = attemptMove(this.state, this.maps, this.tiles, dirKey);
       let stepNotes = [];
       if (result.moved) {
+        this.justLootedChestFlag = null;
         const tick = tickOverworldStepEffects(this.state);
         stepNotes = tick.notes || [];
       }
@@ -1449,11 +1484,12 @@ function registerApp() {
           entry.canCast &&
           (entry.spell.targetType === 'enemy_single' || entry.spell.targetType === 'enemy_group')
         ) {
+          const grpTitle = group.units.length === 1 ? group.name : group.pluralName;
           this.combat.queuedActions[hero.id] = {
             type: 'cast',
             spellId: entry.spell.id,
             targetGroupId: group.id,
-            label: `Cast ${entry.spell.name} -> ${group.label}`
+            label: `Cast ${entry.spell.name} -> ${grpTitle}`
           };
           this.combat.selectingSpell = false;
           this.combat.selectingTarget = false;
@@ -1469,10 +1505,11 @@ function registerApp() {
         return;
       }
 
+      const grpTitle = group.units.length === 1 ? group.name : group.pluralName;
       this.combat.queuedActions[hero.id] = {
         type: 'attack',
         targetGroupId: group.id,
-        label: `Attack ${group.label} (${group.name})`
+        label: `Attack ${grpTitle}`
       };
       this.combat.selectingTarget = false;
       this.combat.selectingItem = false;
@@ -1717,6 +1754,9 @@ function registerApp() {
           partyMembers: this.partyMembersDetailed,
           itemsById: this.itemsById
         });
+        if (dRes.looted) {
+          this.justLootedChestFlag = this.currentTrigger?.flag || null;
+        }
         this.persist();
         if (dRes.log) {
           this.appendLog(dRes.log);

@@ -10,6 +10,7 @@
     "hitBonus": 0,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "thief", "ranger"],
+    "shops": ["town_oakhaven"],
     "price": 25,
     "description": "A balanced steel blade for close-quarters combat."
   },
@@ -24,6 +25,7 @@
     "hitBonus": 0,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "cleric"],
+    "shops": ["town_oakhaven"],
     "price": 25,
     "description": "Heavy flanged iron head favored by templars and clerics."
   },
@@ -38,6 +40,7 @@
     "hitBonus": 1,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "wizard"],
+    "shops": ["town_oakhaven", "town_yew"],
     "price": 20,
     "description": "Balanced bandolier of daggers usable in melee or thrown from the back row."
   },
@@ -52,6 +55,7 @@
     "hitBonus": 0,
     "bonuses": {},
     "allowedClasses": ["fighter", "thief", "ranger"],
+    "shops": ["town_oakhaven", "town_yew"],
     "price": 30,
     "description": "Light recurve bow capable of striking from either row."
   },
@@ -66,6 +70,7 @@
     "hitBonus": 0,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric"],
+    "shops": ["town_oakhaven"],
     "price": 15,
     "description": "Simple braided sling that lets back-row healers hurl heavy lead bullets."
   },
@@ -80,6 +85,7 @@
     "hitBonus": 1,
     "bonuses": { "maxMp": 2 },
     "allowedClasses": ["wizard", "cleric"],
+    "shops": ["town_oakhaven"],
     "price": 25,
     "description": "Focuses arcane sparks from any row and expands the wielder's mana pool."
   },
@@ -94,6 +100,7 @@
     "hitBonus": 0,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "ranger"],
+    "shops": ["town_oakhaven", "town_yew"],
     "price": 50,
     "description": "Long ash-shafted polearm with reach to strike from the front or back row."
   },
@@ -108,6 +115,7 @@
     "hitBonus": 2,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "thief", "ranger"],
+    "shops": ["town_yew", "town_moon"],
     "price": 65,
     "description": "Needle-sharp thrusting sword that scales with agility and accuracy."
   },
@@ -122,6 +130,7 @@
     "hitBonus": 1,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin"],
+    "shops": ["town_oakhaven", "town_yew"],
     "price": 80,
     "description": "Crucible-steel martial blade forged in Oakhaven's royal armory."
   },
@@ -136,6 +145,7 @@
     "hitBonus": 0,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "cleric"],
+    "shops": ["town_oakhaven", "town_yew"],
     "price": 80,
     "description": "Crushing warhammer built to dent shields and shatter undead bones."
   },
@@ -150,6 +160,7 @@
     "hitBonus": 1,
     "bonuses": {},
     "allowedClasses": ["fighter", "ranger"],
+    "shops": ["town_yew"],
     "price": 95,
     "description": "Masterwork heartwood longbow crafted by the bowyers of Yew."
   },
@@ -164,6 +175,7 @@
     "hitBonus": 1,
     "bonuses": { "wis": 1, "maxMp": 3 },
     "allowedClasses": ["paladin", "cleric"],
+    "shops": ["town_yew", "town_moon"],
     "price": 115,
     "description": "Sanctified long-handled mace that radiates holy reach and bolsters Divine WIS."
   },
@@ -178,6 +190,7 @@
     "hitBonus": 1,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin"],
+    "shops": ["town_yew", "town_moon"],
     "price": 130,
     "description": "Heavy pole-axe that cleaves foes from either the front or back line."
   },
@@ -192,8 +205,24 @@
     "hitBonus": 2,
     "bonuses": {},
     "allowedClasses": ["fighter", "thief", "ranger"],
+    "shops": ["town_moon"],
     "price": 125,
     "description": "Winch-drawn steel arbalest favored by sharpshooters in Port of Moon."
+  },
+  {
+    "id": "shadow_stiletto",
+    "name": "Shadowsteel Stiletto",
+    "slot": "weapon",
+    "category": "finesse",
+    "dice": "2d4+2",
+    "statKey": "dex",
+    "range": "melee",
+    "hitBonus": 2,
+    "bonuses": { "dex": 1 },
+    "allowedClasses": ["fighter", "thief", "ranger"],
+    "shops": ["town_moon"],
+    "price": 155,
+    "description": "Razor-thin assassin's blade from Moon Harbor that slips effortlessly between armor plates."
   },
   {
     "id": "archmage_rod",
@@ -206,6 +235,7 @@
     "hitBonus": 2,
     "bonuses": { "int": 1, "maxMp": 5 },
     "allowedClasses": ["wizard"],
+    "shops": ["town_moon"],
     "price": 140,
     "description": "Silver-inlaid rod that hurls searing bolts of force and deepens arcane reserves."
   },
@@ -220,6 +250,7 @@
     "hitBonus": 1,
     "bonuses": { "str": 1 },
     "allowedClasses": ["fighter", "paladin"],
+    "shops": ["town_moon"],
     "price": 185,
     "description": "Two-handed champion's blade of unmatched front-line devastation."
   },
@@ -231,6 +262,7 @@
     "acBonus": 1,
     "bonuses": { "maxMp": 2 },
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric", "wizard"],
+    "shops": ["town_oakhaven"],
     "price": 20,
     "description": "Woven wool robe stitched with minor warding runes."
   },
@@ -242,6 +274,7 @@
     "acBonus": 1,
     "bonuses": { "maxMp": 1, "maxHp": 1 },
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric", "wizard"],
+    "shops": ["town_oakhaven"],
     "price": 20,
     "description": "Blessed temple garments worn by initiates of the Triad."
   },
@@ -253,6 +286,7 @@
     "acBonus": 2,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric"],
+    "shops": ["town_oakhaven"],
     "price": 30,
     "description": "Supple boiled-leather cuirass that protects without hindering movement."
   },
@@ -264,8 +298,21 @@
     "acBonus": 3,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric"],
+    "shops": ["town_oakhaven", "town_yew"],
     "price": 60,
     "description": "Reinforced leather riveted with steel bosses."
+  },
+  {
+    "id": "chain_hauberk",
+    "name": "Chainmail Hauberk",
+    "slot": "armor",
+    "category": "medium",
+    "acBonus": 4,
+    "bonuses": {},
+    "allowedClasses": ["fighter", "paladin", "ranger", "cleric"],
+    "shops": ["town_oakhaven", "town_yew"],
+    "price": 95,
+    "description": "Interlocking steel rings over a padded gambeson."
   },
   {
     "id": "starweave_robe",
@@ -275,6 +322,7 @@
     "acBonus": 3,
     "bonuses": { "int": 1, "wis": 1, "maxMp": 5 },
     "allowedClasses": ["wizard", "cleric"],
+    "shops": ["town_yew", "town_moon"],
     "price": 100,
     "description": "Shimmering astral silk that deflects blades and amplifies spellcraft."
   },
@@ -286,19 +334,9 @@
     "acBonus": 4,
     "bonuses": { "dex": 1 },
     "allowedClasses": ["thief", "ranger"],
+    "shops": ["town_yew", "town_moon"],
     "price": 115,
     "description": "Darkened wyvern-hide armor tailored for scouts and cutpurses."
-  },
-  {
-    "id": "chain_hauberk",
-    "name": "Chainmail Hauberk",
-    "slot": "armor",
-    "category": "medium",
-    "acBonus": 4,
-    "bonuses": {},
-    "allowedClasses": ["fighter", "paladin", "ranger", "cleric"],
-    "price": 95,
-    "description": "Interlocking steel rings over a padded gambeson."
   },
   {
     "id": "templar_scale",
@@ -308,8 +346,33 @@
     "acBonus": 5,
     "bonuses": { "maxHp": 4 },
     "allowedClasses": ["fighter", "paladin", "cleric"],
+    "shops": ["town_yew", "town_moon"],
     "price": 145,
     "description": "Overlapping bronze-and-steel scales consecrated at Oakhaven Temple."
+  },
+  {
+    "id": "moonshadow_armor",
+    "name": "Moonshadow Brigandine",
+    "slot": "armor",
+    "category": "light",
+    "acBonus": 5,
+    "bonuses": { "dex": 2 },
+    "allowedClasses": ["thief", "ranger"],
+    "shops": ["town_moon"],
+    "price": 180,
+    "description": "Supple sea-drake leather reinforced with mithril links from Port of Moon."
+  },
+  {
+    "id": "astral_mantle",
+    "name": "Archmage Astral Mantle",
+    "slot": "armor",
+    "category": "cloth",
+    "acBonus": 4,
+    "bonuses": { "int": 2, "wis": 2, "maxMp": 8 },
+    "allowedClasses": ["wizard", "cleric"],
+    "shops": ["town_moon"],
+    "price": 190,
+    "description": "Celestial vestments woven with silver star-thread for master spellcasters."
   },
   {
     "id": "knight_plate",
@@ -319,6 +382,7 @@
     "acBonus": 6,
     "bonuses": { "maxHp": 5 },
     "allowedClasses": ["fighter", "paladin"],
+    "shops": ["town_moon"],
     "price": 210,
     "description": "Full articulated steel plate worn by the Vanguard of Castle Avalon."
   },
@@ -330,6 +394,7 @@
     "acBonus": 1,
     "bonuses": {},
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric", "wizard"],
+    "shops": ["town_oakhaven", "town_yew"],
     "price": 60,
     "description": "Silver band that projects a subtle ward against incoming blows (+1 AC)."
   },
@@ -341,6 +406,7 @@
     "acBonus": 0,
     "bonuses": { "str": 2 },
     "allowedClasses": ["fighter", "paladin", "ranger", "cleric"],
+    "shops": ["town_yew", "town_moon"],
     "price": 85,
     "description": "Iron-banded wristguards that lend ferocious melee strength (+2 STR)."
   },
@@ -352,6 +418,7 @@
     "acBonus": 1,
     "bonuses": { "dex": 2 },
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric", "wizard"],
+    "shops": ["town_yew"],
     "price": 95,
     "description": "Forest-green mantle woven in Yew (+2 DEX, +1 AC)."
   },
@@ -363,6 +430,7 @@
     "acBonus": 0,
     "bonuses": { "wis": 2, "maxMp": 4 },
     "allowedClasses": ["paladin", "ranger", "cleric"],
+    "shops": ["town_oakhaven", "town_yew"],
     "price": 90,
     "description": "Gold-filigree holy reliquary (+2 WIS, +4 Max MP)."
   },
@@ -374,6 +442,7 @@
     "acBonus": 0,
     "bonuses": { "int": 2, "maxMp": 5 },
     "allowedClasses": ["wizard"],
+    "shops": ["town_moon"],
     "price": 95,
     "description": "Star-sapphire ring pulsing with raw ether (+2 INT, +5 Max MP)."
   },
@@ -385,6 +454,7 @@
     "acBonus": 1,
     "bonuses": { "maxHp": 8 },
     "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric", "wizard"],
+    "shops": ["town_moon"],
     "price": 115,
     "description": "Ruby pendant warm to the touch (+8 Max HP, +1 AC)."
   },
@@ -395,6 +465,7 @@
     "category": "potion",
     "effect": "heal_hp",
     "dice": "2d4+4",
+    "shops": ["town_oakhaven", "town_yew", "town_moon"],
     "price": 20,
     "description": "Crimson herbal draught that restores 6–12 HP to a living hero."
   },
@@ -405,6 +476,7 @@
     "category": "potion",
     "effect": "heal_hp",
     "dice": "4d4+8",
+    "shops": ["town_yew", "town_moon"],
     "price": 50,
     "description": "Concentrated alchemical elixir that restores 12–24 HP to a living hero."
   },
@@ -415,6 +487,7 @@
     "category": "potion",
     "effect": "restore_mp",
     "dice": "2d4+3",
+    "shops": ["town_oakhaven", "town_yew", "town_moon"],
     "price": 30,
     "description": "Luminous azure phial that restores 5–11 MP to a spellcaster."
   },
@@ -425,6 +498,7 @@
     "category": "potion",
     "effect": "cure_status",
     "dice": "1d4",
+    "shops": ["town_oakhaven", "town_yew", "town_moon"],
     "price": 18,
     "description": "Blessed silverleaf tincture that cures Poison, Sleep, Paralysis, and Silence (+1–4 HP)."
   },
@@ -435,6 +509,7 @@
     "category": "relic",
     "effect": "revive_or_heal",
     "dice": "2d6+4",
+    "shops": ["town_moon"],
     "price": 85,
     "description": "Sacred temple salts that revive a fallen (Dead) hero or heal a living ally for 6–16 HP."
   },
@@ -445,6 +520,7 @@
     "category": "utility",
     "effect": "field_light",
     "durationSteps": 35,
+    "shops": ["town_oakhaven", "town_yew", "town_moon"],
     "price": 15,
     "description": "Resin-soaked pine torch that illuminates dark dungeon corridors for 35 steps."
   },
@@ -454,6 +530,7 @@
     "slot": "consumable",
     "category": "utility",
     "effect": "unlock_door",
+    "shops": ["town_yew", "town_moon"],
     "price": 40,
     "description": "Forged masterwork lockpick-key that unlocks any barred dungeon door or disarms a chest lock."
   },
@@ -463,6 +540,7 @@
     "slot": "consumable",
     "category": "utility",
     "effect": "exit_dungeon",
+    "shops": ["town_oakhaven", "town_yew", "town_moon"],
     "price": 45,
     "description": "Iridescent pinion blessed by the Triad that lifts the entire party out of a dungeon to its surface entrance."
   }

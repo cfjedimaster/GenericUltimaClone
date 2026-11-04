@@ -483,7 +483,7 @@ function resolveHeroSpellCast({
     const killNote = slainCount > 0 ? ` (${slainCount} slain!)` : '';
     addCombatLog(
       combatState,
-      `${hero.name} unleashes ${spell.name} (-${spell.mpCost} MP) across ${targetGroup.label} (${targetGroup.pluralName}) for ${totalDmg} total dmg${killNote}!`,
+      `${hero.name} unleashes ${spell.name} (-${spell.mpCost} MP) across ${targetGroup.pluralName} for ${totalDmg} total dmg${killNote}!`,
       'hit'
     );
     return;
@@ -567,16 +567,17 @@ function resolveHeroSpellCast({
       }
     }
 
+    const grpTitle = targetGroup.units.length === 1 ? targetGroup.name : targetGroup.pluralName;
     if (affected.length > 0) {
       addCombatLog(
         combatState,
-        `${hero.name} casts ${spell.name} (-${spell.mpCost} MP) on ${targetGroup.label}: ${affected.join(', ')} afflicted with ${spell.status}!`,
+        `${hero.name} casts ${spell.name} (-${spell.mpCost} MP) on ${grpTitle}: ${affected.join(', ')} afflicted with ${spell.status}!`,
         'victory'
       );
     } else {
       addCombatLog(
         combatState,
-        `${hero.name} casts ${spell.name} (-${spell.mpCost} MP) on ${targetGroup.label}, but the enemies resist!`,
+        `${hero.name} casts ${spell.name} (-${spell.mpCost} MP) on ${grpTitle}, but the enemies resist!`,
         'info'
       );
     }

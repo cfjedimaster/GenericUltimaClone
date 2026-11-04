@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.2.1] - 2026-11-04
+
+### Added
+
+- **Town-Specific Shop Inventories & Late-Game Gear (`data/items.json`, `js/app.js`)**:
+  - Scoped shop catalogs by town (`town_oakhaven`, `town_yew`, `town_moon`) so each town outfitter stocks tiered regional gear and supplies.
+  - Added three late-game items in Port of Moon: **Shadowsteel Stiletto** (`shadow_stiletto`), **Moonshadow Brigandine** (`moonshadow_armor`), and **Archmage Astral Mantle** (`astral_mantle`).
+- **Shop Equipped Gear Comparison Strip (`index.html`, `css/style.css`, `js/app.js`)**:
+  - Added a live equipped-slot summary strip (`WPN`, `ARM`, `ACC`, and `AC`) for the selected hero in the shop modal.
+  - Added `EQUIPPED` status badges and `Already Equipped` button guards so players don't accidentally re-buy gear a hero is already wearing.
+
+### Changed
+
+- **Dungeon & Combat Readability Polish (`data/maps.json`, `js/dungeon.js`, `js/combat.js`, `js/app.js`)**:
+  - Updated dungeon level labels from `Level B1–B3` to `Floor 1–3` and simplified stair transition messages to `"to the lower/higher level"`.
+  - Hid looted treasure chests immediately on the party's current tile until the party steps away.
+  - Updated combat target and log messages to use singular or plural monster names based on surviving unit count without redundant `Group A/B/C` prefixes.
+
 ## [0.2.0] - 2026-11-04
 
 ### Added
