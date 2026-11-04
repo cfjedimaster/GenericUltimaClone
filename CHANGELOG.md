@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.0] - 2026-11-04
+
+### Added
+
+- **Expanded 20-Floor Dungeon Crawl (`data/maps.json`, `data/encounters.json`, `js/combat.js`)**:
+  - Expanded **Cavern of Despise** to **8 Floors** (`dungeon_despise_b1` through `dungeon_despise_b8`) and **Abyss of Doom** to **12 Floors** (`dungeon_doom_b1` through `dungeon_doom_b12`), with locked doors, trapped treasure chests, mystic fountains, and mid-dungeon Wyrm/Dragon guardian posts on key descents.
+  - Moved **Malakor the Lich Lord** to the bottom of Cavern of Despise (**Floor 8**) and **Pyrothrax the Abyssal Wyrm** to the bottom of Abyss of Doom (**Floor 12**).
+- **Wyrms, Chromatic Dragons & D&D High-Tier Bestiary Expansion (`data/monsters.json`, `data/encounters.json`)**:
+  - Added 4 elemental **Wyrms** across mid-to-deep dungeon floors: **Frost Wyrm** (`frost_wyrm`), **Venom Wyrm** (`venom_wyrm`), **Cinder Wyrm** (`cinder_wyrm`), and undead **Shadow Wyrm** (`shadow_wyrm`).
+  - Added 5 proper **Chromatic Dragons** in the deeper dungeon levels with small, lethal encounter counts (`1–2` per group): **Green Dragon** (`green_dragon`), **White Dragon** (`white_dragon`), **Blue Dragon** (`blue_dragon`), **Black Dragon** (`black_dragon`), and **Red Dragon** (`red_dragon`).
+  - Added 9 classic D&D-inspired high-level dungeon beasts and aberrations: **Displacer Stalker** (`displacer_panther`), **Umber Ravager** (`umber_hulk`), **Illithid Mind Flayer** (`mind_flayer`), **Nosferatu Blood Lord** (`vampire_lord`), **Five-Headed Pyrohydra** (`pyro_hydra`), **Eye Tyrant Beholder** (`beholder`), **Adamantine Juggernaut** (`iron_golem`), **Dread Demilich** (`arch_lich`), and **Balor Pit Fiend** (`balor_fiend`).
+- **Exclusive Boss & Dragon Relics (`data/items.json`, `js/app.js`)**:
+  - Added 7 legendary items with `shops: []` so town shops never sell them: **Malakor's Scepter of Oblivion** (`malakor_staff`), **Necromancer's Astral Shroud** (`shroud_of_despise`), **Phylactery of the Lich Lord** (`phylactery_malakor`), **Pyrothrax's Wyrmfire Greatsword** (`wyrmfire_greatsword`), **Grand Dragonbone Longbow** (`dragon_fang_bow`), **Abyssal Wyrmscale Panoply** (`wyrmscale_panoply`), and **Crown of the Triad** (`crown_of_the_triad`).
+- **Field Camping (`[R]`) & Dungeon Guardian 3D Silhouettes (`data/items.json`, `js/app.js`, `js/dungeon.js`, `index.html`)**:
+  - Added **Canvas Camp Tent** (`camping_tent`) and `[R] Camp` command on the Overworld and in Dungeons to restore 100% HP/MP to living party members (with a 5% chance of an ambush encounter).
+  - Added bespoke 3D canvas silhouettes for dungeon bosses and fixed stairwell guardians (Lich Lord, Abyssal Wyrm, Chromatic Dragons/Wyrms, Beholder, and Armored Vanguard).
+
 ## [0.3.0] - 2026-11-04
 
 ### Added

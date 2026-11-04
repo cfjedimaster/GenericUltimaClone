@@ -15,7 +15,8 @@ export function createDefaultState() {
     // Shared party pack: Array of { itemId: string, qty: number }
     inventory: [
       { itemId: 'healing_draught', qty: 2 },
-      { itemId: 'dungeon_torch', qty: 1 }
+      { itemId: 'dungeon_torch', qty: 1 },
+      { itemId: 'camping_tent', qty: 1 }
     ],
     location: {
       mode: 'overworld',
@@ -47,8 +48,13 @@ export function loadStateFromStorage() {
 }
 
 export function saveStateToStorage(state) {
+  if (state && typeof state === 'object') {
+    state.updatedAt = new Date().toISOString();
+    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(state));
+    return state;
+  }
   const payload = {
-    ...state,
+    ...createDefaultState(),
     updatedAt: new Date().toISOString()
   };
   localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(payload));

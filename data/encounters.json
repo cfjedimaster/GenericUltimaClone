@@ -160,13 +160,13 @@
       "weight": 30,
       "groups": [
         { "monsterId": "barrow_wight", "count": "1d2" },
-        { "monsterId": "crypt_ghoul", "count": "1d2+1" }
+        { "monsterId": "crypt_ghoul", "count": "1d2" }
       ]
     },
     {
       "weight": 20,
       "groups": [
-        { "monsterId": "ogre_crusher", "count": "1d2" },
+        { "monsterId": "ogre_crusher", "count": "1" },
         { "monsterId": "shadow_warlock", "count": "1d2" }
       ]
     },
@@ -174,8 +174,187 @@
       "weight": 20,
       "groups": [
         { "monsterId": "barrow_wight", "count": "1d2" },
-        { "monsterId": "shadow_warlock", "count": "1d2" },
-        { "monsterId": "skeleton", "count": "1d3" }
+        { "monsterId": "wyvernling", "count": "1d2" }
+      ]
+    }
+  ],
+  "despise_b3": [
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "ogre_crusher", "count": "1d2" },
+        { "monsterId": "stone_gargoyle", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "barrow_wight", "count": "1d2" },
+        { "monsterId": "abyssal_chanter", "count": "1" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "stone_gargoyle", "count": "1d2" },
+        { "monsterId": "shadow_warlock", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "ogre_crusher", "count": "1d2" },
+        { "monsterId": "wyvernling", "count": "1d2" }
+      ]
+    }
+  ],
+  "despise_b4": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "cave_troll", "count": "1" },
+        { "monsterId": "ogre_crusher", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "frost_wyrm", "count": "1" },
+        { "monsterId": "stone_gargoyle", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "displacer_panther", "count": "1d2" },
+        { "monsterId": "shadow_warlock", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "umber_hulk", "count": "1" },
+        { "monsterId": "barrow_wight", "count": "1d2" }
+      ]
+    }
+  ],
+  "despise_b5": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "frost_wyrm", "count": "1d2" },
+        { "monsterId": "barrow_wight", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "umber_hulk", "count": "1d2" },
+        { "monsterId": "displacer_panther", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "mind_flayer", "count": "1" },
+        { "monsterId": "death_knight", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "venom_wyrm", "count": "1" },
+        { "monsterId": "frost_wyrm", "count": "1" }
+      ]
+    }
+  ],
+  "despise_b6": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "mind_flayer", "count": "1d2" },
+        { "monsterId": "umber_hulk", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "vampire_lord", "count": "1" },
+        { "monsterId": "death_knight", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "shadow_wyrm", "count": "1" },
+        { "monsterId": "frost_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "green_dragon", "count": "1" },
+        { "monsterId": "venom_wyrm", "count": "1" }
+      ]
+    }
+  ],
+  "despise_b7": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "beholder", "count": "1" },
+        { "monsterId": "mind_flayer", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "white_dragon", "count": "1" },
+        { "monsterId": "frost_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "vampire_lord", "count": "1d2" },
+        { "monsterId": "shadow_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "green_dragon", "count": "1" },
+        { "monsterId": "umber_hulk", "count": "1" }
+      ]
+    }
+  ],
+  "despise_b8": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "arch_lich", "count": "1" },
+        { "monsterId": "vampire_lord", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "black_dragon", "count": "1" },
+        { "monsterId": "shadow_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "beholder", "count": "1" },
+        { "monsterId": "iron_golem", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "white_dragon", "count": "1" },
+        { "monsterId": "arch_lich", "count": "1" }
       ]
     }
   ],
@@ -184,29 +363,28 @@
       "weight": 30,
       "groups": [
         { "monsterId": "stone_gargoyle", "count": "1d2" },
-        { "monsterId": "wyvernling", "count": "1d2" }
+        { "monsterId": "ogre_crusher", "count": "1d2" }
       ]
     },
     {
       "weight": 30,
       "groups": [
-        { "monsterId": "ogre_crusher", "count": "1d2" },
-        { "monsterId": "hobgoblin_vanguard", "count": "1d2+1" }
+        { "monsterId": "hellhound", "count": "1d2" },
+        { "monsterId": "hobgoblin_vanguard", "count": "1d2" }
       ]
     },
     {
       "weight": 20,
       "groups": [
-        { "monsterId": "barrow_wight", "count": "1d2" },
-        { "monsterId": "shadow_warlock", "count": "1d2" }
+        { "monsterId": "displacer_panther", "count": "1" },
+        { "monsterId": "abyssal_chanter", "count": "1d2" }
       ]
     },
     {
       "weight": 20,
       "groups": [
-        { "monsterId": "stone_gargoyle", "count": "1d2" },
-        { "monsterId": "abyssal_chanter", "count": "1" },
-        { "monsterId": "crypt_ghoul", "count": "1d2" }
+        { "monsterId": "cave_troll", "count": "1" },
+        { "monsterId": "stone_gargoyle", "count": "1d2" }
       ]
     }
   ],
@@ -214,62 +392,329 @@
     {
       "weight": 30,
       "groups": [
-        { "monsterId": "ogre_crusher", "count": "1d2+1" },
-        { "monsterId": "abyssal_chanter", "count": "1d2" }
+        { "monsterId": "hellhound", "count": "1d2" },
+        { "monsterId": "cave_troll", "count": "1d2" }
       ]
     },
     {
       "weight": 30,
       "groups": [
-        { "monsterId": "hellhound", "count": "1d2" },
-        { "monsterId": "stone_gargoyle", "count": "1d2" }
+        { "monsterId": "displacer_panther", "count": "1d2" },
+        { "monsterId": "abyssal_chanter", "count": "1" }
       ]
     },
     {
       "weight": 20,
       "groups": [
-        { "monsterId": "cave_troll", "count": "1d2" },
+        { "monsterId": "death_knight", "count": "1" },
         { "monsterId": "barrow_wight", "count": "1d2" }
       ]
     },
     {
       "weight": 20,
       "groups": [
-        { "monsterId": "hellhound", "count": "1d2" },
-        { "monsterId": "abyssal_chanter", "count": "1d2" },
-        { "monsterId": "shadow_warlock", "count": "1d2" }
+        { "monsterId": "frost_wyrm", "count": "1" },
+        { "monsterId": "hellhound", "count": "1d2" }
       ]
     }
   ],
   "doom_b3": [
     {
-      "weight": 30,
-      "groups": [
-        { "monsterId": "cave_troll", "count": "1d2" },
-        { "monsterId": "hellhound", "count": "1d2+1" }
-      ]
-    },
-    {
-      "weight": 30,
+      "weight": 25,
       "groups": [
         { "monsterId": "death_knight", "count": "1d2" },
-        { "monsterId": "barrow_wight", "count": "1d2+1" }
-      ]
-    },
-    {
-      "weight": 20,
-      "groups": [
-        { "monsterId": "death_knight", "count": "1d2" },
-        { "monsterId": "abyssal_chanter", "count": "1d2" },
         { "monsterId": "hellhound", "count": "1d2" }
       ]
     },
     {
-      "weight": 20,
+      "weight": 25,
       "groups": [
-        { "monsterId": "cave_troll", "count": "1d2+1" },
-        { "monsterId": "death_knight", "count": "1" },
-        { "monsterId": "abyssal_chanter", "count": "1d2" }
+        { "monsterId": "cinder_wyrm", "count": "1" },
+        { "monsterId": "cave_troll", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "umber_hulk", "count": "1" },
+        { "monsterId": "displacer_panther", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "venom_wyrm", "count": "1" },
+        { "monsterId": "death_knight", "count": "1" }
+      ]
+    }
+  ],
+  "doom_b4": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "cinder_wyrm", "count": "1d2" },
+        { "monsterId": "hellhound", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "umber_hulk", "count": "1d2" },
+        { "monsterId": "mind_flayer", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "frost_wyrm", "count": "1" },
+        { "monsterId": "cinder_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "vampire_lord", "count": "1" },
+        { "monsterId": "death_knight", "count": "1d2" }
+      ]
+    }
+  ],
+  "doom_b5": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "shadow_wyrm", "count": "1" },
+        { "monsterId": "cinder_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "mind_flayer", "count": "1d2" },
+        { "monsterId": "umber_hulk", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "pyro_hydra", "count": "1" },
+        { "monsterId": "hellhound", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "green_dragon", "count": "1" },
+        { "monsterId": "vampire_lord", "count": "1" }
+      ]
+    }
+  ],
+  "doom_b6": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "green_dragon", "count": "1" },
+        { "monsterId": "venom_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "pyro_hydra", "count": "1" },
+        { "monsterId": "cinder_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "beholder", "count": "1" },
+        { "monsterId": "mind_flayer", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "white_dragon", "count": "1" },
+        { "monsterId": "vampire_lord", "count": "1" }
+      ]
+    }
+  ],
+  "doom_b7": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "beholder", "count": "1" },
+        { "monsterId": "umber_hulk", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "blue_dragon", "count": "1" },
+        { "monsterId": "cinder_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "pyro_hydra", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "white_dragon", "count": "1" },
+        { "monsterId": "green_dragon", "count": "1" }
+      ]
+    }
+  ],
+  "doom_b8": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "iron_golem", "count": "1" },
+        { "monsterId": "beholder", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "black_dragon", "count": "1" },
+        { "monsterId": "shadow_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "blue_dragon", "count": "1" },
+        { "monsterId": "pyro_hydra", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "arch_lich", "count": "1" },
+        { "monsterId": "vampire_lord", "count": "1d2" }
+      ]
+    }
+  ],
+  "doom_b9": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "black_dragon", "count": "1" },
+        { "monsterId": "arch_lich", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "red_dragon", "count": "1" },
+        { "monsterId": "cinder_wyrm", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "iron_golem", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "blue_dragon", "count": "1" },
+        { "monsterId": "beholder", "count": "1" }
+      ]
+    }
+  ],
+  "doom_b10": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "balor_fiend", "count": "1" },
+        { "monsterId": "hellhound", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "red_dragon", "count": "1" },
+        { "monsterId": "black_dragon", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "arch_lich", "count": "1" },
+        { "monsterId": "iron_golem", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "beholder", "count": "1d2" },
+        { "monsterId": "mind_flayer", "count": "1" }
+      ]
+    }
+  ],
+  "doom_b11": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "balor_fiend", "count": "1" },
+        { "monsterId": "red_dragon", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "arch_lich", "count": "1" },
+        { "monsterId": "black_dragon", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "iron_golem", "count": "1" },
+        { "monsterId": "blue_dragon", "count": "1" },
+        { "monsterId": "beholder", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "red_dragon", "count": "1d2" }
+      ]
+    }
+  ],
+  "doom_b12": [
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "balor_fiend", "count": "1" },
+        { "monsterId": "red_dragon", "count": "1" },
+        { "monsterId": "arch_lich", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "red_dragon", "count": "1d2" },
+        { "monsterId": "black_dragon", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "balor_fiend", "count": "1d2" },
+        { "monsterId": "iron_golem", "count": "1" }
+      ]
+    },
+    {
+      "weight": 25,
+      "groups": [
+        { "monsterId": "arch_lich", "count": "1" },
+        { "monsterId": "beholder", "count": "1" },
+        { "monsterId": "blue_dragon", "count": "1" }
       ]
     }
   ]

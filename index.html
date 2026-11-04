@@ -528,6 +528,15 @@
               Leave Town [X]
             </button>
             <button type="button" class="btn-sm" x-show="!isDungeonMode" @click="openAtlasModal()">Atlas [M]</button>
+            <button
+              type="button"
+              class="btn-sm"
+              x-show="currentMap?.mode !== 'town'"
+              :disabled="!canCamp"
+              :title="tentCount > 0 ? 'Pitch a Canvas Camp Tent to restore full HP/MP (5% ambush risk)' : 'Requires a Canvas Camp Tent in your Party Pack'"
+              @click="campParty()"
+              x-text="`Camp [R] (${tentCount})`"
+            ></button>
             <button type="button" class="btn-sm" @click="openSpellModal()">Spells [C]</button>
             <button type="button" class="btn-sm" @click="openInventoryModal()">Pack [I]</button>
             <button type="button" class="btn-sm" x-show="!isDungeonMode" @click="goToScreen('tavern')">Tavern Roster</button>
@@ -614,44 +623,54 @@
 
           <div class="viewport-sidebar">
             <!-- Underfoot Dungeon Feature Callout -->
-            <template x-if="currentTrigger">
-              <div class="poi-callout">
-                <strong x-text="currentTrigger.name"></strong>
-                <p
-                  x-text="currentTrigger.type === 'chest' && isTriggerConsumed(currentTrigger) ? (justLootedChestFlag === currentTrigger.flag ? 'You retrieved the items inside.' : 'This chest has already been opened and emptied.') : currentTrigger.message"
-                ></p>
-                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-                  <template x-if="currentTrigger.type === 'chest' && !isTriggerConsumed(currentTrigger) && currentTrigger.trap && !isChestTrapSafe(currentTrigger)">
-                    <button type="button" class="btn-sm" @click="searchAndDisarmDungeon()">
-                      [F] Disarm Trap
-                    </button>
-                  </template>
-                  <template x-if="currentTrigger.type !== 'chest' || !isTriggerConsumed(currentTrigger)">
-                    <button type="button" class="btn-sm btn-primary" @click="enterOrInteract()">
-                      [E] <span x-text="currentTrigger.type === 'stairs_up' ? 'Climb Up' : currentTrigger.type === 'stairs_down' ? 'Descend' : currentTrigger.type === 'chest' ? 'Open Chest' : 'Activate'"></span>
-                    </button>
-                  </template>
-                </div>
+            <div class="poi-callout" x-show="currentTrigger">
+              <strong x-text="currentTrigger?.name"></strong>
+              <p
+                x-text="currentTrigger?.type === 'chest' && isTriggerConsumed(currentTrigger) ? (justLootedChestFlag === currentTrigger?.flag ? 'You retrieved the items inside.' : 'This chest has already been opened and emptied.') : currentTrigger?.message"
+              ></p>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <button
+                  type="button"
+                  class="btn-sm"
+                  x-show="currentTrigger?.type === 'chest' && !isTriggerConsumed(currentTrigger) && currentTrigger?.trap && !isChestTrapSafe(currentTrigger)"
+                  @click="searchAndDisarmDungeon()"
+                >
+                  [F] Disarm Trap
+                </button>
+                <button
+                  type="button"
+                  class="btn-sm btn-primary"
+                  x-show="currentTrigger && (currentTrigger.type !== 'chest' || !isTriggerConsumed(currentTrigger))"
+                  @click="enterOrInteract()"
+                >
+                  [E] <span x-text="currentTrigger?.type === 'stairs_up' ? 'Climb Up' : currentTrigger?.type === 'stairs_down' ? 'Descend' : currentTrigger?.type === 'chest' ? 'Open Chest' : 'Activate'"></span>
+                </button>
               </div>
-            </template>
+            </div>
 
             <!-- Ahead Locked Door / Trap Callout -->
-            <template x-if="!currentTrigger && triggerAhead">
-              <div class="poi-callout">
-                <strong x-text="`Ahead (${triggerAhead.direction}): ${triggerAhead.name}`"></strong>
-                <p x-text="triggerAhead.message"></p>
-                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-                  <template x-if="canUnlockAhead">
-                    <button type="button" class="btn-sm btn-primary" @click="unlockDoorAhead()">
-                      [O] Pick Lock / Use Key
-                    </button>
-                  </template>
-                  <button type="button" class="btn-sm" @click="searchAndDisarmDungeon()">
-                    [F] Search / Disarm
-                  </button>
-                </div>
+            <div class="poi-callout" x-show="!currentTrigger && triggerAhead">
+              <strong x-text="`Ahead (${triggerAhead?.direction || ''}): ${triggerAhead?.name || ''}`"></strong>
+              <p x-text="triggerAhead?.message"></p>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;" x-show="canUnlockAhead || canSearchOrDisarmAhead">
+                <button
+                  type="button"
+                  class="btn-sm btn-primary"
+                  x-show="canUnlockAhead"
+                  @click="unlockDoorAhead()"
+                >
+                  [O] Pick Lock / Use Key
+                </button>
+                <button
+                  type="button"
+                  class="btn-sm"
+                  x-show="canSearchOrDisarmAhead"
+                  @click="searchAndDisarmDungeon()"
+                >
+                  [F] Search / Disarm
+                </button>
               </div>
-            </template>
+            </div>
 
             <!-- 7x7 Local Automap Sensor Grid -->
             <div class="legend-card">
@@ -692,8 +711,8 @@
         <div class="log-panel">
           <div class="log-header">
             <span>Chronicle Log</span>
-            <small x-show="!isDungeonMode">WASD/Arrows move, [E] Enter, [M] Atlas, [C] Cast, [I] Pack &amp; Gear, [T] Talk, [X] Exit Town</small>
-            <small x-show="isDungeonMode">W/S Forward/Back, A/D Turn 90&deg;, [E] Stairs/Chest, [O] Unlock Door, [F] Search/Disarm, [C] Cast</small>
+            <small x-show="!isDungeonMode">WASD/Arrows move, [E] Enter, [R] Camp, [M] Atlas, [C] Cast, [I] Pack &amp; Gear, [T] Talk, [X] Exit Town</small>
+            <small x-show="isDungeonMode">W/S Forward/Back, A/D Turn 90&deg;, [E] Stairs/Chest, [O] Unlock, [F] Search/Disarm, [R] Camp, [C] Cast</small>
           </div>
           <div id="exploration-log" class="log-entries" role="log" aria-live="polite">
             <template x-for="item in messageLog" :key="item.id">
@@ -773,6 +792,15 @@
               @click="openInventoryModal()"
             >
               [I] Pack (<span x-text="totalPackItemCount"></span>)
+            </button>
+            <button
+              type="button"
+              x-show="currentMap?.mode !== 'town'"
+              :disabled="!canCamp"
+              :title="tentCount > 0 ? 'Pitch a Canvas Camp Tent to restore full HP/MP (5% ambush risk)' : 'Requires a Canvas Camp Tent in your Party Pack'"
+              @click="campParty()"
+            >
+              [R] Camp (<span x-text="tentCount"></span>)
             </button>
             <button
               type="button"

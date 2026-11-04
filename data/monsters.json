@@ -446,31 +446,493 @@
     ]
   },
   {
+    "id": "frost_wyrm",
+    "name": "Frost Wyrm",
+    "pluralName": "Frost Wyrms",
+    "glyph": "y",
+    "color": "#5ce1e6",
+    "hp": "5d8+12",
+    "ac": 15,
+    "dex": 13,
+    "attackName": "Glacial Fangs",
+    "damageDice": "2d6+3",
+    "specialAttack": {
+      "name": "Rime Breath",
+      "chance": 0.36,
+      "damageDice": "2d6+2",
+      "status": "Paralysis",
+      "statusChance": 0.55
+    },
+    "xp": 155,
+    "gold": "5d8+28",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.25 },
+      { "itemId": "ether_tonic", "chance": 0.22 },
+      { "itemId": "astral_mantle", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "venom_wyrm",
+    "name": "Venom Wyrm",
+    "pluralName": "Venom Wyrms",
+    "glyph": "y",
+    "color": "#9be564",
+    "hp": "6d8+12",
+    "ac": 15,
+    "dex": 14,
+    "attackName": "Serrated Jaws",
+    "damageDice": "2d6+4",
+    "specialAttack": {
+      "name": "Blight Vapor",
+      "chance": 0.38,
+      "damageDice": "2d6+3",
+      "status": "Poison",
+      "statusChance": 0.78
+    },
+    "xp": 170,
+    "gold": "5d10+30",
+    "drops": [
+      { "itemId": "antidote_herb", "chance": 0.35 },
+      { "itemId": "greater_healing_draught", "chance": 0.25 },
+      { "itemId": "moonshadow_armor", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "cinder_wyrm",
+    "name": "Cinder Wyrm",
+    "pluralName": "Cinder Wyrms",
+    "glyph": "y",
+    "color": "#ff924c",
+    "hp": "6d8+16",
+    "ac": 16,
+    "dex": 14,
+    "attackName": "Scorching Talons",
+    "damageDice": "2d8+3",
+    "specialAttack": {
+      "name": "Magma Spit",
+      "chance": 0.4,
+      "damageDice": "3d6+2"
+    },
+    "xp": 195,
+    "gold": "6d10+35",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.28 },
+      { "itemId": "phoenix_salts", "chance": 0.14 },
+      { "itemId": "shadow_stiletto", "chance": 0.07 }
+    ]
+  },
+  {
+    "id": "shadow_wyrm",
+    "name": "Shadow Wyrm",
+    "pluralName": "Shadow Wyrms",
+    "glyph": "Y",
+    "color": "#c77dff",
+    "undead": true,
+    "hp": "7d8+18",
+    "ac": 16,
+    "dex": 14,
+    "attackName": "Necrotic Bite",
+    "damageDice": "2d8+4",
+    "specialAttack": {
+      "name": "Null-Void Miasma",
+      "chance": 0.4,
+      "damageDice": "2d8+3",
+      "status": "Silence",
+      "statusChance": 0.68
+    },
+    "xp": 225,
+    "gold": "6d12+42",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.3 },
+      { "itemId": "phoenix_salts", "chance": 0.16 },
+      { "itemId": "astral_mantle", "chance": 0.07 }
+    ]
+  },
+  {
+    "id": "green_dragon",
+    "name": "Green Dragon",
+    "pluralName": "Green Dragons",
+    "glyph": "D",
+    "color": "#52d681",
+    "hp": "7d8+22",
+    "ac": 16,
+    "dex": 14,
+    "attackName": "Razor-Scale Claws",
+    "damageDice": "2d8+5",
+    "specialAttack": {
+      "name": "Corrosive Chlorine Breath",
+      "chance": 0.42,
+      "damageDice": "3d6+3",
+      "status": "Poison",
+      "statusChance": 0.8
+    },
+    "xp": 250,
+    "gold": "7d12+50",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.32 },
+      { "itemId": "phoenix_salts", "chance": 0.18 },
+      { "itemId": "moonshadow_armor", "chance": 0.08 }
+    ]
+  },
+  {
+    "id": "white_dragon",
+    "name": "White Dragon",
+    "pluralName": "White Dragons",
+    "glyph": "D",
+    "color": "#b8f2ff",
+    "hp": "8d8+24",
+    "ac": 17,
+    "dex": 14,
+    "attackName": "Glacier Jaws",
+    "damageDice": "3d6+4",
+    "specialAttack": {
+      "name": "Hoarfrost Blizzard Breath",
+      "chance": 0.42,
+      "damageDice": "3d6+4",
+      "status": "Paralysis",
+      "statusChance": 0.6
+    },
+    "xp": 280,
+    "gold": "8d12+60",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.32 },
+      { "itemId": "ether_tonic", "chance": 0.3 },
+      { "itemId": "astral_mantle", "chance": 0.09 }
+    ]
+  },
+  {
+    "id": "blue_dragon",
+    "name": "Blue Dragon",
+    "pluralName": "Blue Dragons",
+    "glyph": "D",
+    "color": "#4da6db",
+    "hp": "9d8+26",
+    "ac": 17,
+    "dex": 15,
+    "attackName": "Thunder-Wing Buffet",
+    "damageDice": "3d6+5",
+    "specialAttack": {
+      "name": "Fulminating Lightning Breath",
+      "chance": 0.44,
+      "damageDice": "3d8+4",
+      "status": "Paralysis",
+      "statusChance": 0.65
+    },
+    "xp": 320,
+    "gold": "9d12+75",
+    "drops": [
+      { "itemId": "phoenix_salts", "chance": 0.24 },
+      { "itemId": "dragon_fang_bow", "chance": 0.08 },
+      { "itemId": "knight_plate", "chance": 0.1 }
+    ]
+  },
+  {
+    "id": "black_dragon",
+    "name": "Black Dragon",
+    "pluralName": "Black Dragons",
+    "glyph": "D",
+    "color": "#b084f5",
+    "hp": "9d8+30",
+    "ac": 18,
+    "dex": 15,
+    "attackName": "Obsidian Fangs",
+    "damageDice": "3d8+4",
+    "specialAttack": {
+      "name": "Stygian Acid Breath",
+      "chance": 0.44,
+      "damageDice": "3d8+5",
+      "status": "Silence",
+      "statusChance": 0.7
+    },
+    "xp": 350,
+    "gold": "10d12+85",
+    "drops": [
+      { "itemId": "phoenix_salts", "chance": 0.28 },
+      { "itemId": "dragon_fang_bow", "chance": 0.1 },
+      { "itemId": "avalon_greatsword", "chance": 0.1 }
+    ]
+  },
+  {
+    "id": "red_dragon",
+    "name": "Red Dragon",
+    "pluralName": "Red Dragons",
+    "glyph": "D",
+    "color": "#ff595e",
+    "hp": "10d8+34",
+    "ac": 18,
+    "dex": 16,
+    "attackName": "Titan Claws",
+    "damageDice": "3d8+5",
+    "specialAttack": {
+      "name": "Searing Dragonfire Breath",
+      "chance": 0.46,
+      "damageDice": "4d6+5"
+    },
+    "xp": 400,
+    "gold": "12d12+100",
+    "drops": [
+      { "itemId": "phoenix_salts", "chance": 0.35 },
+      { "itemId": "dragon_fang_bow", "chance": 0.14 },
+      { "itemId": "heartstone_amulet", "chance": 0.15 }
+    ]
+  },
+  {
+    "id": "displacer_panther",
+    "name": "Displacer Stalker",
+    "pluralName": "Displacer Stalkers",
+    "glyph": "p",
+    "color": "#a78bfa",
+    "hp": "6d8+14",
+    "ac": 16,
+    "dex": 16,
+    "attackName": "Barbed Tentacles",
+    "damageDice": "2d8+3",
+    "specialAttack": {
+      "name": "Phase-Shift Flurry",
+      "chance": 0.38,
+      "damageDice": "3d6+3"
+    },
+    "xp": 185,
+    "gold": "5d10+32",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.26 },
+      { "itemId": "cloak_elvenkind", "chance": 0.1 },
+      { "itemId": "moonshadow_armor", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "umber_hulk",
+    "name": "Umber Ravager",
+    "pluralName": "Umber Ravagers",
+    "glyph": "U",
+    "color": "#d9a752",
+    "hp": "7d8+20",
+    "ac": 16,
+    "dex": 12,
+    "attackName": "Colossal Mandibles",
+    "damageDice": "2d8+5",
+    "specialAttack": {
+      "name": "Hypnotic Compound Gaze",
+      "chance": 0.36,
+      "damageDice": "2d6+3",
+      "status": "Sleep",
+      "statusChance": 0.68
+    },
+    "xp": 215,
+    "gold": "6d10+40",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.28 },
+      { "itemId": "bracers_might", "chance": 0.1 },
+      { "itemId": "knight_plate", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "mind_flayer",
+    "name": "Illithid Mind Flayer",
+    "pluralName": "Illithid Mind Flayers",
+    "glyph": "M",
+    "color": "#e298ff",
+    "hp": "7d8+18",
+    "ac": 16,
+    "dex": 15,
+    "attackName": "Tentacle Brain-Lash",
+    "damageDice": "2d8+4",
+    "specialAttack": {
+      "name": "Psionic Mind Blast",
+      "chance": 0.44,
+      "damageDice": "3d6+3",
+      "status": "Paralysis",
+      "statusChance": 0.72,
+      "isSpell": true
+    },
+    "xp": 240,
+    "gold": "7d10+48",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.35 },
+      { "itemId": "astral_mantle", "chance": 0.08 },
+      { "itemId": "ring_arcana", "chance": 0.1 }
+    ]
+  },
+  {
+    "id": "vampire_lord",
+    "name": "Nosferatu Blood Lord",
+    "pluralName": "Nosferatu Blood Lords",
+    "glyph": "V",
+    "color": "#ff4d6d",
+    "undead": true,
+    "hp": "8d8+22",
+    "ac": 17,
+    "dex": 16,
+    "attackName": "Crimson Rapier",
+    "damageDice": "3d6+4",
+    "specialAttack": {
+      "name": "Exsanguinating Bite",
+      "chance": 0.42,
+      "damageDice": "3d6+5",
+      "status": "Paralysis",
+      "statusChance": 0.62
+    },
+    "xp": 265,
+    "gold": "8d12+55",
+    "drops": [
+      { "itemId": "phoenix_salts", "chance": 0.2 },
+      { "itemId": "shadow_stiletto", "chance": 0.09 },
+      { "itemId": "moonshadow_armor", "chance": 0.08 }
+    ]
+  },
+  {
+    "id": "pyro_hydra",
+    "name": "Five-Headed Pyrohydra",
+    "pluralName": "Five-Headed Pyrohydras",
+    "glyph": "H",
+    "color": "#ff924c",
+    "hp": "9d8+26",
+    "ac": 16,
+    "dex": 13,
+    "attackName": "Snapping Maw Frenzy",
+    "damageDice": "3d6+5",
+    "specialAttack": {
+      "name": "Synchronized Fire Jet",
+      "chance": 0.42,
+      "damageDice": "3d8+4"
+    },
+    "xp": 295,
+    "gold": "8d12+65",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.35 },
+      { "itemId": "heartstone_amulet", "chance": 0.1 },
+      { "itemId": "avalon_greatsword", "chance": 0.08 }
+    ]
+  },
+  {
+    "id": "beholder",
+    "name": "Eye Tyrant Beholder",
+    "pluralName": "Eye Tyrant Beholders",
+    "glyph": "E",
+    "color": "#f0c45a",
+    "hp": "9d8+28",
+    "ac": 17,
+    "dex": 15,
+    "attackName": "Central Antimagic Glare",
+    "damageDice": "3d6+5",
+    "specialAttack": {
+      "name": "Disintegration Eye Ray",
+      "chance": 0.46,
+      "damageDice": "3d8+5",
+      "status": "Silence",
+      "statusChance": 0.72,
+      "isSpell": true
+    },
+    "xp": 330,
+    "gold": "9d12+80",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.35 },
+      { "itemId": "phoenix_salts", "chance": 0.24 },
+      { "itemId": "astral_mantle", "chance": 0.1 }
+    ]
+  },
+  {
+    "id": "iron_golem",
+    "name": "Adamantine Juggernaut",
+    "pluralName": "Adamantine Juggernauts",
+    "glyph": "J",
+    "color": "#b0b8c8",
+    "hp": "10d8+34",
+    "ac": 19,
+    "dex": 11,
+    "attackName": "Colossus Fist",
+    "damageDice": "3d8+5",
+    "specialAttack": {
+      "name": "Furnace Poison Gas Cloud",
+      "chance": 0.4,
+      "damageDice": "3d6+4",
+      "status": "Poison",
+      "statusChance": 0.82
+    },
+    "xp": 360,
+    "gold": "10d12+90",
+    "drops": [
+      { "itemId": "knight_plate", "chance": 0.14 },
+      { "itemId": "avalon_greatsword", "chance": 0.12 },
+      { "itemId": "heartstone_amulet", "chance": 0.12 }
+    ]
+  },
+  {
+    "id": "arch_lich",
+    "name": "Dread Demilich",
+    "pluralName": "Dread Demiliches",
+    "glyph": "Z",
+    "color": "#5ce1e6",
+    "undead": true,
+    "hp": "9d8+30",
+    "ac": 18,
+    "dex": 16,
+    "attackName": "Soul-Rend Touch",
+    "damageDice": "3d8+4",
+    "specialAttack": {
+      "name": "Wail of the Banshee",
+      "chance": 0.45,
+      "damageDice": "4d6+4",
+      "status": "Paralysis",
+      "statusChance": 0.7,
+      "isSpell": true
+    },
+    "xp": 380,
+    "gold": "11d12+95",
+    "drops": [
+      { "itemId": "phoenix_salts", "chance": 0.3 },
+      { "itemId": "astral_mantle", "chance": 0.12 },
+      { "itemId": "ring_arcana", "chance": 0.14 }
+    ]
+  },
+  {
+    "id": "balor_fiend",
+    "name": "Balor Pit Fiend",
+    "pluralName": "Balor Pit Fiends",
+    "glyph": "F",
+    "color": "#ff4d4d",
+    "hp": "11d8+38",
+    "ac": 19,
+    "dex": 16,
+    "attackName": "Vorpal Lightning Whip",
+    "damageDice": "3d8+6",
+    "specialAttack": {
+      "name": "Hellfire Immolation",
+      "chance": 0.46,
+      "damageDice": "4d6+6"
+    },
+    "xp": 430,
+    "gold": "13d12+115",
+    "drops": [
+      { "itemId": "phoenix_salts", "chance": 0.38 },
+      { "itemId": "dragon_fang_bow", "chance": 0.14 },
+      { "itemId": "knight_plate", "chance": 0.14 }
+    ]
+  },
+  {
     "id": "boss_malakor",
     "name": "Malakor the Lich Lord",
     "pluralName": "Malakor the Lich Lord",
     "glyph": "L",
     "color": "#e298ff",
     "undead": true,
-    "hp": "8d8+22",
-    "ac": 15,
-    "dex": 13,
+    "hp": "11d8+40",
+    "ac": 17,
+    "dex": 15,
     "attackName": "Scepter of Oblivion",
-    "damageDice": "2d6+3",
+    "damageDice": "3d6+5",
     "specialAttack": {
       "name": "Soul-Shackle Nova",
-      "chance": 0.42,
-      "damageDice": "2d6+2",
+      "chance": 0.45,
+      "damageDice": "3d8+4",
       "status": "Paralysis",
-      "statusChance": 0.6,
+      "statusChance": 0.65,
       "isSpell": true
     },
-    "xp": 320,
-    "gold": "8d10+80",
+    "xp": 650,
+    "gold": "12d12+180",
     "drops": [
-      { "itemId": "archmage_rod", "chance": 0.85 },
-      { "itemId": "starweave_robe", "chance": 0.65 },
-      { "itemId": "phoenix_salts", "chance": 0.9 }
+      { "itemId": "phoenix_salts", "chance": 1.0 }
     ]
   },
   {
@@ -479,22 +941,20 @@
     "pluralName": "Pyrothrax the Abyssal Wyrm",
     "glyph": "D",
     "color": "#ff4d4d",
-    "hp": "10d8+32",
-    "ac": 16,
-    "dex": 14,
+    "hp": "14d8+55",
+    "ac": 19,
+    "dex": 16,
     "attackName": "Cataclysmic Jaws",
-    "damageDice": "2d8+4",
+    "damageDice": "3d8+6",
     "specialAttack": {
       "name": "Hellfire Cataclysm",
-      "chance": 0.45,
-      "damageDice": "3d6+3"
+      "chance": 0.48,
+      "damageDice": "4d8+6"
     },
-    "xp": 500,
-    "gold": "10d12+120",
+    "xp": 1100,
+    "gold": "16d12+300",
     "drops": [
-      { "itemId": "avalon_greatsword", "chance": 0.9 },
-      { "itemId": "knight_plate", "chance": 0.85 },
-      { "itemId": "heartstone_amulet", "chance": 0.9 }
+      { "itemId": "phoenix_salts", "chance": 1.0 }
     ]
   }
 ]

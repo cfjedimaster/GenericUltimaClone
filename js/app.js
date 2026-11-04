@@ -418,6 +418,9 @@ function registerApp() {
           } else if (key === 'f' || key === 'F') {
             e.preventDefault();
             this.searchAndDisarmDungeon();
+          } else if (key === 'r' || key === 'R') {
+            e.preventDefault();
+            this.campParty();
           } else if (key === ' ' || key === 'p' || key === 'P') {
             if (key === ' ' && activeTag === 'BUTTON') return;
             e.preventDefault();
@@ -445,6 +448,9 @@ function registerApp() {
         } else if (key === 't' || key === 'T') {
           e.preventDefault();
           this.talkNearby();
+        } else if (key === 'r' || key === 'R') {
+          e.preventDefault();
+          this.campParty();
         } else if (key === 'x' || key === 'X') {
           e.preventDefault();
           this.leaveCurrentTown();
@@ -755,6 +761,15 @@ function registerApp() {
     },
 
     usePackConsumable(itemId, targetHero = this.activeGearHero) {
+      const itemDef = this.itemsById[itemId];
+      if (itemDef?.effect === 'camp_rest') {
+        if (this.screen !== 'overworld') {
+          this.notify('Embark onto the Overworld or enter a Dungeon before pitching camp.');
+          return;
+        }
+        this.campParty();
+        return;
+      }
       if (!targetHero) return;
       const res = useConsumableOnHero(this.state, itemId, targetHero, this.itemsById);
       this.persist(res.log);
@@ -887,7 +902,8 @@ function registerApp() {
     get filteredShopCatalog() {
       const currentTownId = this.state.location?.mapId || 'town_oakhaven';
       const townItems = this.items.filter(item => {
-        if (!Array.isArray(item.shops) || item.shops.length === 0) return true;
+        if (!Array.isArray(item.shops)) return true;
+        if (item.shops.length === 0) return false;
         return item.shops.includes(currentTownId);
       });
       if (this.shopCategory === 'all') return townItems;
@@ -1181,7 +1197,16 @@ function registerApp() {
     },
 
     get triggerAhead() {
-      return getTriggerAhead(this.state, this.maps);
+      const trig = getTriggerAhead(this.state, this.maps);
+      if (!trig) return null;
+      if (trig.type === 'locked_door' && isDoorUnlocked(this.state, trig)) return null;
+      if (
+        (trig.type === 'fixed_encounter' || trig.type === 'boss' || trig.type === 'trap' || trig.type === 'chest') &&
+        isFeatureConsumed(this.state, trig)
+      ) {
+        return null;
+      }
+      return trig;
     },
 
     get canUnlockAhead() {
@@ -1190,6 +1215,21 @@ function registerApp() {
           this.triggerAhead.type === 'locked_door' &&
           !isDoorUnlocked(this.state, this.triggerAhead)
       );
+    },
+
+    get canSearchOrDisarmAhead() {
+      if (!this.triggerAhead) return false;
+      const t = this.triggerAhead.type;
+      if (t === 'locked_door') return !isDoorUnlocked(this.state, this.triggerAhead);
+      if (t === 'trap') return !isFeatureConsumed(this.state, this.triggerAhead);
+      if (t === 'chest') {
+        return (
+          !isFeatureConsumed(this.state, this.triggerAhead) &&
+          Boolean(this.triggerAhead.trap) &&
+          !isChestTrapDisarmed(this.state, this.triggerAhead)
+        );
+      }
+      return false;
     },
 
     isTriggerConsumed(trigger) {
@@ -1388,7 +1428,7 @@ function registerApp() {
       }
     },
 
-    startCombatEncounter(tileDef) {
+    startCombatEncounter(tileDef, options = {}) {
       const terrainId = tileDef?.id || (this.isDungeonMode ? (this.currentMap?.encounterTable || 'despise_b1') : 'grass');
       const terrainName = tileDef?.name || (this.isDungeonMode ? this.currentMap?.name : 'Wilderness');
       const lightActive = (this.state.location?.lightSteps || 0) > 0;
@@ -1403,7 +1443,8 @@ function registerApp() {
         itemsById: this.itemsById,
         lightActive,
         dungeonDepth,
-        isDarkness: this.isDungeonMode && !lightActive
+        isDarkness: this.isDungeonMode && !lightActive,
+        forceSurprise: options.forceSurprise || null
       });
 
       this.screen = 'combat';
@@ -1836,6 +1877,9 @@ function registerApp() {
     },
 
     revivePartyAfterDefeat() {
+      this.combat = null;
+      this.screen = 'overworld';
+
       const tithe = Math.floor((this.state.gold || 0) / 2);
       this.state.gold = Math.max(0, (this.state.gold || 0) - tithe);
 
@@ -1852,8 +1896,6 @@ function registerApp() {
       this.state.location.x = 12;
       this.state.location.y = 12;
 
-      this.combat = null;
-      this.screen = 'overworld';
       this.syncDocumentTitle();
       this.syncMusic();
       this.persist();
@@ -1953,6 +1995,107 @@ function registerApp() {
       for (const note of tick.notes || []) {
         this.appendLog(note);
       }
+      this.refreshDungeonCanvas();
+    },
+
+    get tentCount() {
+      return getInventoryQty(this.state, 'camping_tent');
+    },
+
+    get canCamp() {
+      const mode = this.currentMap?.mode || 'overworld';
+      return (
+        this.screen === 'overworld' &&
+        (mode === 'overworld' || mode === 'dungeon') &&
+        !this.isPartyAfloat &&
+        this.tentCount > 0
+      );
+    },
+
+    campParty() {
+      const mode = this.currentMap?.mode || 'overworld';
+      if (mode === 'town') {
+        const msg = 'Town guards frown on pitching tents in the street — rest at the local Inn or step outside town!';
+        this.notify(msg);
+        if (this.screen === 'overworld') this.appendLog(msg);
+        return;
+      }
+      if (this.isPartyAfloat) {
+        const msg = 'You cannot pitch a tent on open water! Sail ashore first.';
+        this.notify(msg);
+        if (this.screen === 'overworld') this.appendLog(msg);
+        return;
+      }
+      if (this.tentCount <= 0) {
+        const msg = 'Making camp requires a Canvas Camp Tent in your Party Pack! Buy one at a Town Armory.';
+        this.notify(msg);
+        if (this.screen === 'overworld') this.appendLog(msg);
+        return;
+      }
+
+      const livingParty = this.state.party
+        .map(entry => this.state.roster.find(c => c.id === entry.charId))
+        .filter(h => h && !isHeroDead(h));
+
+      if (livingParty.length === 0) {
+        this.notify('No living party members remain to pitch camp.');
+        return;
+      }
+
+      const needsRest = livingParty.some(
+        h =>
+          h.derived.hp < h.derived.maxHp ||
+          h.derived.mp < h.derived.maxMp ||
+          h.status === 'Sleep' ||
+          h.status === 'Paralysis' ||
+          h.status === 'Silence'
+      );
+
+      if (!needsRest) {
+        const msg = 'All living party members are already at full HP and MP! Save your Canvas Camp Tent for when you need it.';
+        this.notify(msg);
+        if (this.screen === 'overworld') this.appendLog(msg);
+        return;
+      }
+
+      removeItemFromPack(this.state, 'camping_tent', 1);
+
+      const invDlg = document.querySelector('#inventory-dialog');
+      if (invDlg && invDlg.open) invDlg.close();
+
+      // 5% chance of monster ambush during camp watch
+      if (Math.random() < 0.05) {
+        const ambushMsg =
+          'CAMP AMBUSH! You pitch a Canvas Camp Tent (-1), but monsters raid your camp in the night before you can rest!';
+        this.persist(ambushMsg);
+        this.appendLog(ambushMsg);
+
+        const encTile = this.isDungeonMode
+          ? {
+              id: this.currentMap?.encounterTable || 'despise_b1',
+              name: `${this.currentMap?.name || 'Dungeon'} Campsite`
+            }
+          : {
+              id: this.currentTile?.id || 'grass',
+              name: `${this.currentTile?.name || 'Wilderness'} Campsite`
+            };
+        this.startCombatEncounter(encTile, { forceSurprise: 'enemy' });
+        return;
+      }
+
+      for (const hero of livingParty) {
+        hero.derived.hp = hero.derived.maxHp;
+        hero.derived.mp = hero.derived.maxMp;
+        if (hero.status === 'Sleep' || hero.status === 'Paralysis' || hero.status === 'Silence') {
+          hero.status = 'OK';
+          delete hero.statusDuration;
+        }
+      }
+
+      const restMsg =
+        'Your party pitches a Canvas Camp Tent (-1) and rests safely through the watch! All living heroes recover 100% HP and MP.';
+      this.persist(restMsg);
+      this.appendLog(restMsg);
       this.refreshDungeonCanvas();
     },
 

@@ -283,7 +283,10 @@
       "mode": "overworld",
       "width": 32,
       "height": 32,
-      "defaultSpawn": { "x": 16, "y": 14 },
+      "defaultSpawn": {
+        "x": 16,
+        "y": 14
+      },
       "grid": [
         "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
         "~~========~~~~=====~~~~=======~~",
@@ -368,7 +371,7 @@
           "targetX": 1,
           "targetY": 1,
           "targetFacing": "E",
-          "message": "Freezing mist pours from the Cavern of Despise (Recommended Lv 2–4). Press [E] to descend into the dark!"
+          "message": "Freezing mist pours from the 8-floor Cavern of Despise (Recommended Lv 2–9). Press [E] to descend into the dark!"
         },
         {
           "x": 10,
@@ -379,7 +382,7 @@
           "targetX": 5,
           "targetY": 11,
           "targetFacing": "N",
-          "message": "Sulfurous smoke billows from the Abyss of Doom (Recommended Lv 4–7). Press [E] to enter the citadel!"
+          "message": "Sulfurous smoke billows from the 12-floor Abyss of Doom (Recommended Lv 5–14+). Press [E] to enter the citadel!"
         },
         {
           "x": 20,
@@ -387,7 +390,9 @@
           "type": "shrine",
           "flag": "shrine_valor_blessed",
           "name": "Shrine of Valor (Sanctuary Isle)",
-          "statBonuses": { "str": 1 },
+          "statBonuses": {
+            "str": 1
+          },
           "hpBonus": 4,
           "mpBonus": 0,
           "message": "An ancient monolith of crimson granite rises above Sanctuary Isle. Press [E] to kneel for the Blessing of Valor (+1 STR, +4 Max HP to all party heroes)."
@@ -398,7 +403,10 @@
           "type": "shrine",
           "flag": "shrine_wisdom_blessed",
           "name": "Shrine of Wisdom (Starlight Atoll)",
-          "statBonuses": { "int": 1, "wis": 1 },
+          "statBonuses": {
+            "int": 1,
+            "wis": 1
+          },
           "hpBonus": 0,
           "mpBonus": 4,
           "message": "Crystalline spires hum with astral harmony on Starlight Atoll. Press [E] to meditate for the Blessing of Wisdom (+1 INT, +1 WIS, +4 Max MP to all party heroes)."
@@ -409,7 +417,9 @@
           "type": "shrine",
           "flag": "shrine_grace_blessed",
           "name": "Shrine of Swift Grace (Tempest Reef)",
-          "statBonuses": { "dex": 1 },
+          "statBonuses": {
+            "dex": 1
+          },
           "hpBonus": 2,
           "mpBonus": 2,
           "message": "Wind-carved coral pillars sing in the sea breeze on Tempest Reef. Press [E] to receive the Blessing of Swift Grace (+1 DEX, +2 Max HP, +2 Max MP to all party heroes)."
@@ -422,8 +432,15 @@
       "mode": "town",
       "width": 17,
       "height": 17,
-      "defaultSpawn": { "x": 8, "y": 15 },
-      "exitTo": { "mapId": "avalon", "x": 16, "y": 13 },
+      "defaultSpawn": {
+        "x": 8,
+        "y": 15
+      },
+      "exitTo": {
+        "mapId": "avalon",
+        "x": 16,
+        "y": 13
+      },
       "grid": [
         "........_........",
         ".###############.",
@@ -519,8 +536,15 @@
       "mode": "town",
       "width": 15,
       "height": 15,
-      "defaultSpawn": { "x": 7, "y": 13 },
-      "exitTo": { "mapId": "avalon", "x": 7, "y": 7 },
+      "defaultSpawn": {
+        "x": 7,
+        "y": 13
+      },
+      "exitTo": {
+        "mapId": "avalon",
+        "x": 7,
+        "y": 7
+      },
       "grid": [
         "ttttttt_ttttttt",
         "t#####t_t#####t",
@@ -593,8 +617,15 @@
       "mode": "town",
       "width": 15,
       "height": 15,
-      "defaultSpawn": { "x": 7, "y": 13 },
-      "exitTo": { "mapId": "avalon", "x": 25, "y": 18 },
+      "defaultSpawn": {
+        "x": 7,
+        "y": 13
+      },
+      "exitTo": {
+        "mapId": "avalon",
+        "x": 25,
+        "y": 18
+      },
       "grid": [
         "~~~~~~~~~~~~~~~",
         "~~===B===B===~~",
@@ -658,7 +689,7 @@
           "y": 7,
           "type": "npc",
           "name": "Old Mariner",
-          "message": "Mariner: 'South across the stone bridge lies the volcanic Abyss of Doom — three floors of fire and dread.'"
+          "message": "Mariner: 'South across the stone bridge lies the volcanic Abyss of Doom — twelve floors of wyrms, dragons, and dread!'"
         },
         {
           "x": 10,
@@ -676,11 +707,19 @@
       "dungeonId": "despise",
       "dungeonDepth": 1,
       "encounterTable": "despise_b1",
-      "encounterRate": 0.10,
+      "encounterRate": 0.1,
       "width": 13,
       "height": 13,
-      "defaultSpawn": { "x": 1, "y": 1, "facing": "E" },
-      "exitTo": { "mapId": "avalon", "x": 25, "y": 7 },
+      "defaultSpawn": {
+        "x": 1,
+        "y": 1,
+        "facing": "E"
+      },
+      "exitTo": {
+        "mapId": "avalon",
+        "x": 25,
+        "y": 7
+      },
       "grid": [
         "#############",
         "#<..+...#..$#",
@@ -714,101 +753,145 @@
           "name": "Stairs to the Lower Level",
           "targetMapId": "dungeon_despise_b2",
           "targetX": 10,
-          "targetY": 3,
-          "targetFacing": "S",
+          "targetY": 11,
+          "targetFacing": "W",
           "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
         },
         {
           "x": 10,
           "y": 3,
           "type": "locked_door",
-          "flag": "door_despise_b1_armory",
-          "difficulty": 14,
-          "name": "Rusted Armory Grate",
-          "message": "A barred iron grate seals the eastern armory alcove. Press [O] to pick the lock or use a Skeleton Key."
+          "flag": "door_despise_b1_1",
+          "difficulty": 12,
+          "name": "Runed Crypt Grate",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
         },
         {
           "x": 3,
           "y": 10,
           "type": "locked_door",
-          "flag": "door_despise_b1_south",
+          "flag": "door_despise_b1_2",
           "difficulty": 13,
-          "name": "Reinforced Vault Door",
-          "message": "An iron-studded door bars the southern shortcut. Press [O] to pick the lock or cast Arcane Knock."
+          "name": "Ironbound Vault Door",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
         },
         {
           "x": 1,
           "y": 3,
           "type": "chest",
-          "flag": "chest_despise_b1_west",
-          "name": "Miners' Iron Strongbox",
-          "trap": { "type": "poison_needle", "name": "Poison Needle", "difficulty": 12, "damageDice": "1d6+1", "status": "Poison" },
-          "gold": "4d8+25",
-          "items": ["dungeon_torch", "healing_draught", "boar_spear"],
-          "message": "An iron-bound strongbox rests in the damp alcove. Press [F] to Search/Disarm or [E] to Open."
+          "flag": "chest_despise_b1_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 12,
+            "damageDice": "1d6+0",
+            "status": "Sleep"
+          },
+          "gold": "5d10+32",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 11,
           "y": 1,
           "type": "chest",
-          "flag": "chest_despise_b1_ne",
-          "name": "Acolyte's Reliquary",
-          "trap": { "type": "gas_cloud", "name": "Slumber Gas", "difficulty": 13, "damageDice": "1d4+1", "status": "Sleep" },
-          "gold": "5d8+30",
-          "items": ["ether_tonic", "ring_protection"],
-          "message": "A silver-trimmed reliquary chest gleams in the corner. Press [F] to Search/Disarm or [E] to Open."
+          "flag": "chest_despise_b1_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 13,
+            "damageDice": "1d6+0"
+          },
+          "gold": "5d10+32",
+          "items": [
+            "broadsword",
+            "dungeon_torch"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 11,
           "y": 3,
           "type": "chest",
-          "flag": "chest_despise_b1_armory",
-          "name": "Vanguard Weapon Chest",
-          "trap": { "type": "explosive_rune", "name": "Cinder Rune", "difficulty": 15, "damageDice": "2d4+2" },
-          "gold": "6d10+45",
-          "items": ["broadsword", "chain_hauberk", "greater_healing_draught"],
-          "message": "A heavy military chest sits behind the armory grate! Press [F] to Search/Disarm or [E] to Open."
+          "flag": "chest_despise_b1_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 12,
+            "damageDice": "1d6+0",
+            "status": "Paralysis"
+          },
+          "gold": "5d10+32",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 7,
           "y": 9,
           "type": "chest",
-          "flag": "chest_despise_b1_center",
-          "name": "Sunken Coffer",
+          "flag": "chest_despise_b1_4",
+          "name": "Runed Stone Coffer",
           "trap": null,
-          "gold": "4d10+20",
-          "items": ["master_key", "antidote_herb"],
-          "message": "A stone coffer sits in a quiet niche. Press [E] to Open."
+          "gold": "5d10+32",
+          "items": [
+            "yew_longbow",
+            "dungeon_torch"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
         },
         {
           "x": 1,
           "y": 11,
           "type": "chest",
-          "flag": "chest_despise_b1_sw",
-          "name": "Forgotten Ranger Pack",
-          "trap": { "type": "poison_needle", "name": "Venom Dart", "difficulty": 13, "damageDice": "1d6+2", "status": "Poison" },
-          "gold": "5d8+35",
-          "items": ["yew_longbow", "dungeon_torch"],
-          "message": "An adventurer's chest lies in the southwest vault. Press [F] to Search/Disarm or [E] to Open."
+          "flag": "chest_despise_b1_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 12,
+            "damageDice": "1d6+0",
+            "status": "Sleep"
+          },
+          "gold": "5d10+32",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 9,
           "y": 6,
           "type": "trap",
-          "flag": "trap_despise_b1_east",
-          "trap": { "type": "spike_pit", "name": "Concealed Spike Plate", "difficulty": 13, "damageDice": "2d4+1" },
-          "name": "Loose Flagstone",
-          "message": "The flagstones here click ominously underfoot!"
+          "flag": "trap_despise_b1_1",
+          "trap": {
+            "type": "spike_pit",
+            "name": "Frost-Spike Pressure Plate",
+            "difficulty": 12,
+            "damageDice": "1d6+2",
+            "status": "Sleep"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
         },
         {
           "x": 5,
           "y": 5,
           "type": "fountain",
           "flag": "fountain_despise_b1",
-          "healHp": 12,
-          "restoreMp": 6,
-          "name": "Subterranean Spring of Clarity",
-          "message": "Luminous mineral water bubbles from a carved basin. Press [E] to drink (+HP & +MP)."
+          "healHp": 15,
+          "restoreMp": 8,
+          "name": "Wellspring of Starlight",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
         },
         {
           "x": 8,
@@ -818,9 +901,18 @@
           "name": "Stairwell Vanguard Post",
           "message": "Hobgoblin Vanguards and a Shadow Warlock bar the passage to the lower stairs!",
           "groups": [
-            { "monsterId": "hobgoblin_vanguard", "count": "2" },
-            { "monsterId": "shadow_warlock", "count": "1" },
-            { "monsterId": "crypt_ghoul", "count": "2" }
+            {
+              "monsterId": "hobgoblin_vanguard",
+              "count": "2"
+            },
+            {
+              "monsterId": "shadow_warlock",
+              "count": "1"
+            },
+            {
+              "monsterId": "crypt_ghoul",
+              "count": "2"
+            }
           ]
         }
       ]
@@ -832,11 +924,1232 @@
       "dungeonId": "despise",
       "dungeonDepth": 2,
       "encounterTable": "despise_b2",
+      "encounterRate": 0.105,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 10,
+        "y": 11,
+        "facing": "W"
+      },
+      "exitTo": {
+        "mapId": "dungeon_despise_b1",
+        "x": 10,
+        "y": 11
+      },
+      "grid": [
+        "#############",
+        "#.>.+...+.$.#",
+        "###.#.###.###",
+        "#$+.+.#F#.+$#",
+        "###.#.#+#.#.#",
+        "#...#.L...!.#",
+        "#.###.#.###.#",
+        "#.#$..+..$#.#",
+        "#.###.###.#.#",
+        "#...+.L...+.#",
+        "###.###.###.#",
+        "#.........<.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_despise_b1",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_despise_b3",
+          "targetX": 2,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "locked_door",
+          "flag": "door_despise_b2_1",
+          "difficulty": 13,
+          "name": "Runed Crypt Grate",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_despise_b2_2",
+          "difficulty": 14,
+          "name": "Ironbound Vault Door",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_despise_b2_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 13,
+            "damageDice": "1d6+1"
+          },
+          "gold": "6d10+44",
+          "items": [
+            "studded_leather",
+            "dungeon_torch"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_despise_b2_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 14,
+            "damageDice": "1d6+1",
+            "status": "Paralysis"
+          },
+          "gold": "6d10+44",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_despise_b2_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 13,
+            "damageDice": "1d6+1",
+            "status": "Poison"
+          },
+          "gold": "6d10+44",
+          "items": [
+            "sunburst_mace",
+            "dungeon_torch"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "type": "chest",
+          "flag": "chest_despise_b2_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "6d10+44",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "type": "chest",
+          "flag": "chest_despise_b2_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 13,
+            "damageDice": "1d6+1"
+          },
+          "gold": "6d10+44",
+          "items": [
+            "warhammer",
+            "dungeon_torch"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "type": "trap",
+          "flag": "trap_despise_b2_1",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Frost-Spike Pressure Plate",
+            "difficulty": 13,
+            "damageDice": "1d6+2"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "type": "fountain",
+          "flag": "fountain_despise_b2",
+          "healHp": 18,
+          "restoreMp": 10,
+          "name": "Wellspring of Starlight",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_despise_b3": {
+      "id": "dungeon_despise_b3",
+      "name": "Cavern of Despise — Floor 3",
+      "mode": "dungeon",
+      "dungeonId": "despise",
+      "dungeonDepth": 3,
+      "encounterTable": "despise_b3",
+      "encounterRate": 0.11,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 2,
+        "y": 1,
+        "facing": "E"
+      },
+      "exitTo": {
+        "mapId": "dungeon_despise_b2",
+        "x": 2,
+        "y": 1
+      },
+      "grid": [
+        "#############",
+        "#.<.+...#..$#",
+        "###.#.###L###",
+        "#$..#...#..$#",
+        "#.###+###+#.#",
+        "#.#..!F...#.#",
+        "#.#.#####.#.#",
+        "#.+...#...+.#",
+        "###.#.#.#.###",
+        "#$+.+...+.L$#",
+        "#####.###.###",
+        "#.........>.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 2,
+          "y": 1,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_despise_b2",
+          "targetX": 2,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_despise_b4",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 9,
+          "y": 2,
+          "type": "locked_door",
+          "flag": "door_despise_b3_1",
+          "difficulty": 14,
+          "name": "Runed Crypt Grate",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_despise_b3_2",
+          "difficulty": 15,
+          "name": "Ironbound Vault Door",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_despise_b3_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 14,
+            "damageDice": "2d6+1",
+            "status": "Paralysis"
+          },
+          "gold": "7d10+56",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_despise_b3_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 15,
+            "damageDice": "2d6+1",
+            "status": "Poison"
+          },
+          "gold": "7d10+56",
+          "items": [
+            "talisman_triad",
+            "dungeon_torch"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_despise_b3_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 14,
+            "damageDice": "2d6+1",
+            "status": "Sleep"
+          },
+          "gold": "7d10+56",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_despise_b3_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "7d10+56",
+          "items": [
+            "steel_halberd",
+            "dungeon_torch"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_despise_b3_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 14,
+            "damageDice": "2d6+1",
+            "status": "Paralysis"
+          },
+          "gold": "7d10+56",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "trap",
+          "flag": "trap_despise_b3_1",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Frost-Spike Pressure Plate",
+            "difficulty": 14,
+            "damageDice": "2d6+2",
+            "status": "Paralysis"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_despise_b3",
+          "healHp": 21,
+          "restoreMp": 12,
+          "name": "Wellspring of Starlight",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_despise_b4": {
+      "id": "dungeon_despise_b4",
+      "name": "Cavern of Despise — Floor 4",
+      "mode": "dungeon",
+      "dungeonId": "despise",
+      "dungeonDepth": 4,
+      "encounterTable": "despise_b4",
+      "encounterRate": 0.115,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 10,
+        "y": 11,
+        "facing": "W"
+      },
+      "exitTo": {
+        "mapId": "dungeon_despise_b3",
+        "x": 10,
+        "y": 11
+      },
+      "grid": [
+        "#############",
+        "#$..+.>.+..$#",
+        "#.###.###.###",
+        "#.#...!...#.#",
+        "#.#.#####.#.#",
+        "#.+.#$F$#.+.#",
+        "#.#.###L#.#.#",
+        "#.#.......#.#",
+        "#.###.###.###",
+        "#...#...#...#",
+        "###+#L###+#.#",
+        "#$..#.....<.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_despise_b3",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 6,
+          "y": 1,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_despise_b5",
+          "targetX": 6,
+          "targetY": 1,
+          "targetFacing": "S",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "type": "locked_door",
+          "flag": "door_despise_b4_1",
+          "difficulty": 14,
+          "name": "Runed Crypt Grate",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 5,
+          "y": 10,
+          "type": "locked_door",
+          "flag": "door_despise_b4_2",
+          "difficulty": 15,
+          "name": "Ironbound Vault Door",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_despise_b4_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 14,
+            "damageDice": "2d6+2",
+            "status": "Poison"
+          },
+          "gold": "8d10+68",
+          "items": [
+            "steel_halberd",
+            "greater_healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_despise_b4_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Sleep"
+          },
+          "gold": "8d10+68",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_despise_b4_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 14,
+            "damageDice": "2d6+2"
+          },
+          "gold": "8d10+68",
+          "items": [
+            "templar_scale",
+            "greater_healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 7,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_despise_b4_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "8d10+68",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 11,
+          "type": "chest",
+          "flag": "chest_despise_b4_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 14,
+            "damageDice": "2d6+2",
+            "status": "Poison"
+          },
+          "gold": "8d10+68",
+          "items": [
+            "ring_arcana",
+            "greater_healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 6,
+          "y": 3,
+          "type": "trap",
+          "flag": "trap_despise_b4_1",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Frost-Spike Pressure Plate",
+            "difficulty": 14,
+            "damageDice": "2d6+2",
+            "status": "Poison"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_despise_b4",
+          "healHp": 24,
+          "restoreMp": 14,
+          "name": "Wellspring of Starlight",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "type": "fixed_encounter",
+          "flag": "enc_despise_b4_wyrm_guard",
+          "name": "Glacial Wyrm Roost",
+          "message": "A Frost Wyrm and an Umber Ravager rear up before the descent to the deep crypts!",
+          "groups": [
+            {
+              "monsterId": "frost_wyrm",
+              "count": "1"
+            },
+            {
+              "monsterId": "umber_hulk",
+              "count": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "dungeon_despise_b5": {
+      "id": "dungeon_despise_b5",
+      "name": "Cavern of Despise — Floor 5",
+      "mode": "dungeon",
+      "dungeonId": "despise",
+      "dungeonDepth": 5,
+      "encounterTable": "despise_b5",
       "encounterRate": 0.12,
       "width": 13,
       "height": 13,
-      "defaultSpawn": { "x": 10, "y": 3, "facing": "S" },
-      "exitTo": { "mapId": "dungeon_despise_b1", "x": 10, "y": 11 },
+      "defaultSpawn": {
+        "x": 6,
+        "y": 1,
+        "facing": "S"
+      },
+      "exitTo": {
+        "mapId": "dungeon_despise_b4",
+        "x": 6,
+        "y": 1
+      },
+      "grid": [
+        "#############",
+        "#$+.+.<.+.+$#",
+        "###.#.###.###",
+        "#...#...#...#",
+        "#.###+###+###",
+        "#.#..F..#.L$#",
+        "#.#.###.#.###",
+        "#.+..!..+...#",
+        "###.###.###.#",
+        "#$+.+...+.L$#",
+        "###.###.###.#",
+        "#...+.>.....#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 6,
+          "y": 1,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_despise_b4",
+          "targetX": 6,
+          "targetY": 1,
+          "targetFacing": "S",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 6,
+          "y": 11,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_despise_b6",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "type": "locked_door",
+          "flag": "door_despise_b5_1",
+          "difficulty": 15,
+          "name": "Runed Crypt Grate",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_despise_b5_2",
+          "difficulty": 16,
+          "name": "Ironbound Vault Door",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_despise_b5_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Sleep"
+          },
+          "gold": "9d10+80",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_despise_b5_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 16,
+            "damageDice": "2d6+2"
+          },
+          "gold": "9d10+80",
+          "items": [
+            "shadow_stiletto",
+            "greater_healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_despise_b5_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Paralysis"
+          },
+          "gold": "9d10+80",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_despise_b5_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "9d10+80",
+          "items": [
+            "cloak_elvenkind",
+            "greater_healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_despise_b5_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Sleep"
+          },
+          "gold": "9d10+80",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "type": "trap",
+          "flag": "trap_despise_b5_1",
+          "trap": {
+            "type": "spike_pit",
+            "name": "Frost-Spike Pressure Plate",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Sleep"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_despise_b5",
+          "healHp": 27,
+          "restoreMp": 16,
+          "name": "Wellspring of Starlight",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_despise_b6": {
+      "id": "dungeon_despise_b6",
+      "name": "Cavern of Despise — Floor 6",
+      "mode": "dungeon",
+      "dungeonId": "despise",
+      "dungeonDepth": 6,
+      "encounterTable": "despise_b6",
+      "encounterRate": 0.125,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 10,
+        "y": 11,
+        "facing": "W"
+      },
+      "exitTo": {
+        "mapId": "dungeon_despise_b5",
+        "x": 6,
+        "y": 11
+      },
+      "grid": [
+        "#############",
+        "#.>.+...+.$.#",
+        "###.#.###.###",
+        "#$+.+.#F#.+$#",
+        "###.#.#+#.#.#",
+        "#...#.L...!.#",
+        "#.###.#.###.#",
+        "#.#$..+..$#.#",
+        "#.###.###.#.#",
+        "#...+.L...+.#",
+        "###.###.###.#",
+        "#.........<.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_despise_b5",
+          "targetX": 6,
+          "targetY": 11,
+          "targetFacing": "N",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_despise_b7",
+          "targetX": 2,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "locked_door",
+          "flag": "door_despise_b6_1",
+          "difficulty": 16,
+          "name": "Runed Crypt Grate",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_despise_b6_2",
+          "difficulty": 17,
+          "name": "Ironbound Vault Door",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_despise_b6_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 16,
+            "damageDice": "3d6+3"
+          },
+          "gold": "10d10+92",
+          "items": [
+            "moonshadow_armor",
+            "greater_healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_despise_b6_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 17,
+            "damageDice": "3d6+3",
+            "status": "Paralysis"
+          },
+          "gold": "10d10+92",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_despise_b6_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 16,
+            "damageDice": "3d6+3",
+            "status": "Poison"
+          },
+          "gold": "10d10+92",
+          "items": [
+            "archmage_rod",
+            "greater_healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "type": "chest",
+          "flag": "chest_despise_b6_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "10d10+92",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "type": "chest",
+          "flag": "chest_despise_b6_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 16,
+            "damageDice": "3d6+3"
+          },
+          "gold": "10d10+92",
+          "items": [
+            "avalon_greatsword",
+            "greater_healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "type": "trap",
+          "flag": "trap_despise_b6_1",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Frost-Spike Pressure Plate",
+            "difficulty": 16,
+            "damageDice": "3d6+2"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "type": "fountain",
+          "flag": "fountain_despise_b6",
+          "healHp": 30,
+          "restoreMp": 18,
+          "name": "Wellspring of Starlight",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        },
+        {
+          "x": 6,
+          "y": 11,
+          "type": "fixed_encounter",
+          "flag": "enc_despise_b6_dragon_guard",
+          "name": "Illithid & Dragon Sanctum",
+          "message": "An Illithid Mind Flayer and a Green Dragon block the lower staircase!",
+          "groups": [
+            {
+              "monsterId": "green_dragon",
+              "count": "1"
+            },
+            {
+              "monsterId": "mind_flayer",
+              "count": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "dungeon_despise_b7": {
+      "id": "dungeon_despise_b7",
+      "name": "Cavern of Despise — Floor 7",
+      "mode": "dungeon",
+      "dungeonId": "despise",
+      "dungeonDepth": 7,
+      "encounterTable": "despise_b7",
+      "encounterRate": 0.13,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 2,
+        "y": 1,
+        "facing": "E"
+      },
+      "exitTo": {
+        "mapId": "dungeon_despise_b6",
+        "x": 2,
+        "y": 1
+      },
+      "grid": [
+        "#############",
+        "#.<.+...#..$#",
+        "###.#.###L###",
+        "#$..#...#..$#",
+        "#.###+###+#.#",
+        "#.#..!F...#.#",
+        "#.#.#####.#.#",
+        "#.+...#...+.#",
+        "###.#.#.#.###",
+        "#$+.+...+.L$#",
+        "#####.###.###",
+        "#.........>.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 2,
+          "y": 1,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_despise_b6",
+          "targetX": 2,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_despise_b8",
+          "targetX": 10,
+          "targetY": 3,
+          "targetFacing": "S",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 9,
+          "y": 2,
+          "type": "locked_door",
+          "flag": "door_despise_b7_1",
+          "difficulty": 16,
+          "name": "Runed Crypt Grate",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_despise_b7_2",
+          "difficulty": 17,
+          "name": "Ironbound Vault Door",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_despise_b7_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 16,
+            "damageDice": "3d6+3",
+            "status": "Paralysis"
+          },
+          "gold": "11d10+104",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_despise_b7_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 17,
+            "damageDice": "3d6+3",
+            "status": "Poison"
+          },
+          "gold": "11d10+104",
+          "items": [
+            "shadow_stiletto",
+            "greater_healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_despise_b7_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 16,
+            "damageDice": "3d6+3",
+            "status": "Sleep"
+          },
+          "gold": "11d10+104",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_despise_b7_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "11d10+104",
+          "items": [
+            "knight_plate",
+            "greater_healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_despise_b7_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 16,
+            "damageDice": "3d6+3",
+            "status": "Paralysis"
+          },
+          "gold": "11d10+104",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "trap",
+          "flag": "trap_despise_b7_1",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Frost-Spike Pressure Plate",
+            "difficulty": 16,
+            "damageDice": "3d6+2",
+            "status": "Paralysis"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_despise_b7",
+          "healHp": 33,
+          "restoreMp": 20,
+          "name": "Wellspring of Starlight",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_despise_b8": {
+      "id": "dungeon_despise_b8",
+      "name": "Cavern of Despise — Floor 8",
+      "mode": "dungeon",
+      "dungeonId": "despise",
+      "dungeonDepth": 8,
+      "encounterTable": "despise_b8",
+      "encounterRate": 0.15,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 10,
+        "y": 3,
+        "facing": "S"
+      },
+      "exitTo": {
+        "mapId": "dungeon_despise_b7",
+        "x": 10,
+        "y": 11
+      },
       "grid": [
         "#############",
         "#$..+...+.$.#",
@@ -846,9 +2159,9 @@
         "#.#..F..#.!.#",
         "#.#.###.#.#.#",
         "#.+.....+.+.#",
-        "#####L#######",
+        "######L######",
         "#...#...#...#",
-        "#.$+#.A.#+$.#",
+        "#.$+..A..+$.#",
         "#...#...#...#",
         "#############"
       ],
@@ -858,18 +2171,18 @@
           "y": 3,
           "type": "stairs_up",
           "name": "Stairs to the Higher Level",
-          "targetMapId": "dungeon_despise_b1",
+          "targetMapId": "dungeon_despise_b7",
           "targetX": 10,
           "targetY": 11,
           "targetFacing": "W",
           "message": "Spiral steps ascend back to the higher level. Press [E] to climb up."
         },
         {
-          "x": 5,
+          "x": 6,
           "y": 8,
           "type": "locked_door",
-          "flag": "door_despise_b2_sanctum",
-          "difficulty": 16,
+          "flag": "door_despise_b8_sanctum",
+          "difficulty": 18,
           "name": "Runed Necropolis Gate",
           "message": "Dread necromantic sigils seal the Sanctum of Malakor! Press [O] to pick/unlock or cast Arcane Knock."
         },
@@ -877,8 +2190,14 @@
           "x": 9,
           "y": 5,
           "type": "trap",
-          "flag": "trap_despise_b2_east",
-          "trap": { "type": "shock_ward", "name": "Arcane Shock Glyph", "difficulty": 15, "damageDice": "2d6+1", "status": "Paralysis" },
+          "flag": "trap_despise_b8_east",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Arcane Shock Glyph",
+            "difficulty": 17,
+            "damageDice": "3d6+2",
+            "status": "Paralysis"
+          },
           "name": "Crackling Floor Glyph",
           "message": "Violet lightning arcs across the flagstones!"
         },
@@ -886,54 +2205,86 @@
           "x": 5,
           "y": 5,
           "type": "fountain",
-          "flag": "fountain_despise_b2",
-          "healHp": 18,
-          "restoreMp": 10,
-          "name": "Wellspring of Starlight",
+          "flag": "fountain_despise_b8",
+          "healHp": 36,
+          "restoreMp": 22,
+          "name": "Wellspring of Astral Clarity",
           "message": "Silver water reflects ancient constellations. Press [E] to drink and restore party vitals."
         },
         {
           "x": 1,
           "y": 1,
           "type": "chest",
-          "flag": "chest_despise_b2_nw",
-          "name": "Gargoyle-Carved Chest",
-          "trap": { "type": "explosive_rune", "name": "Frost-Shard Trap", "difficulty": 15, "damageDice": "2d6" },
-          "gold": "6d10+50",
-          "items": ["sunburst_mace", "greater_healing_draught"],
+          "flag": "chest_despise_b8_nw",
+          "name": "Wyrm-Carved Reliquary",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Hoarfrost Ward",
+            "difficulty": 17,
+            "damageDice": "3d6+2"
+          },
+          "gold": "10d10+110",
+          "items": [
+            "astral_mantle",
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
           "message": "A frost-rimed stone chest rests in the northwest crypt. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 10,
           "y": 1,
           "type": "chest",
-          "flag": "chest_despise_b2_ne",
-          "name": "Alchemist's Trunk",
+          "flag": "chest_despise_b8_ne",
+          "name": "Archmage's Supply Trunk",
           "trap": null,
-          "gold": "5d10+40",
-          "items": ["ether_tonic", "greater_healing_draught", "master_key"],
-          "message": "An alchemist's supply trunk sits behind the northern archway. Press [E] to Open."
+          "gold": "8d10+90",
+          "items": [
+            "phoenix_salts",
+            "greater_healing_draught",
+            "master_key"
+          ],
+          "message": "An archmage's trunk sits behind the northern archway. Press [E] to Open."
         },
         {
           "x": 2,
           "y": 10,
           "type": "chest",
-          "flag": "chest_despise_b2_sw",
+          "flag": "chest_despise_b8_sw",
           "name": "Lich's Left Reliquary",
-          "trap": { "type": "gas_cloud", "name": "Withering Vapor", "difficulty": 16, "damageDice": "2d6+2", "status": "Silence" },
-          "gold": "8d10+75",
-          "items": ["templar_scale", "cloak_elvenkind"],
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Withering Vapor",
+            "difficulty": 18,
+            "damageDice": "3d6+3",
+            "status": "Silence"
+          },
+          "gold": "12d10+140",
+          "items": [
+            "knight_plate",
+            "moonshadow_armor"
+          ],
           "message": "A gilded reliquary rests in Malakor's western vault. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 10,
           "y": 10,
           "type": "chest",
-          "flag": "chest_despise_b2_se",
+          "flag": "chest_despise_b8_se",
           "name": "Lich's Right Reliquary",
-          "trap": { "type": "poison_needle", "name": "Death-Adder Needle", "difficulty": 16, "damageDice": "2d6+2", "status": "Poison" },
-          "gold": "8d10+75",
-          "items": ["steel_halberd", "ring_arcana", "phoenix_salts"],
+          "trap": {
+            "type": "poison_needle",
+            "name": "Death-Adder Needle",
+            "difficulty": 18,
+            "damageDice": "3d6+3",
+            "status": "Poison"
+          },
+          "gold": "12d10+140",
+          "items": [
+            "avalon_greatsword",
+            "heartstone_amulet",
+            "phoenix_salts"
+          ],
           "message": "A black-iron chest gleams in Malakor's eastern vault. Press [F] to Search/Disarm or [E] to Open."
         },
         {
@@ -943,13 +2294,26 @@
           "flag": "boss_despise_malakor",
           "name": "Altar of Malakor the Lich Lord",
           "victoryTitle": "Seal of Despise Claimed!",
-          "bonusLoot": ["archmage_rod", "phoenix_salts"],
-          "message": "Malakor the Lich Lord rises from his obsidian throne: 'Your bones shall serve my legion!'",
+          "bonusLoot": [
+            "malakor_staff",
+            "shroud_of_despise",
+            "phylactery_malakor"
+          ],
+          "message": "Malakor the Lich Lord rises from his obsidian throne at the bottom of Despise: 'Your bones shall serve my legion!'",
           "clearedMessage": "The shattered phylactery of Malakor lies cold upon the altar. The Cavern of Despise is cleansed!",
           "groups": [
-            { "monsterId": "barrow_wight", "count": "2" },
-            { "monsterId": "boss_malakor", "count": "1" },
-            { "monsterId": "shadow_warlock", "count": "2" }
+            {
+              "monsterId": "arch_lich",
+              "count": "1"
+            },
+            {
+              "monsterId": "boss_malakor",
+              "count": "1"
+            },
+            {
+              "monsterId": "vampire_lord",
+              "count": "2"
+            }
           ]
         }
       ]
@@ -961,128 +2325,191 @@
       "dungeonId": "doom",
       "dungeonDepth": 2,
       "encounterTable": "doom_b1",
-      "encounterRate": 0.11,
+      "encounterRate": 0.1,
       "width": 13,
       "height": 13,
-      "defaultSpawn": { "x": 5, "y": 11, "facing": "N" },
-      "exitTo": { "mapId": "avalon", "x": 10, "y": 26 },
+      "defaultSpawn": {
+        "x": 2,
+        "y": 1,
+        "facing": "E"
+      },
+      "exitTo": {
+        "mapId": "avalon",
+        "x": 10,
+        "y": 26
+      },
       "grid": [
         "#############",
-        "#$..+...>..$#",
+        "#.<.+...#..$#",
         "###.#.###L###",
-        "#...#...#...#",
+        "#$..#...#..$#",
         "#.###+###+#.#",
-        "#.#..!F!..#.#",
+        "#.#..!F...#.#",
         "#.#.#####.#.#",
         "#.+...#...+.#",
         "###.#.#.#.###",
-        "#$+.+...+.+$#",
+        "#$+.+...+.L$#",
         "#####.###.###",
-        "#....<..+...#",
+        "#.........>.#",
         "#############"
       ],
       "triggers": [
         {
-          "x": 5,
-          "y": 11,
+          "x": 2,
+          "y": 1,
           "type": "stairs_up",
-          "name": "Basalt Steps to Surface",
+          "name": "Steps to Surface",
           "targetMapId": "avalon",
           "targetX": 10,
           "targetY": 26,
-          "message": "Scorched basalt stairs ascend back to the southern peaks of Avalon. Press [E] to exit."
+          "message": "Stone steps lead up toward daylight and the Realm of Avalon. Press [E] to ascend."
         },
         {
-          "x": 8,
-          "y": 1,
+          "x": 10,
+          "y": 11,
           "type": "stairs_down",
           "name": "Stairs to the Lower Level",
           "targetMapId": "dungeon_doom_b2",
           "targetX": 10,
-          "targetY": 1,
+          "targetY": 11,
           "targetFacing": "W",
-          "message": "Heat radiates from the staircase descending to the lower level. Press [E] to descend."
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
         },
         {
           "x": 9,
           "y": 2,
           "type": "locked_door",
-          "flag": "door_doom_b1_ne",
-          "difficulty": 15,
-          "name": "Cinder-Forged Portcullis",
-          "message": "A glowing iron portcullis blocks the northeast treasury. Press [O] to unlock or cast Arcane Knock."
+          "flag": "door_doom_b1_1",
+          "difficulty": 13,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_doom_b1_2",
+          "difficulty": 14,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b1_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 13,
+            "damageDice": "1d6+1",
+            "status": "Sleep"
+          },
+          "gold": "6d10+44",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b1_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 14,
+            "damageDice": "1d6+1"
+          },
+          "gold": "6d10+44",
+          "items": [
+            "studded_leather",
+            "dungeon_torch"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b1_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 13,
+            "damageDice": "1d6+1",
+            "status": "Paralysis"
+          },
+          "gold": "6d10+44",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b1_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "6d10+44",
+          "items": [
+            "sunburst_mace",
+            "dungeon_torch"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b1_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 13,
+            "damageDice": "1d6+1",
+            "status": "Sleep"
+          },
+          "gold": "6d10+44",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 5,
           "y": 5,
           "type": "trap",
-          "flag": "trap_doom_b1_west",
-          "trap": { "type": "explosive_rune", "name": "Magma Vent Trap", "difficulty": 15, "damageDice": "2d6+2" },
-          "name": "Cracked Magma Tile",
-          "message": "A jet of searing steam erupts from the floor!"
-        },
-        {
-          "x": 7,
-          "y": 5,
-          "type": "trap",
-          "flag": "trap_doom_b1_east",
-          "trap": { "type": "explosive_rune", "name": "Magma Vent Trap", "difficulty": 15, "damageDice": "2d6+2" },
-          "name": "Cracked Magma Tile",
-          "message": "A jet of searing steam erupts from the floor!"
+          "flag": "trap_doom_b1_1",
+          "trap": {
+            "type": "spike_pit",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 13,
+            "damageDice": "1d6+2",
+            "status": "Sleep"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
         },
         {
           "x": 6,
           "y": 5,
           "type": "fountain",
           "flag": "fountain_doom_b1",
-          "healHp": 20,
+          "healHp": 18,
           "restoreMp": 10,
           "name": "Basin of Tempered Vigour",
-          "message": "Warm volcanic spring water restores stamina and mana. Press [E] to drink."
-        },
-        {
-          "x": 1,
-          "y": 9,
-          "type": "chest",
-          "flag": "chest_doom_b1_sw",
-          "name": "Charred Iron Chest",
-          "trap": { "type": "explosive_rune", "name": "Brimstone Ward", "difficulty": 15, "damageDice": "2d6+1" },
-          "gold": "6d10+45",
-          "items": ["repeating_crossbow", "dungeon_torch"],
-          "message": "A soot-blackened chest sits in the western guardroom. Press [F] to Search/Disarm or [E] to Open."
-        },
-        {
-          "x": 11,
-          "y": 9,
-          "type": "chest",
-          "flag": "chest_doom_b1_se",
-          "name": "Cultist's Coffer",
-          "trap": null,
-          "gold": "6d10+40",
-          "items": ["ether_tonic", "greater_healing_draught", "master_key"],
-          "message": "An ornate coffer rests in the eastern chamber. Press [E] to Open."
-        },
-        {
-          "x": 1,
-          "y": 1,
-          "type": "chest",
-          "flag": "chest_doom_b1_nw",
-          "name": "Ogre Chieftain's Hoard",
-          "trap": { "type": "poison_needle", "name": "Wyvern-Venom Spike", "difficulty": 16, "damageDice": "2d6+2", "status": "Poison" },
-          "gold": "7d10+60",
-          "items": ["bracers_might", "greater_healing_draught"],
-          "message": "A heavy ironbound chest sits in the northwest hall. Press [F] to Search/Disarm or [E] to Open."
-        },
-        {
-          "x": 11,
-          "y": 1,
-          "type": "chest",
-          "flag": "chest_doom_b1_ne",
-          "name": "Cinder Vault Chest",
-          "trap": { "type": "shock_ward", "name": "Lightning Sigil", "difficulty": 16, "damageDice": "2d6+3", "status": "Paralysis" },
-          "gold": "8d10+70",
-          "items": ["starweave_robe", "talisman_triad"],
-          "message": "A runed vault chest gleams behind the portcullis. Press [F] to Search/Disarm or [E] to Open."
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
         }
       ]
     },
@@ -1093,149 +2520,190 @@
       "dungeonId": "doom",
       "dungeonDepth": 3,
       "encounterTable": "doom_b2",
-      "encounterRate": 0.13,
+      "encounterRate": 0.105,
       "width": 13,
       "height": 13,
-      "defaultSpawn": { "x": 10, "y": 1, "facing": "W" },
-      "exitTo": { "mapId": "dungeon_doom_b1", "x": 8, "y": 1 },
+      "defaultSpawn": {
+        "x": 10,
+        "y": 11,
+        "facing": "W"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b1",
+        "x": 10,
+        "y": 11
+      },
       "grid": [
         "#############",
-        "#...+.$.+.<.#",
+        "#$..+.>.+..$#",
         "#.###.###.###",
         "#.#...!...#.#",
         "#.#.#####.#.#",
         "#.+.#$F$#.+.#",
         "#.#.###L#.#.#",
-        "#.#...!...#.#",
+        "#.#.......#.#",
         "#.###.###.###",
         "#...#...#...#",
         "###+#L###+#.#",
-        "#$..#.>...$.#",
+        "#$..#.....<.#",
         "#############"
       ],
       "triggers": [
         {
           "x": 10,
-          "y": 1,
+          "y": 11,
           "type": "stairs_up",
           "name": "Stairs to the Higher Level",
           "targetMapId": "dungeon_doom_b1",
-          "targetX": 8,
-          "targetY": 1,
+          "targetX": 10,
+          "targetY": 11,
           "targetFacing": "W",
-          "message": "Obsidian stairs climb back to the higher level. Press [E] to ascend."
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
         },
         {
           "x": 6,
-          "y": 11,
+          "y": 1,
           "type": "stairs_down",
           "name": "Stairs to the Lower Level",
           "targetMapId": "dungeon_doom_b3",
           "targetX": 6,
-          "targetY": 11,
-          "targetFacing": "N",
-          "message": "Roaring flames echo from the lower level below! Press [E] to descend."
+          "targetY": 1,
+          "targetFacing": "S",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
         },
         {
           "x": 7,
           "y": 6,
           "type": "locked_door",
-          "flag": "door_doom_b2_sanctuary",
-          "difficulty": 16,
-          "name": "Sanctuary Vault Door",
-          "message": "A gilded bronze door seals the central fountain vault. Press [O] to unlock or cast Arcane Knock."
+          "flag": "door_doom_b2_1",
+          "difficulty": 14,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
         },
         {
           "x": 5,
           "y": 10,
           "type": "locked_door",
-          "flag": "door_doom_b2_descent",
-          "difficulty": 17,
-          "name": "Gate of the Lower Abyss",
-          "message": "Heavy black-iron chains bar the staircase down to the lower level! Press [O] to unlock or cast Arcane Knock."
+          "flag": "door_doom_b2_2",
+          "difficulty": 15,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b2_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 14,
+            "damageDice": "2d6+1"
+          },
+          "gold": "7d10+56",
+          "items": [
+            "starweave_robe",
+            "dungeon_torch"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b2_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 15,
+            "damageDice": "2d6+1",
+            "status": "Paralysis"
+          },
+          "gold": "7d10+56",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_doom_b2_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 14,
+            "damageDice": "2d6+1",
+            "status": "Poison"
+          },
+          "gold": "7d10+56",
+          "items": [
+            "talisman_triad",
+            "dungeon_torch"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 7,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_doom_b2_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "7d10+56",
+          "items": [
+            "dungeon_torch",
+            "healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 11,
+          "type": "chest",
+          "flag": "chest_doom_b2_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 14,
+            "damageDice": "2d6+1"
+          },
+          "gold": "7d10+56",
+          "items": [
+            "steel_halberd",
+            "dungeon_torch"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 6,
           "y": 3,
           "type": "trap",
-          "flag": "trap_doom_b2_north",
-          "trap": { "type": "gas_cloud", "name": "Choking Brimstone Cloud", "difficulty": 16, "damageDice": "2d6+2", "status": "Silence" },
-          "name": "Sulfur Vent",
-          "message": "Noxious sulfur fumes hiss from a floor grate!"
-        },
-        {
-          "x": 6,
-          "y": 7,
-          "type": "trap",
-          "flag": "trap_doom_b2_south",
-          "trap": { "type": "spike_pit", "name": "Obsidian Blade Trap", "difficulty": 16, "damageDice": "2d8+2" },
-          "name": "Slotted Floor Tile",
-          "message": "Scything obsidian bladeswhir from the floor!"
+          "flag": "trap_doom_b2_1",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 14,
+            "damageDice": "2d6+2"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
         },
         {
           "x": 6,
           "y": 5,
           "type": "fountain",
           "flag": "fountain_doom_b2",
-          "healHp": 25,
-          "restoreMp": 14,
-          "name": "Fountain of the Phoenix",
-          "message": "Golden water warms your spirit and mends deep wounds. Press [E] to drink."
-        },
-        {
-          "x": 6,
-          "y": 1,
-          "type": "chest",
-          "flag": "chest_doom_b2_north",
-          "name": "Obsidian Chest",
-          "trap": null,
-          "gold": "7d10+55",
-          "items": ["greater_healing_draught", "ether_tonic", "master_key"],
-          "message": "A polished obsidian chest sits in the northern alcove. Press [E] to Open."
-        },
-        {
-          "x": 5,
-          "y": 5,
-          "type": "chest",
-          "flag": "chest_doom_b2_vault_w",
-          "name": "Sanctuary Reliquary (West)",
-          "trap": { "type": "shock_ward", "name": "Astral Ward", "difficulty": 17, "damageDice": "3d6", "status": "Paralysis" },
-          "gold": "8d12+80",
-          "items": ["avalon_greatsword", "phoenix_salts"],
-          "message": "A radiant chest rests beside the Fountain of the Phoenix. Press [F] to Search/Disarm or [E] to Open."
-        },
-        {
-          "x": 7,
-          "y": 5,
-          "type": "chest",
-          "flag": "chest_doom_b2_vault_e",
-          "name": "Sanctuary Reliquary (East)",
-          "trap": { "type": "explosive_rune", "name": "Solar Flare Rune", "difficulty": 17, "damageDice": "3d6" },
-          "gold": "8d12+80",
-          "items": ["heartstone_amulet", "greater_healing_draught"],
-          "message": "A rune-carved chest rests beside the Fountain of the Phoenix. Press [F] to Search/Disarm or [E] to Open."
-        },
-        {
-          "x": 1,
-          "y": 11,
-          "type": "chest",
-          "flag": "chest_doom_b2_sw",
-          "name": "Shadow-Stalker Cache",
-          "trap": null,
-          "gold": "6d10+50",
-          "items": ["shadow_cloak_armor", "cloak_elvenkind"],
-          "message": "A concealed cache rests in the southwest corner. Press [E] to Open."
-        },
-        {
-          "x": 10,
-          "y": 11,
-          "type": "chest",
-          "flag": "chest_doom_b2_se",
-          "name": "Warlock's Strongbox",
-          "trap": { "type": "poison_needle", "name": "Abyssal Fang", "difficulty": 16, "damageDice": "2d6+3", "status": "Poison" },
-          "gold": "7d10+65",
-          "items": ["archmage_rod", "ether_tonic"],
-          "message": "An iron strongbox hums with dark energy. Press [F] to Search/Disarm or [E] to Open."
+          "healHp": 21,
+          "restoreMp": 12,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
         }
       ]
     },
@@ -1246,11 +2714,1869 @@
       "dungeonId": "doom",
       "dungeonDepth": 4,
       "encounterTable": "doom_b3",
+      "encounterRate": 0.11,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 6,
+        "y": 1,
+        "facing": "S"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b2",
+        "x": 6,
+        "y": 1
+      },
+      "grid": [
+        "#############",
+        "#$+.+.<.+.+$#",
+        "###.#.###.###",
+        "#...#...#...#",
+        "#.###+###+###",
+        "#.#..F..#.L$#",
+        "#.#.###.#.###",
+        "#.+..!..+...#",
+        "###.###.###.#",
+        "#$+.+...+.L$#",
+        "###.###.###.#",
+        "#...+.>.....#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 6,
+          "y": 1,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b2",
+          "targetX": 6,
+          "targetY": 1,
+          "targetFacing": "S",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 6,
+          "y": 11,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b4",
+          "targetX": 1,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "type": "locked_door",
+          "flag": "door_doom_b3_1",
+          "difficulty": 14,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_doom_b3_2",
+          "difficulty": 15,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b3_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 14,
+            "damageDice": "2d6+2",
+            "status": "Paralysis"
+          },
+          "gold": "8d10+68",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b3_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Poison"
+          },
+          "gold": "8d10+68",
+          "items": [
+            "steel_halberd",
+            "greater_healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_doom_b3_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 14,
+            "damageDice": "2d6+2",
+            "status": "Sleep"
+          },
+          "gold": "8d10+68",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b3_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "8d10+68",
+          "items": [
+            "templar_scale",
+            "greater_healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b3_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 14,
+            "damageDice": "2d6+2",
+            "status": "Paralysis"
+          },
+          "gold": "8d10+68",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "type": "trap",
+          "flag": "trap_doom_b3_1",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 14,
+            "damageDice": "2d6+2",
+            "status": "Paralysis"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_doom_b3",
+          "healHp": 24,
+          "restoreMp": 14,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        },
+        {
+          "x": 8,
+          "y": 11,
+          "type": "fixed_encounter",
+          "flag": "enc_doom_b3_wyrm_guard",
+          "name": "Cinder Wyrm Crucible",
+          "message": "A Cinder Wyrm and an Umber Ravager block the stairs to the deeper magma halls!",
+          "groups": [
+            {
+              "monsterId": "cinder_wyrm",
+              "count": "1"
+            },
+            {
+              "monsterId": "umber_hulk",
+              "count": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "dungeon_doom_b4": {
+      "id": "dungeon_doom_b4",
+      "name": "Abyss of Doom — Floor 4",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 5,
+      "encounterTable": "doom_b4",
+      "encounterRate": 0.115,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 1,
+        "y": 1,
+        "facing": "E"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b3",
+        "x": 6,
+        "y": 11
+      },
+      "grid": [
+        "#############",
+        "#<..+...#..$#",
+        "###.#.###.###",
+        "#$+.+...+.L$#",
+        "###.###.#.###",
+        "#...#F#.#...#",
+        "#.###+###!#.#",
+        "#.#.......#.#",
+        "#.###+#.###.#",
+        "#...#.#$#...#",
+        "###L#.###+###",
+        "#$..+.....>.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 1,
+          "y": 1,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b3",
+          "targetX": 6,
+          "targetY": 11,
+          "targetFacing": "N",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b5",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 10,
+          "y": 3,
+          "type": "locked_door",
+          "flag": "door_doom_b4_1",
+          "difficulty": 15,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 3,
+          "y": 10,
+          "type": "locked_door",
+          "flag": "door_doom_b4_2",
+          "difficulty": 16,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b4_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Poison"
+          },
+          "gold": "9d10+80",
+          "items": [
+            "bracers_might",
+            "greater_healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b4_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 16,
+            "damageDice": "2d6+2",
+            "status": "Sleep"
+          },
+          "gold": "9d10+80",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b4_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 15,
+            "damageDice": "2d6+2"
+          },
+          "gold": "9d10+80",
+          "items": [
+            "shadow_stiletto",
+            "greater_healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b4_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "9d10+80",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 11,
+          "type": "chest",
+          "flag": "chest_doom_b4_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Poison"
+          },
+          "gold": "9d10+80",
+          "items": [
+            "cloak_elvenkind",
+            "greater_healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 9,
+          "y": 6,
+          "type": "trap",
+          "flag": "trap_doom_b4_1",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 15,
+            "damageDice": "2d6+2",
+            "status": "Poison"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_doom_b4",
+          "healHp": 27,
+          "restoreMp": 16,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_doom_b5": {
+      "id": "dungeon_doom_b5",
+      "name": "Abyss of Doom — Floor 5",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 6,
+      "encounterTable": "doom_b5",
+      "encounterRate": 0.12,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 10,
+        "y": 11,
+        "facing": "W"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b4",
+        "x": 10,
+        "y": 11
+      },
+      "grid": [
+        "#############",
+        "#.>.+...+.$.#",
+        "###.#.###.###",
+        "#$+.+.#F#.+$#",
+        "###.#.#+#.#.#",
+        "#...#.L...!.#",
+        "#.###.#.###.#",
+        "#.#$..+..$#.#",
+        "#.###.###.#.#",
+        "#...+.L...+.#",
+        "###.###.###.#",
+        "#.........<.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b4",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b6",
+          "targetX": 2,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "locked_door",
+          "flag": "door_doom_b5_1",
+          "difficulty": 16,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_doom_b5_2",
+          "difficulty": 17,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b5_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 16,
+            "damageDice": "3d6+3",
+            "status": "Sleep"
+          },
+          "gold": "10d10+92",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b5_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 17,
+            "damageDice": "3d6+3"
+          },
+          "gold": "10d10+92",
+          "items": [
+            "moonshadow_armor",
+            "greater_healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b5_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 16,
+            "damageDice": "3d6+3",
+            "status": "Paralysis"
+          },
+          "gold": "10d10+92",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "type": "chest",
+          "flag": "chest_doom_b5_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "10d10+92",
+          "items": [
+            "archmage_rod",
+            "greater_healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "type": "chest",
+          "flag": "chest_doom_b5_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 16,
+            "damageDice": "3d6+3",
+            "status": "Sleep"
+          },
+          "gold": "10d10+92",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "type": "trap",
+          "flag": "trap_doom_b5_1",
+          "trap": {
+            "type": "spike_pit",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 16,
+            "damageDice": "3d6+2",
+            "status": "Sleep"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "type": "fountain",
+          "flag": "fountain_doom_b5",
+          "healHp": 30,
+          "restoreMp": 18,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_doom_b6": {
+      "id": "dungeon_doom_b6",
+      "name": "Abyss of Doom — Floor 6",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 7,
+      "encounterTable": "doom_b6",
+      "encounterRate": 0.125,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 2,
+        "y": 1,
+        "facing": "E"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b5",
+        "x": 2,
+        "y": 1
+      },
+      "grid": [
+        "#############",
+        "#.<.+...#..$#",
+        "###.#.###L###",
+        "#$..#...#..$#",
+        "#.###+###+#.#",
+        "#.#..!F...#.#",
+        "#.#.#####.#.#",
+        "#.+...#...+.#",
+        "###.#.#.#.###",
+        "#$+.+...+.L$#",
+        "#####.###.###",
+        "#.........>.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 2,
+          "y": 1,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b5",
+          "targetX": 2,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b7",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 9,
+          "y": 2,
+          "type": "locked_door",
+          "flag": "door_doom_b6_1",
+          "difficulty": 16,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_doom_b6_2",
+          "difficulty": 17,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b6_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 16,
+            "damageDice": "3d6+3"
+          },
+          "gold": "11d10+104",
+          "items": [
+            "astral_mantle",
+            "greater_healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b6_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 17,
+            "damageDice": "3d6+3",
+            "status": "Paralysis"
+          },
+          "gold": "11d10+104",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b6_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 16,
+            "damageDice": "3d6+3",
+            "status": "Poison"
+          },
+          "gold": "11d10+104",
+          "items": [
+            "shadow_stiletto",
+            "greater_healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b6_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "11d10+104",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b6_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 16,
+            "damageDice": "3d6+3"
+          },
+          "gold": "11d10+104",
+          "items": [
+            "knight_plate",
+            "greater_healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "trap",
+          "flag": "trap_doom_b6_1",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 16,
+            "damageDice": "3d6+2"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_doom_b6",
+          "healHp": 33,
+          "restoreMp": 20,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        },
+        {
+          "x": 6,
+          "y": 11,
+          "type": "fixed_encounter",
+          "flag": "enc_doom_b6_dragon_guard",
+          "name": "Beholder & Dragon Gate",
+          "message": "An Eye Tyrant Beholder and a Five-Headed Pyrohydra guard the lower descent!",
+          "groups": [
+            {
+              "monsterId": "beholder",
+              "count": "1"
+            },
+            {
+              "monsterId": "pyro_hydra",
+              "count": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "dungeon_doom_b7": {
+      "id": "dungeon_doom_b7",
+      "name": "Abyss of Doom — Floor 7",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 8,
+      "encounterTable": "doom_b7",
+      "encounterRate": 0.13,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 10,
+        "y": 11,
+        "facing": "W"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b6",
+        "x": 10,
+        "y": 11
+      },
+      "grid": [
+        "#############",
+        "#$..+.>.+..$#",
+        "#.###.###.###",
+        "#.#...!...#.#",
+        "#.#.#####.#.#",
+        "#.+.#$F$#.+.#",
+        "#.#.###L#.#.#",
+        "#.#.......#.#",
+        "#.###.###.###",
+        "#...#...#...#",
+        "###+#L###+#.#",
+        "#$..#.....<.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b6",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 6,
+          "y": 1,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b8",
+          "targetX": 6,
+          "targetY": 1,
+          "targetFacing": "S",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "type": "locked_door",
+          "flag": "door_doom_b7_1",
+          "difficulty": 17,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 5,
+          "y": 10,
+          "type": "locked_door",
+          "flag": "door_doom_b7_2",
+          "difficulty": 18,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b7_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 17,
+            "damageDice": "3d6+4",
+            "status": "Paralysis"
+          },
+          "gold": "12d10+116",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b7_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 18,
+            "damageDice": "3d6+4",
+            "status": "Poison"
+          },
+          "gold": "12d10+116",
+          "items": [
+            "avalon_greatsword",
+            "greater_healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_doom_b7_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 17,
+            "damageDice": "3d6+4",
+            "status": "Sleep"
+          },
+          "gold": "12d10+116",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 7,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_doom_b7_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "12d10+116",
+          "items": [
+            "knight_plate",
+            "greater_healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 11,
+          "type": "chest",
+          "flag": "chest_doom_b7_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 17,
+            "damageDice": "3d6+4",
+            "status": "Paralysis"
+          },
+          "gold": "12d10+116",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 6,
+          "y": 3,
+          "type": "trap",
+          "flag": "trap_doom_b7_1",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 17,
+            "damageDice": "3d6+2",
+            "status": "Paralysis"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_doom_b7",
+          "healHp": 36,
+          "restoreMp": 22,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_doom_b8": {
+      "id": "dungeon_doom_b8",
+      "name": "Abyss of Doom — Floor 8",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 9,
+      "encounterTable": "doom_b8",
+      "encounterRate": 0.135,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 6,
+        "y": 1,
+        "facing": "S"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b7",
+        "x": 6,
+        "y": 1
+      },
+      "grid": [
+        "#############",
+        "#$+.+.<.+.+$#",
+        "###.#.###.###",
+        "#...#...#...#",
+        "#.###+###+###",
+        "#.#..F..#.L$#",
+        "#.#.###.#.###",
+        "#.+..!..+...#",
+        "###.###.###.#",
+        "#$+.+...+.L$#",
+        "###.###.###.#",
+        "#...+.>.....#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 6,
+          "y": 1,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b7",
+          "targetX": 6,
+          "targetY": 1,
+          "targetFacing": "S",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 6,
+          "y": 11,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b9",
+          "targetX": 1,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "type": "locked_door",
+          "flag": "door_doom_b8_1",
+          "difficulty": 18,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_doom_b8_2",
+          "difficulty": 19,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b8_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 18,
+            "damageDice": "4d6+4",
+            "status": "Poison"
+          },
+          "gold": "13d10+128",
+          "items": [
+            "heartstone_amulet",
+            "greater_healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b8_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 19,
+            "damageDice": "4d6+4",
+            "status": "Sleep"
+          },
+          "gold": "13d10+128",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_doom_b8_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 18,
+            "damageDice": "4d6+4"
+          },
+          "gold": "13d10+128",
+          "items": [
+            "knight_plate",
+            "greater_healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b8_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "13d10+128",
+          "items": [
+            "greater_healing_draught",
+            "antidote_herb",
+            "master_key"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b8_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 18,
+            "damageDice": "4d6+4",
+            "status": "Poison"
+          },
+          "gold": "13d10+128",
+          "items": [
+            "avalon_greatsword",
+            "greater_healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "type": "trap",
+          "flag": "trap_doom_b8_1",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 18,
+            "damageDice": "4d6+2",
+            "status": "Poison"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_doom_b8",
+          "healHp": 39,
+          "restoreMp": 24,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_doom_b9": {
+      "id": "dungeon_doom_b9",
+      "name": "Abyss of Doom — Floor 9",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 10,
+      "encounterTable": "doom_b9",
+      "encounterRate": 0.14,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 1,
+        "y": 1,
+        "facing": "E"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b8",
+        "x": 6,
+        "y": 11
+      },
+      "grid": [
+        "#############",
+        "#<..+...#..$#",
+        "###.#.###.###",
+        "#$+.+...+.L$#",
+        "###.###.#.###",
+        "#...#F#.#...#",
+        "#.###+###!#.#",
+        "#.#.......#.#",
+        "#.###+#.###.#",
+        "#...#.#$#...#",
+        "###L#.###+###",
+        "#$..+.....>.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 1,
+          "y": 1,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b8",
+          "targetX": 6,
+          "targetY": 11,
+          "targetFacing": "N",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b10",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 10,
+          "y": 3,
+          "type": "locked_door",
+          "flag": "door_doom_b9_1",
+          "difficulty": 19,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 3,
+          "y": 10,
+          "type": "locked_door",
+          "flag": "door_doom_b9_2",
+          "difficulty": 20,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b9_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 19,
+            "damageDice": "4d6+5",
+            "status": "Sleep"
+          },
+          "gold": "14d10+140",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "phoenix_salts"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b9_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 20,
+            "damageDice": "4d6+5"
+          },
+          "gold": "14d10+140",
+          "items": [
+            "knight_plate",
+            "greater_healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b9_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 19,
+            "damageDice": "4d6+5",
+            "status": "Paralysis"
+          },
+          "gold": "14d10+140",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "phoenix_salts"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "type": "chest",
+          "flag": "chest_doom_b9_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "14d10+140",
+          "items": [
+            "moonshadow_armor",
+            "greater_healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 11,
+          "type": "chest",
+          "flag": "chest_doom_b9_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 19,
+            "damageDice": "4d6+5",
+            "status": "Sleep"
+          },
+          "gold": "14d10+140",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "phoenix_salts"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 9,
+          "y": 6,
+          "type": "trap",
+          "flag": "trap_doom_b9_1",
+          "trap": {
+            "type": "spike_pit",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 19,
+            "damageDice": "4d6+2",
+            "status": "Sleep"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_doom_b9",
+          "healHp": 42,
+          "restoreMp": 26,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        },
+        {
+          "x": 8,
+          "y": 11,
+          "type": "fixed_encounter",
+          "flag": "enc_doom_b9_dragon_guard",
+          "name": "Juggernaut & Dragon Bastion",
+          "message": "An Adamantine Juggernaut and a Blue Dragon roar in unison, guarding the lower abyss!",
+          "groups": [
+            {
+              "monsterId": "iron_golem",
+              "count": "1"
+            },
+            {
+              "monsterId": "blue_dragon",
+              "count": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "dungeon_doom_b10": {
+      "id": "dungeon_doom_b10",
+      "name": "Abyss of Doom — Floor 10",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 11,
+      "encounterTable": "doom_b10",
+      "encounterRate": 0.145,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 10,
+        "y": 11,
+        "facing": "W"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b9",
+        "x": 10,
+        "y": 11
+      },
+      "grid": [
+        "#############",
+        "#.>.+...+.$.#",
+        "###.#.###.###",
+        "#$+.+.#F#.+$#",
+        "###.#.#+#.#.#",
+        "#...#.L...!.#",
+        "#.###.#.###.#",
+        "#.#$..+..$#.#",
+        "#.###.###.#.#",
+        "#...+.L...+.#",
+        "###.###.###.#",
+        "#.........<.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b9",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b11",
+          "targetX": 10,
+          "targetY": 11,
+          "targetFacing": "W",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "locked_door",
+          "flag": "door_doom_b10_1",
+          "difficulty": 19,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "type": "locked_door",
+          "flag": "door_doom_b10_2",
+          "difficulty": 20,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 10,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b10_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 19,
+            "damageDice": "4d6+5"
+          },
+          "gold": "14d10+152",
+          "items": [
+            "dragon_fang_bow",
+            "greater_healing_draught"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b10_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 20,
+            "damageDice": "4d6+5",
+            "status": "Paralysis"
+          },
+          "gold": "14d10+152",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "phoenix_salts"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "type": "chest",
+          "flag": "chest_doom_b10_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 19,
+            "damageDice": "4d6+5",
+            "status": "Poison"
+          },
+          "gold": "14d10+152",
+          "items": [
+            "astral_mantle",
+            "greater_healing_draught"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "type": "chest",
+          "flag": "chest_doom_b10_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "14d10+152",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "phoenix_salts"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "type": "chest",
+          "flag": "chest_doom_b10_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Brimstone Cinder Ward",
+            "difficulty": 19,
+            "damageDice": "4d6+5"
+          },
+          "gold": "14d10+152",
+          "items": [
+            "heartstone_amulet",
+            "greater_healing_draught"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 10,
+          "y": 5,
+          "type": "trap",
+          "flag": "trap_doom_b10_1",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 19,
+            "damageDice": "4d6+2"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "type": "fountain",
+          "flag": "fountain_doom_b10",
+          "healHp": 45,
+          "restoreMp": 28,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        }
+      ]
+    },
+    "dungeon_doom_b11": {
+      "id": "dungeon_doom_b11",
+      "name": "Abyss of Doom — Floor 11",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 12,
+      "encounterTable": "doom_b11",
       "encounterRate": 0.15,
       "width": 13,
       "height": 13,
-      "defaultSpawn": { "x": 6, "y": 11, "facing": "N" },
-      "exitTo": { "mapId": "dungeon_doom_b2", "x": 6, "y": 11 },
+      "defaultSpawn": {
+        "x": 10,
+        "y": 11,
+        "facing": "W"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b10",
+        "x": 2,
+        "y": 1
+      },
+      "grid": [
+        "#############",
+        "#$..+.>.+..$#",
+        "#.###.###.###",
+        "#.#...!...#.#",
+        "#.#.#####.#.#",
+        "#.+.#$F$#.+.#",
+        "#.#.###L#.#.#",
+        "#.#.......#.#",
+        "#.###.###.###",
+        "#...#...#...#",
+        "###+#L###+#.#",
+        "#$..#.....<.#",
+        "#############"
+      ],
+      "triggers": [
+        {
+          "x": 10,
+          "y": 11,
+          "type": "stairs_up",
+          "name": "Stairs to the Higher Level",
+          "targetMapId": "dungeon_doom_b10",
+          "targetX": 2,
+          "targetY": 1,
+          "targetFacing": "E",
+          "message": "Carved stone steps ascend back to the higher level. Press [E] to climb up."
+        },
+        {
+          "x": 6,
+          "y": 1,
+          "type": "stairs_down",
+          "name": "Stairs to the Lower Level",
+          "targetMapId": "dungeon_doom_b12",
+          "targetX": 6,
+          "targetY": 11,
+          "targetFacing": "N",
+          "message": "Carved stairs spiral down to the lower level. Press [E] to descend."
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "type": "locked_door",
+          "flag": "door_doom_b11_1",
+          "difficulty": 20,
+          "name": "Obsidian Portcullis",
+          "message": "A heavy barred gate blocks the chamber. Press [O] to pick the lock, use a Skeleton Key, or cast Arcane Knock."
+        },
+        {
+          "x": 5,
+          "y": 10,
+          "type": "locked_door",
+          "flag": "door_doom_b11_2",
+          "difficulty": 21,
+          "name": "Dragon-Forged Bulkhead",
+          "message": "An iron-reinforced door bars the passage ahead. Press [O] to unlock or cast Arcane Knock."
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b11_1",
+          "name": "Ironbound Strongbox",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 20,
+            "damageDice": "4d6+6",
+            "status": "Paralysis"
+          },
+          "gold": "14d10+164",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "phoenix_salts"
+          ],
+          "message": "A Ironbound Strongbox gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 11,
+          "y": 1,
+          "type": "chest",
+          "flag": "chest_doom_b11_2",
+          "name": "Gilded Reliquary",
+          "trap": {
+            "type": "poison_needle",
+            "name": "Venomous Wyrm-Needle",
+            "difficulty": 21,
+            "damageDice": "4d6+6",
+            "status": "Poison"
+          },
+          "gold": "14d10+164",
+          "items": [
+            "astral_mantle",
+            "greater_healing_draught"
+          ],
+          "message": "A Gilded Reliquary gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_doom_b11_3",
+          "name": "Warlord Supply Chest",
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Soporific Miasma Vapor",
+            "difficulty": 20,
+            "damageDice": "4d6+6",
+            "status": "Sleep"
+          },
+          "gold": "14d10+164",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "phoenix_salts"
+          ],
+          "message": "A Warlord Supply Chest gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 7,
+          "y": 5,
+          "type": "chest",
+          "flag": "chest_doom_b11_4",
+          "name": "Runed Stone Coffer",
+          "trap": null,
+          "gold": "14d10+164",
+          "items": [
+            "heartstone_amulet",
+            "greater_healing_draught"
+          ],
+          "message": "A Runed Stone Coffer rests in the alcove. Press [E] to Open."
+        },
+        {
+          "x": 1,
+          "y": 11,
+          "type": "chest",
+          "flag": "chest_doom_b11_5",
+          "name": "Wyrm-Hide Trunk",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Fulminating Lightning Glyph",
+            "difficulty": 20,
+            "damageDice": "4d6+6",
+            "status": "Paralysis"
+          },
+          "gold": "14d10+164",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "phoenix_salts"
+          ],
+          "message": "A Wyrm-Hide Trunk gleams in the shadows. Press [F] to Search/Disarm or [E] to Open."
+        },
+        {
+          "x": 6,
+          "y": 3,
+          "type": "trap",
+          "flag": "trap_doom_b11_1",
+          "trap": {
+            "type": "shock_ward",
+            "name": "Magma-Vent Floor Seal",
+            "difficulty": 20,
+            "damageDice": "4d6+2",
+            "status": "Paralysis"
+          },
+          "name": "Concealed Pressure Plate",
+          "message": "The flagstones shift ominously underfoot!"
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "type": "fountain",
+          "flag": "fountain_doom_b11",
+          "healHp": 48,
+          "restoreMp": 30,
+          "name": "Basin of Tempered Vigour",
+          "message": "Luminous enchanted water fills a carved stone basin. Press [E] to drink (+HP & +MP)."
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "type": "fixed_encounter",
+          "flag": "enc_doom_b11_red_dragon_guard",
+          "name": "Balor & Crimson Dragon Vanguard",
+          "message": "A Balor Pit Fiend and an ancient Red Dragon guard the final staircase to the Throne of Pyrothrax!",
+          "groups": [
+            {
+              "monsterId": "balor_fiend",
+              "count": "1"
+            },
+            {
+              "monsterId": "red_dragon",
+              "count": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "dungeon_doom_b12": {
+      "id": "dungeon_doom_b12",
+      "name": "Abyss of Doom — Floor 12",
+      "mode": "dungeon",
+      "dungeonId": "doom",
+      "dungeonDepth": 13,
+      "encounterTable": "doom_b12",
+      "encounterRate": 0.16,
+      "width": 13,
+      "height": 13,
+      "defaultSpawn": {
+        "x": 6,
+        "y": 11,
+        "facing": "N"
+      },
+      "exitTo": {
+        "mapId": "dungeon_doom_b11",
+        "x": 6,
+        "y": 1
+      },
       "grid": [
         "#############",
         "#$+.+...+.+$#",
@@ -1272,9 +4598,9 @@
           "y": 11,
           "type": "stairs_up",
           "name": "Stairs to the Higher Level",
-          "targetMapId": "dungeon_doom_b2",
+          "targetMapId": "dungeon_doom_b11",
           "targetX": 6,
-          "targetY": 11,
+          "targetY": 1,
           "targetFacing": "N",
           "message": "Stairs ascend back toward the higher level. Press [E] to climb up."
         },
@@ -1282,8 +4608,8 @@
           "x": 6,
           "y": 5,
           "type": "locked_door",
-          "flag": "door_doom_b3_throne",
-          "difficulty": 18,
+          "flag": "door_doom_b12_throne",
+          "difficulty": 20,
           "name": "Great Dragon-Scale Gate",
           "message": "Massive adamantine gates bar the Throne of Pyrothrax! Press [O] to unlock or cast Arcane Knock."
         },
@@ -1291,8 +4617,13 @@
           "x": 6,
           "y": 6,
           "type": "trap",
-          "flag": "trap_doom_b3_gate",
-          "trap": { "type": "explosive_rune", "name": "Hellfire Seal", "difficulty": 18, "damageDice": "3d6+3" },
+          "flag": "trap_doom_b12_gate",
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Hellfire Seal",
+            "difficulty": 19,
+            "damageDice": "4d6+4"
+          },
           "name": "Hellfire Threshold Seal",
           "message": "A pillar of hellfire erupts before the Dragon Gate!"
         },
@@ -1300,54 +4631,87 @@
           "x": 7,
           "y": 8,
           "type": "fountain",
-          "flag": "fountain_doom_b3",
-          "healHp": 35,
-          "restoreMp": 20,
+          "flag": "fountain_doom_b12",
+          "healHp": 50,
+          "restoreMp": 30,
           "name": "Chalice of the Triad",
-          "message": "Consecrated light fills a crystal basin in the depths. Press [E] to drink deeply (+HP & +MP)."
+          "message": "Consecrated light fills a crystal basin in the deepest abyss. Press [E] to drink deeply (+HP & +MP)."
         },
         {
           "x": 2,
           "y": 11,
           "type": "chest",
-          "flag": "chest_doom_b3_sw",
-          "name": "Fallen Paladin's Reliquary",
+          "flag": "chest_doom_b12_sw",
+          "name": "Fallen Champion's Reliquary",
           "trap": null,
-          "gold": "8d10+75",
-          "items": ["knight_plate", "phoenix_salts", "greater_healing_draught"],
+          "gold": "12d12+160",
+          "items": [
+            "knight_plate",
+            "phoenix_salts",
+            "greater_healing_draught"
+          ],
           "message": "A crusader's armored chest rests near the entrance. Press [E] to Open."
         },
         {
           "x": 10,
           "y": 11,
           "type": "chest",
-          "flag": "chest_doom_b3_se",
+          "flag": "chest_doom_b12_se",
           "name": "Abyssal Supply Chest",
-          "trap": { "type": "gas_cloud", "name": "Nightmare Miasma", "difficulty": 17, "damageDice": "2d6+2", "status": "Sleep" },
-          "gold": "8d10+75",
-          "items": ["greater_healing_draught", "ether_tonic", "master_key"],
+          "trap": {
+            "type": "gas_cloud",
+            "name": "Nightmare Miasma",
+            "difficulty": 19,
+            "damageDice": "3d6+4",
+            "status": "Sleep"
+          },
+          "gold": "12d12+160",
+          "items": [
+            "greater_healing_draught",
+            "ether_tonic",
+            "master_key"
+          ],
           "message": "An iron supply chest sits in the southeastern hall. Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 1,
           "y": 1,
           "type": "chest",
-          "flag": "chest_doom_b3_nw",
+          "flag": "chest_doom_b12_nw",
           "name": "Pyrothrax's Western Hoard",
-          "trap": { "type": "explosive_rune", "name": "Dragonfire Ward", "difficulty": 18, "damageDice": "3d6+4" },
-          "gold": "12d12+150",
-          "items": ["avalon_greatsword", "heartstone_amulet", "phoenix_salts"],
+          "trap": {
+            "type": "explosive_rune",
+            "name": "Dragonfire Ward",
+            "difficulty": 20,
+            "damageDice": "4d6+5"
+          },
+          "gold": "15d12+250",
+          "items": [
+            "dragon_fang_bow",
+            "heartstone_amulet",
+            "phoenix_salts"
+          ],
           "message": "Mountains of gold and relics overflow from the Western Hoard! Press [F] to Search/Disarm or [E] to Open."
         },
         {
           "x": 11,
           "y": 1,
           "type": "chest",
-          "flag": "chest_doom_b3_ne",
+          "flag": "chest_doom_b12_ne",
           "name": "Pyrothrax's Eastern Hoard",
-          "trap": { "type": "shock_ward", "name": "Tempest Crown Ward", "difficulty": 18, "damageDice": "3d6+4", "status": "Paralysis" },
-          "gold": "12d12+150",
-          "items": ["knight_plate", "ring_arcana", "talisman_triad"],
+          "trap": {
+            "type": "shock_ward",
+            "name": "Tempest Crown Ward",
+            "difficulty": 20,
+            "damageDice": "4d6+5",
+            "status": "Paralysis"
+          },
+          "gold": "15d12+250",
+          "items": [
+            "astral_mantle",
+            "moonshadow_armor",
+            "phoenix_salts"
+          ],
           "message": "Ancient royal treasure glitters in the Eastern Hoard! Press [F] to Search/Disarm or [E] to Open."
         },
         {
@@ -1357,13 +4721,27 @@
           "flag": "boss_doom_pyrothrax",
           "name": "Throne of Pyrothrax the Abyssal Wyrm",
           "victoryTitle": "Crown of the Triad Reclaimed!",
-          "bonusLoot": ["knight_plate", "avalon_greatsword", "heartstone_amulet"],
-          "message": "Pyrothrax the Abyssal Wyrm unfurls wings of living magma: 'Mortal worms! Burn to ash!'",
+          "bonusLoot": [
+            "wyrmfire_greatsword",
+            "wyrmscale_panoply",
+            "crown_of_the_triad",
+            "dragon_fang_bow"
+          ],
+          "message": "Pyrothrax the Abyssal Wyrm unfurls wings of living magma on Floor 12: 'Mortal worms! Burn to ash!'",
           "clearedMessage": "Pyrothrax lies vanquished before the shattered abyssal throne. Peace returns to the Realm of Avalon!",
           "groups": [
-            { "monsterId": "death_knight", "count": "2" },
-            { "monsterId": "boss_pyrothrax", "count": "1" },
-            { "monsterId": "hellhound", "count": "2" }
+            {
+              "monsterId": "balor_fiend",
+              "count": "1"
+            },
+            {
+              "monsterId": "boss_pyrothrax",
+              "count": "1"
+            },
+            {
+              "monsterId": "red_dragon",
+              "count": "1"
+            }
           ]
         }
       ]

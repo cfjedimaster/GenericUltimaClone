@@ -136,6 +136,7 @@ export function createEncounter({
   dungeonDepth = 0,
   fixedGroups = null,
   isDarkness = false,
+  forceSurprise = null,
   onVictoryFlag = null,
   victoryTitle = null,
   bonusLoot = null
@@ -148,9 +149,9 @@ export function createEncounter({
       });
 
   const depthTier = Math.max(0, Number(dungeonDepth || 0) - 1);
-  const hpMultiplier = 1 + depthTier * 0.15;
-  const acDepthBonus = Math.floor(depthTier / 2);
-  const rewardMultiplier = 1 + depthTier * 0.15;
+  const hpMultiplier = 1 + depthTier * 0.10;
+  const acDepthBonus = Math.min(4, Math.floor(depthTier / 3));
+  const rewardMultiplier = 1 + depthTier * 0.14;
 
   const groups = [];
   formation.groups.slice(0, 3).forEach((spec, idx) => {
@@ -213,7 +214,9 @@ export function createEncounter({
   const diff = partySurpriseRoll - enemySurpriseRoll;
 
   let surprise = 'none';
-  if (diff >= 6.5) {
+  if (forceSurprise === 'enemy' || forceSurprise === 'party' || forceSurprise === 'none') {
+    surprise = forceSurprise;
+  } else if (diff >= 6.5) {
     surprise = 'party';
   } else if (diff <= -6.5) {
     surprise = 'enemy';

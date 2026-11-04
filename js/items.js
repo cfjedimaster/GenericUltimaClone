@@ -99,6 +99,7 @@ export function formatItemSummary(itemDef) {
     if (itemDef.effect === 'field_light') return `Torchlight for ${itemDef.durationSteps || 35} steps`;
     if (itemDef.effect === 'unlock_door') return `Unlocks any barred dungeon door ([O] in Dungeon)`;
     if (itemDef.effect === 'exit_dungeon') return `Teleports party out of a dungeon to its surface entrance`;
+    if (itemDef.effect === 'camp_rest') return `Restores 100% HP & MP on Overworld/Dungeon ([R] Camp, 5% ambush risk)`;
   }
   return itemDef.description || '';
 }

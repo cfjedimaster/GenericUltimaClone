@@ -1113,23 +1113,13 @@ function drawFeatureInCorridor(ctx, depth, tile, trigger, state, detectActive) {
     return;
   }
 
-  // 5. Dread Boss Altar (A) or Fixed Encounter
-  if (code === 'A' || (trigger && trigger.type === 'fixed_encounter' && !isFeatureConsumed(state, trigger))) {
+  // 5. Dread Boss Altar (A) or Fixed Guardian Encounter
+  if (code === 'A' || (trigger && (trigger.type === 'fixed_encounter' || trigger.type === 'boss'))) {
     const cleared = isFeatureConsumed(state, trigger);
-    const w = 58 * scale;
-    const h = 46 * scale;
-    ctx.fillStyle = cleared ? '#1e2230' : '#2d112b';
-    ctx.strokeStyle = cleared ? '#6e7a94' : '#e298ff';
-    ctx.lineWidth = 2;
-    ctx.fillRect(cx - w / 2, floorY - h, w, h);
-    ctx.strokeRect(cx - w / 2, floorY - h, w, h);
-
-    if (!cleared) {
-      ctx.fillStyle = '#f25f5c';
-      ctx.beginPath();
-      ctx.arc(cx, floorY - h / 2, 9 * scale, 0, Math.PI * 2);
-      ctx.fill();
+    if (cleared && code !== 'A') {
+      return;
     }
+    drawGuardianOrBossInCorridor(ctx, cx, floorY, ceilY, scale, trigger, cleared);
     return;
   }
 
@@ -1149,4 +1139,323 @@ function drawFeatureInCorridor(ctx, depth, tile, trigger, state, detectActive) {
       ctx.stroke();
     }
   }
+}
+
+function drawGuardianOrBossInCorridor(ctx, cx, floorY, ceilY, scale, trigger, cleared) {
+  ctx.save();
+
+  // Base stepped ritual dais / floor shadow
+  const daisW = 86 * scale;
+  const daisH = 12 * scale;
+  ctx.fillStyle = cleared ? '#1b202c' : '#261224';
+  ctx.strokeStyle = cleared ? '#59657d' : '#b86bff';
+  ctx.lineWidth = Math.max(1, 1.5 * scale);
+  ctx.fillRect(cx - daisW / 2, floorY - daisH, daisW, daisH);
+  ctx.strokeRect(cx - daisW / 2, floorY - daisH, daisW, daisH);
+
+  if (cleared) {
+    // Dormant broken altar pedestal after boss is vanquished
+    const pedW = 46 * scale;
+    const pedH = 22 * scale;
+    ctx.fillStyle = '#151922';
+    ctx.strokeStyle = '#6e7a94';
+    ctx.fillRect(cx - pedW / 2, floorY - daisH - pedH, pedW, pedH);
+    ctx.strokeRect(cx - pedW / 2, floorY - daisH - pedH, pedW, pedH);
+    ctx.restore();
+    return;
+  }
+
+  const leadMonsterId = trigger?.groups?.[0]?.monsterId || '';
+  const flag = trigger?.flag || '';
+  const baseY = floorY - daisH * 0.6;
+
+  // Ambient menacing glow behind the guardian
+  const glowRadius = 58 * scale;
+  const isFrost = leadMonsterId.includes('frost');
+  const isEmerald = leadMonsterId.includes('green');
+  const isLich = flag.includes('malakor') || leadMonsterId.includes('lich');
+  const isBeholder = leadMonsterId.includes('beholder');
+
+  const primaryStroke = isFrost
+    ? '#5ce1e6'
+    : isEmerald
+      ? '#52d681'
+      : isLich || isBeholder
+        ? '#e298ff'
+        : '#ff784f';
+  const bodyFill = isFrost
+    ? '#102838'
+    : isEmerald
+      ? '#112b1d'
+      : isLich || isBeholder
+        ? '#241130'
+        : '#331214';
+  const eyeGlow = isFrost ? '#bdfaff' : isEmerald ? '#ffe680' : '#ffdf6b';
+
+  const aura = ctx.createRadialGradient(
+    cx,
+    baseY - 40 * scale,
+    4 * scale,
+    cx,
+    baseY - 40 * scale,
+    glowRadius
+  );
+  aura.addColorStop(0, isFrost ? 'rgba(92, 225, 230, 0.28)' : isLich ? 'rgba(226, 152, 255, 0.28)' : 'rgba(242, 95, 92, 0.28)');
+  aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = aura;
+  ctx.beginPath();
+  ctx.arc(cx, baseY - 40 * scale, glowRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = bodyFill;
+  ctx.strokeStyle = primaryStroke;
+  ctx.lineWidth = Math.max(1.2, 2 * scale);
+
+  // Variant A: Beholder / Eye Tyrant
+  if (isBeholder) {
+    const r = 30 * scale;
+    const cy = baseY - 44 * scale;
+
+    // Writhing eyestalks
+    const stalks = [
+      [-28, -26], [-16, -38], [0, -42], [16, -38], [28, -26], [-34, -8], [34, -8]
+    ];
+    for (const [ox, oy] of stalks) {
+      ctx.beginPath();
+      ctx.moveTo(cx + ox * 0.45 * scale, cy + oy * 0.45 * scale);
+      ctx.quadraticCurveTo(
+        cx + ox * 0.9 * scale,
+        cy + (oy - 8) * scale,
+        cx + ox * scale,
+        cy + oy * scale
+      );
+      ctx.stroke();
+      ctx.fillStyle = eyeGlow;
+      ctx.beginPath();
+      ctx.arc(cx + ox * scale, cy + oy * scale, 3 * scale, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Main spherical body
+    ctx.fillStyle = bodyFill;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Central cyclopean eye
+    ctx.fillStyle = '#f25f5c';
+    ctx.beginPath();
+    ctx.arc(cx, cy - 4 * scale, 11 * scale, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#08060c';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy - 4 * scale, 2.5 * scale, 8 * scale, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Jagged maw
+    ctx.strokeStyle = '#ffd875';
+    ctx.beginPath();
+    ctx.moveTo(cx - 14 * scale, cy + 12 * scale);
+    ctx.lineTo(cx - 8 * scale, cy + 17 * scale);
+    ctx.lineTo(cx - 2 * scale, cy + 11 * scale);
+    ctx.lineTo(cx + 4 * scale, cy + 17 * scale);
+    ctx.lineTo(cx + 10 * scale, cy + 11 * scale);
+    ctx.lineTo(cx + 15 * scale, cy + 15 * scale);
+    ctx.stroke();
+
+    ctx.restore();
+    return;
+  }
+
+  // Variant B: Lich Lord Malakor on Dread Altar
+  if (isLich) {
+    // Robed torso & flared mantle
+    ctx.beginPath();
+    ctx.moveTo(cx - 26 * scale, baseY);
+    ctx.lineTo(cx - 18 * scale, baseY - 54 * scale);
+    ctx.lineTo(cx - 28 * scale, baseY - 62 * scale);
+    ctx.lineTo(cx - 10 * scale, baseY - 68 * scale);
+    ctx.lineTo(cx + 10 * scale, baseY - 68 * scale);
+    ctx.lineTo(cx + 28 * scale, baseY - 62 * scale);
+    ctx.lineTo(cx + 18 * scale, baseY - 54 * scale);
+    ctx.lineTo(cx + 26 * scale, baseY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Crowned skull head
+    const headY = baseY - 78 * scale;
+    ctx.beginPath();
+    ctx.arc(cx, headY, 11 * scale, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Spiked crown
+    ctx.strokeStyle = '#f0c45a';
+    ctx.beginPath();
+    ctx.moveTo(cx - 11 * scale, headY - 7 * scale);
+    ctx.lineTo(cx - 7 * scale, headY - 18 * scale);
+    ctx.lineTo(cx, headY - 10 * scale);
+    ctx.lineTo(cx, headY - 21 * scale);
+    ctx.lineTo(cx + 7 * scale, headY - 10 * scale);
+    ctx.lineTo(cx + 11 * scale, headY - 18 * scale);
+    ctx.stroke();
+
+    // Glowing eye sockets
+    ctx.fillStyle = '#5ce1e6';
+    ctx.fillRect(cx - 6 * scale, headY - 2 * scale, 3.5 * scale, 3.5 * scale);
+    ctx.fillRect(cx + 2.5 * scale, headY - 2 * scale, 3.5 * scale, 3.5 * scale);
+
+    // Arcane staff on the right
+    const staffX = cx + 32 * scale;
+    ctx.strokeStyle = '#5ce1e6';
+    ctx.beginPath();
+    ctx.moveTo(staffX, baseY);
+    ctx.lineTo(staffX, baseY - 86 * scale);
+    ctx.stroke();
+    ctx.fillStyle = '#e298ff';
+    ctx.beginPath();
+    ctx.arc(staffX, baseY - 90 * scale, 5.5 * scale, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+    return;
+  }
+
+  // Variant C: Wyrms, Dragons & Winged Fiends (Cinder Wyrm, Frost Wyrm, Dragons, Balor, Pyrothrax)
+  if (
+    leadMonsterId.includes('wyrm') ||
+    leadMonsterId.includes('dragon') ||
+    leadMonsterId.includes('balor') ||
+    flag.includes('pyrothrax')
+  ) {
+    // Spread bat/dragon wings (left & right)
+    ctx.beginPath();
+    // Left wing
+    ctx.moveTo(cx - 12 * scale, baseY - 46 * scale);
+    ctx.lineTo(cx - 62 * scale, baseY - 82 * scale);
+    ctx.lineTo(cx - 54 * scale, baseY - 48 * scale);
+    ctx.lineTo(cx - 38 * scale, baseY - 56 * scale);
+    ctx.lineTo(cx - 28 * scale, baseY - 34 * scale);
+    ctx.lineTo(cx - 14 * scale, baseY - 28 * scale);
+    ctx.closePath();
+    // Right wing
+    ctx.moveTo(cx + 12 * scale, baseY - 46 * scale);
+    ctx.lineTo(cx + 62 * scale, baseY - 82 * scale);
+    ctx.lineTo(cx + 54 * scale, baseY - 48 * scale);
+    ctx.lineTo(cx + 38 * scale, baseY - 56 * scale);
+    ctx.lineTo(cx + 28 * scale, baseY - 34 * scale);
+    ctx.lineTo(cx + 14 * scale, baseY - 28 * scale);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Serpentine/draconic torso & coiled lower body
+    ctx.beginPath();
+    ctx.moveTo(cx - 24 * scale, baseY);
+    ctx.lineTo(cx - 15 * scale, baseY - 52 * scale);
+    ctx.lineTo(cx, baseY - 64 * scale);
+    ctx.lineTo(cx + 15 * scale, baseY - 52 * scale);
+    ctx.lineTo(cx + 24 * scale, baseY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Chest scale ribs
+    ctx.beginPath();
+    for (let r = 1; r <= 3; r++) {
+      const ry = baseY - r * 12 * scale;
+      ctx.moveTo(cx - 10 * scale, ry);
+      ctx.lineTo(cx + 10 * scale, ry);
+    }
+    ctx.stroke();
+
+    // Horned Dragon / Wyrm Head
+    const headY = baseY - 72 * scale;
+    ctx.beginPath();
+    ctx.moveTo(cx - 18 * scale, headY - 18 * scale); // Left horn tip
+    ctx.lineTo(cx - 10 * scale, headY - 4 * scale);
+    ctx.lineTo(cx - 12 * scale, headY + 10 * scale);
+    ctx.lineTo(cx, headY + 16 * scale);              // Snout / jaw
+    ctx.lineTo(cx + 12 * scale, headY + 10 * scale);
+    ctx.lineTo(cx + 10 * scale, headY - 4 * scale);
+    ctx.lineTo(cx + 18 * scale, headY - 18 * scale); // Right horn tip
+    ctx.lineTo(cx + 5 * scale, headY - 7 * scale);
+    ctx.lineTo(cx - 5 * scale, headY - 7 * scale);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Glowing draconic eyes
+    ctx.fillStyle = eyeGlow;
+    ctx.beginPath();
+    ctx.moveTo(cx - 7 * scale, headY);
+    ctx.lineTo(cx - 2 * scale, headY + 2 * scale);
+    ctx.lineTo(cx - 6 * scale, headY + 4 * scale);
+    ctx.closePath();
+    ctx.moveTo(cx + 7 * scale, headY);
+    ctx.lineTo(cx + 2 * scale, headY + 2 * scale);
+    ctx.lineTo(cx + 6 * scale, headY + 4 * scale);
+    ctx.closePath();
+    ctx.fill();
+
+    // Breath ember / frost core in maw
+    ctx.fillStyle = isFrost ? '#5ce1e6' : '#ff5e3a';
+    ctx.beginPath();
+    ctx.arc(cx, headY + 10 * scale, 3.5 * scale, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+    return;
+  }
+
+  // Variant D: Armored Juggernaut / Vanguard Sentinel (default fixed_encounter)
+  // Broad-shouldered armored silhouette with horned helm and halberd
+  ctx.beginPath();
+  ctx.moveTo(cx - 24 * scale, baseY);
+  ctx.lineTo(cx - 20 * scale, baseY - 46 * scale);
+  ctx.lineTo(cx - 30 * scale, baseY - 54 * scale); // Left pauldron
+  ctx.lineTo(cx - 12 * scale, baseY - 62 * scale);
+  ctx.lineTo(cx + 12 * scale, baseY - 62 * scale);
+  ctx.lineTo(cx + 30 * scale, baseY - 54 * scale); // Right pauldron
+  ctx.lineTo(cx + 20 * scale, baseY - 46 * scale);
+  ctx.lineTo(cx + 24 * scale, baseY);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Horned Greathelm
+  const helmY = baseY - 72 * scale;
+  ctx.beginPath();
+  ctx.moveTo(cx - 16 * scale, helmY - 12 * scale);
+  ctx.lineTo(cx - 9 * scale, helmY);
+  ctx.lineTo(cx - 9 * scale, helmY + 10 * scale);
+  ctx.lineTo(cx + 9 * scale, helmY + 10 * scale);
+  ctx.lineTo(cx + 9 * scale, helmY);
+  ctx.lineTo(cx + 16 * scale, helmY - 12 * scale);
+  ctx.lineTo(cx + 5 * scale, helmY - 4 * scale);
+  ctx.lineTo(cx - 5 * scale, helmY - 4 * scale);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Glowing visor slit
+  ctx.fillStyle = eyeGlow;
+  ctx.fillRect(cx - 6 * scale, helmY + 1 * scale, 12 * scale, 2.8 * scale);
+
+  // Halberd / Polearm on left side
+  const poleX = cx - 32 * scale;
+  ctx.strokeStyle = '#f0c45a';
+  ctx.beginPath();
+  ctx.moveTo(poleX, baseY);
+  ctx.lineTo(poleX, baseY - 88 * scale);
+  ctx.lineTo(poleX + 10 * scale, baseY - 76 * scale);
+  ctx.lineTo(poleX, baseY - 68 * scale);
+  ctx.stroke();
+
+  ctx.restore();
 }

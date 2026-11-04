@@ -459,6 +459,99 @@
     "description": "Ruby pendant warm to the touch (+8 Max HP, +1 AC)."
   },
   {
+    "id": "malakor_staff",
+    "name": "Malakor's Scepter of Oblivion",
+    "slot": "weapon",
+    "category": "ranged",
+    "dice": "2d8+3",
+    "statKey": "int",
+    "range": "ranged",
+    "hitBonus": 3,
+    "bonuses": { "int": 3, "wis": 2, "maxMp": 14 },
+    "allowedClasses": ["wizard", "cleric"],
+    "shops": [],
+    "price": 650,
+    "description": "Legendary obsidian lich-scepter that hurls bolts of void fire from any row (Boss Relic — Not Sold in Shops)."
+  },
+  {
+    "id": "shroud_of_despise",
+    "name": "Necromancer's Astral Shroud",
+    "slot": "armor",
+    "category": "cloth",
+    "acBonus": 6,
+    "bonuses": { "int": 3, "wis": 3, "maxMp": 16, "maxHp": 8 },
+    "allowedClasses": ["wizard", "cleric"],
+    "shops": [],
+    "price": 620,
+    "description": "Relic vestments of the Lich Lord woven from void-silk and deathless wards (Boss Relic — Not Sold in Shops)."
+  },
+  {
+    "id": "phylactery_malakor",
+    "name": "Phylactery of the Lich Lord",
+    "slot": "accessory",
+    "category": "amulet",
+    "acBonus": 2,
+    "bonuses": { "int": 3, "wis": 3, "maxMp": 12 },
+    "allowedClasses": ["paladin", "ranger", "cleric", "wizard"],
+    "shops": [],
+    "price": 580,
+    "description": "Purified soul-crystal of Malakor that overflows with boundless spell power (Boss Relic — Not Sold in Shops)."
+  },
+  {
+    "id": "wyrmfire_greatsword",
+    "name": "Pyrothrax's Wyrmfire Greatsword",
+    "slot": "weapon",
+    "category": "blade",
+    "dice": "3d8+4",
+    "statKey": "str",
+    "range": "melee",
+    "hitBonus": 3,
+    "bonuses": { "str": 3, "maxHp": 10 },
+    "allowedClasses": ["fighter", "paladin"],
+    "shops": [],
+    "price": 900,
+    "description": "Colossal dragon-forged greatsword wreathed in eternal abyssal flame (Boss Relic — Not Sold in Shops)."
+  },
+  {
+    "id": "dragon_fang_bow",
+    "name": "Grand Dragonbone Longbow",
+    "slot": "weapon",
+    "category": "ranged",
+    "dice": "3d6+4",
+    "statKey": "dex",
+    "range": "ranged",
+    "hitBonus": 4,
+    "bonuses": { "dex": 3 },
+    "allowedClasses": ["fighter", "thief", "ranger"],
+    "shops": [],
+    "price": 820,
+    "description": "Carved from the horn and sinew of an Elder Dragon; pierces the thickest scales from any row (Relic — Not Sold in Shops)."
+  },
+  {
+    "id": "wyrmscale_panoply",
+    "name": "Abyssal Wyrmscale Panoply",
+    "slot": "armor",
+    "category": "heavy",
+    "acBonus": 9,
+    "bonuses": { "str": 2, "maxHp": 18 },
+    "allowedClasses": ["fighter", "paladin", "ranger", "cleric"],
+    "shops": [],
+    "price": 950,
+    "description": "Impervious crimson-and-gold dragonscale armor forged from Pyrothrax's hide (Boss Relic — Not Sold in Shops)."
+  },
+  {
+    "id": "crown_of_the_triad",
+    "name": "Crown of the Triad",
+    "slot": "accessory",
+    "category": "trinket",
+    "acBonus": 3,
+    "bonuses": { "str": 2, "dex": 2, "int": 2, "wis": 2, "maxHp": 15, "maxMp": 12 },
+    "allowedClasses": ["fighter", "paladin", "thief", "ranger", "cleric", "wizard"],
+    "shops": [],
+    "price": 1200,
+    "description": "Supreme royal relic reclaimed from the 12th floor of the Abyss of Doom (Boss Relic — Not Sold in Shops)."
+  },
+  {
     "id": "healing_draught",
     "name": "Healing Potion",
     "slot": "consumable",
@@ -543,5 +636,15 @@
     "shops": ["town_oakhaven", "town_yew", "town_moon"],
     "price": 45,
     "description": "Iridescent pinion blessed by the Triad that lifts the entire party out of a dungeon to its surface entrance."
+  },
+  {
+    "id": "camping_tent",
+    "name": "Canvas Camp Tent",
+    "slot": "consumable",
+    "category": "utility",
+    "effect": "camp_rest",
+    "shops": ["town_oakhaven", "town_yew", "town_moon"],
+    "price": 35,
+    "description": "Weatherproof canvas tent and bedrolls. Pitch camp on the Overworld or in a Dungeon to restore full HP & MP to living heroes (5% chance of ambush)."
   }
 ]
