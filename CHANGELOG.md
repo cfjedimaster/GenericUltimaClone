@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.0] - 2026-11-04
+
+### Added
+
+- **Overworld Atlas (`[M]`), Skiff Sailing & Island Shrines (`js/overworld.js`, `data/maps.json`, `index.html`, `css/style.css`)**:
+  - Added the **Cartographer's Atlas of Avalon (`[M]`)** modal showing a 32×32 world map grid with automatic fog-of-war charting, exploration progress (`X / 1024 tiles`), party beacon (`@` / `⛵`), and discovered landmarks.
+  - Added **Moon Harbor Dock & Skiff Charter** (`7, 2` in Coastal Port of Moon) where the party can charter a shallow-draft **Skiff** (`150 GP`) to sail across Shallow Water (`=`) tiles on the Overworld.
+  - Added three offshore **Island Shrines of the Triad** reachable by Skiff that grant permanent stat and vital blessings to all active party members:
+    - **Shrine of Valor (Sanctuary Isle — `20, 25`)**: `+1 STR`, `+4 Max HP`
+    - **Shrine of Wisdom (Starlight Atoll — `16, 2`)**: `+1 INT`, `+1 WIS`, `+4 Max MP`
+    - **Shrine of Swift Grace (Tempest Reef — `29, 14`)**: `+1 DEX`, `+2 Max HP`, `+2 Max MP`
+- **Expanded Spellbook & Tier 5 Magic (`data/spells.json`, `js/magic.js`, `js/combat.js`)**:
+  - Extended spell tier progression to **Tier 5 (Level 9)** for pure casters and **Tier 4 (Level 10)** for hybrid casters.
+  - Added 8 new Arcane and Divine spells: **Glacial Lance** (`arc_frost_lance`), **Chronos Veil** (`arc_haste`), **All-Seeing Eye** (`arc_eye`), **Void Singularity** (`arc_supernova`), **Solar Pillar** (`div_exorcism`), **Bulwark of the Triad** (`div_aegis`), **Miracle of Rebirth** (`div_phoenix` — restores `Ashes` in the field or combat), and **Celestial Miracle** (`div_apotheosis`).
+- **Retro Chiptune Background Music (`js/audio.js`, `js/app.js`, `index.html`)**:
+  - Built a zero-dependency Web Audio API synthesizer with four distinct themes (*Overworld*, *Town & Tavern*, spooky 3-voice *Dungeon*, and fast, thrilling 3-voice *Combat*) and a persistent `♫ Music: ON/OFF` toggle in the top header.
+
 ## [0.2.1] - 2026-11-04
 
 ### Added

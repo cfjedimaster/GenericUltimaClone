@@ -108,6 +108,22 @@
     "description": "Calls down fork-lightning that arcs through every living enemy on the battlefield."
   },
   {
+    "id": "arc_frost_lance",
+    "name": "Glacial Lance",
+    "school": "arcane",
+    "tier": 3,
+    "mpCost": 6,
+    "usableIn": ["combat"],
+    "targetType": "enemy_single",
+    "effect": "damage_and_status",
+    "dice": "3d6+3",
+    "status": "Paralysis",
+    "duration": 2,
+    "baseChance": 75,
+    "statKey": "int",
+    "description": "Impales a single foe with a lance of permafrost for heavy cold damage and a high chance to inflict Paralysis."
+  },
+  {
     "id": "arc_recall",
     "name": "Ethereal Recall",
     "school": "arcane",
@@ -118,6 +134,33 @@
     "effect": "recall",
     "statKey": "int",
     "description": "Folds space to teleport the party out of danger or directly to the gates of Oakhaven."
+  },
+  {
+    "id": "arc_haste",
+    "name": "Chronos Veil",
+    "school": "arcane",
+    "tier": 4,
+    "mpCost": 9,
+    "usableIn": ["combat"],
+    "targetType": "party",
+    "effect": "buff_party",
+    "acBonus": 3,
+    "hitBonus": 3,
+    "statKey": "int",
+    "description": "Warps time around the party, granting +3 AC and +3 Hit bonus for the entire battle."
+  },
+  {
+    "id": "arc_eye",
+    "name": "All-Seeing Eye",
+    "school": "arcane",
+    "tier": 4,
+    "mpCost": 8,
+    "usableIn": ["field"],
+    "targetType": "party",
+    "effect": "field_omnisight",
+    "durationSteps": 60,
+    "statKey": "int",
+    "description": "Summons an astral eye for 60 steps, granting Mage-Light, Triad Sight trap detection, and wide-radius Overworld Atlas vision."
   },
   {
     "id": "arc_cataclysm",
@@ -131,6 +174,19 @@
     "dice": "4d6+4",
     "statKey": "int",
     "description": "Tears open the firmament to rain starfire across all enemy formations."
+  },
+  {
+    "id": "arc_supernova",
+    "name": "Void Singularity",
+    "school": "arcane",
+    "tier": 5,
+    "mpCost": 16,
+    "usableIn": ["combat"],
+    "targetType": "enemy_all",
+    "effect": "damage_all",
+    "dice": "6d6+8",
+    "statKey": "int",
+    "description": "Collapses a rift of abyssal gravity across the battlefield, dealing cataclysmic damage to all foes."
   },
   {
     "id": "div_heal",
@@ -257,6 +313,48 @@
     "description": "Calls a fallen (Dead) hero's soul back from the threshold with restored HP."
   },
   {
+    "id": "div_exorcism",
+    "name": "Solar Pillar",
+    "school": "divine",
+    "tier": 3,
+    "mpCost": 6,
+    "usableIn": ["combat"],
+    "targetType": "enemy_group",
+    "effect": "damage_group",
+    "dice": "2d6+3",
+    "undeadMultiplier": 1.5,
+    "statKey": "wis",
+    "description": "Calls down a column of consecrated sunlight across an enemy group (deals 1.5x damage against Undead)."
+  },
+  {
+    "id": "div_aegis",
+    "name": "Bulwark of the Triad",
+    "school": "divine",
+    "tier": 4,
+    "mpCost": 9,
+    "usableIn": ["combat"],
+    "targetType": "party",
+    "effect": "buff_and_cure_party",
+    "acBonus": 4,
+    "hitBonus": 2,
+    "cures": ["Poison", "Sleep", "Paralysis", "Silence"],
+    "statKey": "wis",
+    "description": "Raises a golden cathedral ward (+4 AC, +2 Hit) and purges status ailments from all living party members."
+  },
+  {
+    "id": "div_phoenix",
+    "name": "Miracle of Rebirth",
+    "school": "divine",
+    "tier": 4,
+    "mpCost": 12,
+    "usableIn": ["combat", "field"],
+    "targetType": "ally_single",
+    "effect": "resurrect_ashes",
+    "dice": "4d6+8",
+    "statKey": "wis",
+    "description": "Restores any fallen hero—even one reduced to Ashes—directly back to life with abundant HP."
+  },
+  {
     "id": "div_wrath",
     "name": "Judgment of the Triad",
     "school": "divine",
@@ -270,5 +368,19 @@
     "undeadMultiplier": 1.5,
     "statKey": "wis",
     "description": "Unleashes sacred wrath across all enemy groups while mending all living party members."
+  },
+  {
+    "id": "div_apotheosis",
+    "name": "Celestial Miracle",
+    "school": "divine",
+    "tier": 5,
+    "mpCost": 16,
+    "usableIn": ["combat", "field"],
+    "targetType": "party",
+    "effect": "miracle_party",
+    "dice": "4d6+10",
+    "cures": ["Poison", "Sleep", "Paralysis", "Silence"],
+    "statKey": "wis",
+    "description": "Supreme invocation of the Triad: revives all Dead or Ashes allies, purges all ailments, and massively heals the entire party."
   }
 ]

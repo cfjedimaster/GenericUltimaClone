@@ -1,3 +1,5 @@
+import { syncCharacterDerivedStats } from './models/character.js';
+
 export const VIEWPORT_RADIUS = 5; // 11x11 visible grid (-5..+5)
 
 export const DIRECTION_DELTAS = {
@@ -6,6 +8,112 @@ export const DIRECTION_DELTAS = {
   W: { dx: -1, dy: 0, label: 'West' },
   E: { dx: 1, dy: 0, label: 'East' }
 };
+
+export function revealOverworldArea(state, centerX, centerY, radius = VIEWPORT_RADIUS) {
+  if (!state) return;
+  if (!state.location) state.location = {};
+  if (!state.location.exploredOverworld || typeof state.location.exploredOverworld !== 'object') {
+    state.location.exploredOverworld = {};
+  }
+  const mapStore = state.location.exploredOverworld;
+  for (let dy = -radius; dy <= radius; dy++) {
+    for (let dx = -radius; dx <= radius; dx++) {
+      const wx = centerX + dx;
+      const wy = centerY + dy;
+      if (wx >= 0 && wx < 32 && wy >= 0 && wy < 32) {
+        mapStore[`${wx},${wy}`] = true;
+      }
+    }
+  }
+}
+
+export function isOverworldTileExplored(state, x, y) {
+  return Boolean(state?.location?.exploredOverworld?.[`${x},${y}`]);
+}
+
+export function buildOverworldAtlasData(map, tiles, state) {
+  if (!map || !tiles) {
+    return { rows: [], exploredCount: 0, totalTiles: 0, percent: 0, landmarks: [] };
+  }
+  const isOnOverworld = state?.location?.mode === 'overworld';
+  const partyX = isOnOverworld
+    ? (state?.location?.x ?? 16)
+    : (state?.location?.returnOverworld?.x ?? 16);
+  const partyY = isOnOverworld
+    ? (state?.location?.y ?? 14)
+    : (state?.location?.returnOverworld?.y ?? 13);
+
+  revealOverworldArea(state, partyX, partyY, VIEWPORT_RADIUS);
+
+  let exploredCount = 0;
+  const totalTiles = map.width * map.height;
+  const rows = [];
+
+  for (let y = 0; y < map.height; y++) {
+    const cells = [];
+    for (let x = 0; x < map.width; x++) {
+      const explored = isOverworldTileExplored(state, x, y);
+      if (explored) exploredCount += 1;
+
+      const isParty = x === partyX && y === partyY;
+      const tile = getTileDefAt(map, tiles, x, y);
+      const trigger = getTriggerAt(map, x, y);
+
+      let glyph = ' ';
+      let fg = '#242b3d';
+      let bg = '#07090f';
+      let title = `Uncharted (${x}, ${y})`;
+
+      if (isParty) {
+        glyph = state?.flags?.has_skiff && tile.code === '=' ? '⛵' : '@';
+        fg = '#ffe680';
+        bg = '#382c10';
+        title = `Your Party (${x}, ${y}) — ${trigger ? trigger.name : tile.name}`;
+      } else if (explored) {
+        glyph = tile.glyph;
+        fg = tile.fg;
+        bg = tile.bg;
+        title = trigger
+          ? `${trigger.name} (${x}, ${y}) — ${tile.name}`
+          : `${tile.name} (${x}, ${y})`;
+      }
+
+      cells.push({
+        key: `${x},${y}-${isParty ? 'p' : 't'}-${explored ? 1 : 0}`,
+        x,
+        y,
+        explored,
+        isParty,
+        isLandmark: Boolean(explored && trigger),
+        glyph,
+        fg,
+        bg,
+        title
+      });
+    }
+    rows.push({
+      rowKey: `atlas-row-${y}`,
+      cells
+    });
+  }
+
+  const landmarks = (map.triggers || [])
+    .filter(t => isOverworldTileExplored(state, t.x, t.y))
+    .map(t => ({
+      ...t,
+      blessed: Boolean(t.flag && state?.flags?.[t.flag])
+    }));
+
+  const percent = totalTiles > 0 ? Math.round((exploredCount / totalTiles) * 100) : 0;
+
+  return {
+    rows,
+    exploredCount,
+    totalTiles,
+    percent,
+    landmarks
+  };
+}
 
 export function getMapById(maps, mapId) {
   if (!maps) return null;
@@ -75,7 +183,7 @@ export function buildViewportRows(map, tiles, centerX, centerY, radius = VIEWPOR
       const trigger = inBounds ? getTriggerAt(map, wx, wy) : null;
       const isParty = dx === 0 && dy === 0;
       rowCells.push({
-        key: `${wx},${wy}`,
+        key: `vcell-${dx},${dy}-${wx},${wy}-${isParty ? 'party' : 'tile'}`,
         x: wx,
         y: wy,
         inBounds,
@@ -85,7 +193,7 @@ export function buildViewportRows(map, tiles, centerX, centerY, radius = VIEWPOR
       });
     }
     rows.push({
-      rowKey: `row-${wy}`,
+      rowKey: `vrow-${dy}-${centerX},${centerY}`,
       cells: rowCells
     });
   }
@@ -144,12 +252,22 @@ export function attemptMove(state, maps, tiles, dirKey) {
   }
 
   const targetTile = getTileDefAt(currentMap, tiles, nx, ny);
-  if (!targetTile.passable) {
+  const canSailShallows = Boolean(
+    currentMap.mode === 'overworld' &&
+      targetTile.code === '=' &&
+      state?.flags?.has_skiff
+  );
+
+  if (!targetTile.passable && !canSailShallows) {
+    const blockNote =
+      targetTile.code === '='
+        ? 'The shallow waters are too deep to wade without a vessel. Charter a Skiff at the Coastal Port of Moon!'
+        : targetTile.blockReason || targetTile.name;
     return {
       moved: false,
       blocked: true,
       tile: targetTile,
-      log: `${delta.label}: Blocked — ${targetTile.blockReason || targetTile.name}`
+      log: `${delta.label}: Blocked — ${blockNote}`
     };
   }
 
@@ -157,6 +275,10 @@ export function attemptMove(state, maps, tiles, dirKey) {
   state.location.x = nx;
   state.location.y = ny;
   state.location.steps = (state.location.steps || 0) + 1;
+
+  if (currentMap.mode === 'overworld') {
+    revealOverworldArea(state, nx, ny, VIEWPORT_RADIUS);
+  }
 
   // Check if stepping onto a Town border tile at the edge of town (optional convenience if walking out the gate row)
   if (
@@ -182,7 +304,7 @@ export function attemptMove(state, maps, tiles, dirKey) {
   };
 }
 
-export function attemptEnterLocation(state, maps) {
+export function attemptEnterLocation(state, maps, gameData = {}) {
   const currentMap = getMapById(maps, state.location.mapId);
   if (!currentMap) return { ok: false, log: 'No map active.' };
 
@@ -191,6 +313,73 @@ export function attemptEnterLocation(state, maps) {
     return {
       ok: false,
       log: 'There is nothing to enter or activate on this tile.'
+    };
+  }
+
+  if (trigger.type === 'shrine') {
+    if (!state.flags) state.flags = {};
+    if (trigger.flag && state.flags[trigger.flag]) {
+      for (const entry of state.party || []) {
+        const hero = state.roster.find(c => c.id === entry.charId);
+        if (hero && hero.status !== 'Dead' && hero.status !== 'Ashes' && hero.derived?.hp > 0) {
+          hero.derived.hp = hero.derived.maxHp;
+          hero.derived.mp = hero.derived.maxMp;
+        }
+      }
+      return {
+        ok: true,
+        shrineRestored: true,
+        trigger,
+        log: `[${trigger.name}] Your party already carries this Shrine's permanent blessing. Its warm radiance restores all living heroes to full HP and MP!`
+      };
+    }
+
+    if (trigger.flag) {
+      state.flags[trigger.flag] = true;
+    }
+
+    const statBonuses = trigger.statBonuses || {};
+    const hpBonus = trigger.hpBonus || 0;
+    const mpBonus = trigger.mpBonus || 0;
+    const blessedNames = [];
+
+    for (const entry of state.party || []) {
+      const hero = state.roster.find(c => c.id === entry.charId);
+      if (!hero) continue;
+      if (!hero.stats) hero.stats = { str: 10, dex: 10, int: 10, wis: 10 };
+      for (const [statKey, amt] of Object.entries(statBonuses)) {
+        if (typeof amt === 'number') {
+          hero.stats[statKey] = (hero.stats[statKey] || 10) + amt;
+        }
+      }
+      if (!hero.shrineBonuses || typeof hero.shrineBonuses !== 'object') {
+        hero.shrineBonuses = { maxHp: 0, maxMp: 0 };
+      }
+      hero.shrineBonuses.maxHp = (hero.shrineBonuses.maxHp || 0) + hpBonus;
+      hero.shrineBonuses.maxMp = (hero.shrineBonuses.maxMp || 0) + mpBonus;
+
+      syncCharacterDerivedStats(
+        hero,
+        gameData.racesById || {},
+        gameData.classesById || {},
+        gameData.itemsById || {},
+        { fillVitals: hero.status !== 'Dead' && hero.status !== 'Ashes' }
+      );
+      blessedNames.push(hero.name);
+    }
+
+    const bonusTags = [];
+    for (const [k, v] of Object.entries(statBonuses)) {
+      if (v) bonusTags.push(`+${v} ${k.toUpperCase()}`);
+    }
+    if (hpBonus) bonusTags.push(`+${hpBonus} Max HP`);
+    if (mpBonus) bonusTags.push(`+${mpBonus} Max MP`);
+
+    return {
+      ok: true,
+      shrineBlessed: true,
+      trigger,
+      log: `☼ [${trigger.name}] Sacred light descends upon ${blessedNames.join(', ')}! Permanent blessing granted: ${bonusTags.join(', ')} (HP & MP fully restored)!`
     };
   }
 

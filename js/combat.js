@@ -407,8 +407,8 @@ function resolveHeroSpellCast({
   const effStats = getEffectiveStats(hero, itemsById);
   const statMod = Math.max(0, getStatMod(effStats[spell.statKey || 'int'] || 10));
 
-  // 1. Single-target enemy spell (e.g., Arcane Bolt, Sunbeam Smite)
-  if (spell.effect === 'damage') {
+  // 1. Single-target enemy spell (e.g., Arcane Bolt, Sunbeam Smite, Glacial Lance)
+  if (spell.effect === 'damage' || spell.effect === 'damage_and_status') {
     let targetGroup = combatState.groups.find(g => g.id === targetGroupId);
     if (!targetGroup || getLivingUnitsInGroup(targetGroup).length === 0) {
       targetGroup = getLivingEnemyGroups(combatState)[0];
@@ -441,9 +441,22 @@ function resolveHeroSpellCast({
         'hit'
       );
     } else {
+      let statusTag = '';
+      if (spell.effect === 'damage_and_status' && spell.status) {
+        const chance = clamp(
+          (spell.baseChance || 70) + statMod * 6 - (targetGroup.ac - 10) * 4,
+          25,
+          95
+        );
+        if (rollDie(100) <= chance) {
+          targetUnit.status = spell.status;
+          targetUnit.statusDuration = spell.duration || 2;
+          statusTag = ` [${spell.status}!]`;
+        }
+      }
       addCombatLog(
         combatState,
-        `${hero.name} casts ${spell.name} (-${spell.mpCost} MP) on ${targetUnit.name} for ${dmg} dmg${undeadTag} (${targetUnit.hp}/${targetUnit.maxHp} HP).`,
+        `${hero.name} casts ${spell.name} (-${spell.mpCost} MP) on ${targetUnit.name} for ${dmg} dmg${undeadTag}${statusTag} (${targetUnit.hp}/${targetUnit.maxHp} HP).`,
         'hit'
       );
     }
@@ -584,8 +597,8 @@ function resolveHeroSpellCast({
     return;
   }
 
-  // 5. Party Buff (Aegis Ward, Benediction)
-  if (spell.effect === 'buff_party') {
+  // 5. Party Buff (Aegis Ward, Benediction, Chronos Veil, Bulwark of the Triad)
+  if (spell.effect === 'buff_party' || spell.effect === 'buff_and_cure_party') {
     if (!combatState.partyBuffs) {
       combatState.partyBuffs = { acBonus: 0, hitBonus: 0, activeNames: [] };
     }
@@ -597,9 +610,23 @@ function resolveHeroSpellCast({
     const bonusParts = [];
     if (spell.acBonus) bonusParts.push(`+${spell.acBonus} AC`);
     if (spell.hitBonus) bonusParts.push(`+${spell.hitBonus} Hit`);
+
+    const curedNames = [];
+    if (spell.effect === 'buff_and_cure_party') {
+      const cures = spell.cures || ['Poison', 'Sleep', 'Paralysis', 'Silence'];
+      for (const entry of state.party) {
+        const ally = state.roster.find(c => c.id === entry.charId);
+        if (isHeroAlive(ally) && cures.includes(ally.status)) {
+          curedNames.push(`${ally.name} (${ally.status})`);
+          ally.status = 'OK';
+          delete ally.statusDuration;
+        }
+      }
+    }
+    const cureTag = curedNames.length > 0 ? ` Cleansed: ${curedNames.join(', ')}.` : '';
     addCombatLog(
       combatState,
-      `${hero.name} weaves ${spell.name} (-${spell.mpCost} MP)! Party gains ${bonusParts.join(', ')} for this battle.`,
+      `${hero.name} weaves ${spell.name} (-${spell.mpCost} MP)! Party gains ${bonusParts.join(', ')} for this battle.${cureTag}`,
       'victory'
     );
     return;
@@ -669,13 +696,14 @@ function resolveHeroSpellCast({
     return;
   }
 
-  // 8. Revive Fallen Ally (Breath of Life)
-  if (spell.effect === 'revive_ally') {
+  // 8. Revive Fallen Ally (Breath of Life / Miracle of Rebirth)
+  if (spell.effect === 'revive_ally' || spell.effect === 'resurrect_ashes') {
+    const canRestoreAshes = spell.effect === 'resurrect_ashes';
     let targetHero = state.roster.find(c => c.id === targetHeroId);
     if (!targetHero || isHeroAlive(targetHero)) {
       targetHero = state.party
         .map(p => state.roster.find(c => c.id === p.charId))
-        .find(h => h && h.status === 'Dead');
+        .find(h => h && (h.status === 'Dead' || (canRestoreAshes && h.status === 'Ashes')));
     }
     if (!targetHero) {
       addCombatLog(
@@ -685,22 +713,58 @@ function resolveHeroSpellCast({
       );
       return;
     }
-    if (targetHero.status === 'Ashes') {
+    if (targetHero.status === 'Ashes' && !canRestoreAshes) {
       addCombatLog(
         combatState,
-        `${hero.name} casts ${spell.name}, but ${targetHero.name} is reduced to Ashes and requires a Temple!`,
+        `${hero.name} casts ${spell.name}, but ${targetHero.name} is reduced to Ashes! Use Miracle of Rebirth, Celestial Miracle, or visit a Temple.`,
         'warn'
       );
       return;
     }
 
+    const oldStatus = targetHero.status;
     const amount = Math.max(1, dice.roll(spell.dice || '2d6+4') + statMod);
     targetHero.status = 'OK';
     delete targetHero.statusDuration;
     targetHero.derived.hp = Math.min(targetHero.derived.maxHp, amount);
     addCombatLog(
       combatState,
-      `${hero.name} invokes ${spell.name} (-${spell.mpCost} MP)! ${targetHero.name} rises from death with ${targetHero.derived.hp}/${targetHero.derived.maxHp} HP!`,
+      `${hero.name} invokes ${spell.name} (-${spell.mpCost} MP)! ${targetHero.name} rises from ${oldStatus} with ${targetHero.derived.hp}/${targetHero.derived.maxHp} HP!`,
+      'victory'
+    );
+    return;
+  }
+
+  // 8b. Supreme Party Miracle (Celestial Miracle: Revive Dead/Ashes + Cure All + Heal All)
+  if (spell.effect === 'miracle_party') {
+    const cures = spell.cures || ['Poison', 'Sleep', 'Paralysis', 'Silence'];
+    const summary = [];
+    for (const entry of state.party) {
+      const ally = state.roster.find(c => c.id === entry.charId);
+      if (!ally) continue;
+      const amount = Math.max(1, dice.roll(spell.dice || '4d6+10') + statMod);
+      if (!isHeroAlive(ally)) {
+        const oldStatus = ally.status;
+        ally.status = 'OK';
+        delete ally.statusDuration;
+        ally.derived.hp = Math.min(ally.derived.maxHp, amount);
+        summary.push(`${ally.name} (risen from ${oldStatus}, ${ally.derived.hp} HP)`);
+      } else {
+        const before = ally.derived.hp;
+        ally.derived.hp = Math.min(ally.derived.maxHp, before + amount);
+        const gained = ally.derived.hp - before;
+        let cured = null;
+        if (cures.includes(ally.status)) {
+          cured = ally.status;
+          ally.status = 'OK';
+          delete ally.statusDuration;
+        }
+        summary.push(`${ally.name} (+${gained} HP${cured ? `, cured ${cured}` : ''})`);
+      }
+    }
+    addCombatLog(
+      combatState,
+      `${hero.name} calls down ${spell.name} (-${spell.mpCost} MP)! ${summary.join(', ')}.`,
       'victory'
     );
     return;

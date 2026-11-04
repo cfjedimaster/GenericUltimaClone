@@ -162,7 +162,7 @@ export function buildDungeonMinimapRows(map, tiles, state, radius = DUNGEON_MINI
 
       if (!inBounds || !explored) {
         cells.push({
-          key: `${wx},${wy}`,
+          key: `dcell-${dx},${dy}-${wx},${wy}-dark`,
           x: wx,
           y: wy,
           inBounds,
@@ -179,7 +179,7 @@ export function buildDungeonMinimapRows(map, tiles, state, radius = DUNGEON_MINI
       const tile = getEffectiveDungeonTileAt(map, tiles, state, wx, wy);
       const trigger = getTriggerAt(map, wx, wy);
       cells.push({
-        key: `${wx},${wy}`,
+        key: `dcell-${dx},${dy}-${wx},${wy}-${isParty ? facing : 'tile'}`,
         x: wx,
         y: wy,
         inBounds,
@@ -200,7 +200,7 @@ export function buildDungeonMinimapRows(map, tiles, state, radius = DUNGEON_MINI
       });
     }
     rows.push({
-      rowKey: `drow-${wy}`,
+      rowKey: `drow-${dy}-${centerX},${centerY},${facing}`,
       cells
     });
   }

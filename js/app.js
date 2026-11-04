@@ -43,11 +43,14 @@ import {
   getTriggerAt,
   getAdjacentTriggers,
   buildViewportRows,
+  revealOverworldArea,
+  buildOverworldAtlasData,
   attemptMove,
   attemptEnterLocation,
   attemptTalkNearby,
   exitTownToOverworld
 } from './overworld.js';
+import { retroMusic } from './audio.js';
 import {
   shouldTriggerRandomEncounter,
   createEncounter,
@@ -89,18 +92,17 @@ import {
 
 function initLightDismissFallbacks() {
   if (!('closedBy' in HTMLDialogElement.prototype)) {
+    const outside = (e, dialog) => {
+      const r = dialog.getBoundingClientRect();
+      return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+    };
     for (const dialog of document.querySelectorAll('dialog[closedby="any"]')) {
-      dialog.addEventListener('click', (event) => {
-        if (event.target !== dialog) return;
-        const rect = dialog.getBoundingClientRect();
-        const isDialogContent = (
-          rect.top <= event.clientY &&
-          event.clientY <= rect.top + rect.height &&
-          rect.left <= event.clientX &&
-          event.clientX <= rect.left + rect.width
-        );
-        if (isDialogContent) return;
-        dialog.close();
+      let pressedOutside = false;
+      dialog.addEventListener('pointerdown', (e) => {
+        pressedOutside = outside(e, dialog);
+      });
+      dialog.addEventListener('pointerup', (e) => {
+        if (pressedOutside && outside(e, dialog)) dialog.close();
       });
     }
   }
@@ -154,7 +156,7 @@ function registerApp() {
 
     // Exploration message log
     messageLog: [
-      { id: 1, text: 'Chronicles of the Triad initialized. Form your party and embark onto the Overworld.' }
+      { id: 1, text: 'Welcome to the Realm of Avalon. Form your party and embark onto the Overworld.' }
     ],
     nextLogId: 2,
 
@@ -187,7 +189,33 @@ function registerApp() {
 
     innName: "The Wayfarer's Inn",
     templeName: 'Temple of the Triad',
+    harborName: 'Moon Harbor Dock & Skiff Charter',
     justLootedChestFlag: null,
+    musicEnabled: retroMusic.enabled,
+
+    get currentMusicTheme() {
+      if (this.screen === 'combat') return 'combat';
+      if (this.screen === 'title' || this.screen === 'tavern' || this.screen === 'create') {
+        return 'town';
+      }
+      const mode = this.currentMap?.mode || 'overworld';
+      if (mode === 'dungeon') return 'dungeon';
+      if (mode === 'town') return 'town';
+      return 'overworld';
+    },
+
+    syncMusic() {
+      retroMusic.setMode(this.currentMusicTheme);
+    },
+
+    toggleMusic() {
+      this.musicEnabled = retroMusic.toggle(this.currentMusicTheme);
+      this.notify(
+        this.musicEnabled
+          ? 'Retro background music enabled.'
+          : 'Background music muted.'
+      );
+    },
 
     async init() {
       try {
@@ -211,6 +239,7 @@ function registerApp() {
         this.resetDraft();
         this.loading = false;
         this.syncDocumentTitle();
+        this.syncMusic();
         initLightDismissFallbacks();
         initUserInvalidAriaSync();
         this.initExplorationKeybindings();
@@ -277,6 +306,8 @@ function registerApp() {
         if (map.mode === 'dungeon') {
           markDungeonTileExplored(this.state, map.id, this.state.location.x, this.state.location.y);
           this.refreshDungeonCanvas();
+        } else if (map.mode === 'overworld') {
+          revealOverworldArea(this.state, this.state.location.x, this.state.location.y);
         }
       }
     },
@@ -349,6 +380,14 @@ function registerApp() {
           if (this.state.roster.length > 0) {
             e.preventDefault();
             this.openSpellModal();
+          }
+          return;
+        }
+
+        if (key === 'm' || key === 'M') {
+          if (this.state.roster.length > 0) {
+            e.preventDefault();
+            this.openAtlasModal();
           }
           return;
         }
@@ -447,6 +486,8 @@ function registerApp() {
             markDungeonTileExplored(this.state, dest.id, this.state.location.x, this.state.location.y);
           }
           this.screen = 'overworld';
+          this.syncDocumentTitle();
+          this.syncMusic();
           this.persist(`Cheat: Teleported party to ${dest.name} (${this.state.location.x}, ${this.state.location.y}).`);
           this.refreshDungeonCanvas();
           return `${dest.name} (${this.state.location.x}, ${this.state.location.y})`;
@@ -501,6 +542,25 @@ function registerApp() {
           this.persist(`Cheat: Set ${hero.name}'s status to ${status}.`);
           return `${hero.name} -> ${status}`;
         },
+        hurt: (player = 1, amount = 10) => {
+          const idx = Number(player) - 1;
+          const entry = this.state.party[idx];
+          const hero = entry
+            ? this.state.roster.find(c => c.id === entry.charId)
+            : this.state.roster[idx];
+          if (!hero) {
+            console.warn(`cheat.hurt(): No hero found at 1-based slot ${player}.`);
+            return null;
+          }
+          const dmg = Math.max(0, Number(amount) || 0);
+          hero.derived.hp = Math.max(0, hero.derived.hp - dmg);
+          if (hero.derived.hp <= 0 && hero.status !== 'Ashes') {
+            hero.status = 'Dead';
+            delete hero.statusDuration;
+          }
+          this.persist(`Cheat: ${hero.name} took ${dmg} HP damage (${hero.derived.hp}/${hero.derived.maxHp} HP).`);
+          return `${hero.name}: ${hero.derived.hp}/${hero.derived.maxHp} HP (${hero.status})`;
+        },
         help: () => {
           console.table({
             'cheat.pickFight(terrainId?)': 'Start a combat encounter (e.g., "grass", "despise_b1", "doom_b3")',
@@ -509,6 +569,7 @@ function registerApp() {
             'cheat.xp(amount = 200)': 'Grant XP to active party members',
             'cheat.give(itemId, qty = 1)': 'Add an item to the shared Party Pack',
             'cheat.status(status, partyIndex)': 'Afflict a hero with Poison, Sleep, Paralysis, Silence, Dead, or Ashes',
+            'cheat.hurt(player = 1, amount = 10)': 'Subtract HP from a 1-based party member (marks Dead at 0 HP)',
             'cheat.heal()': 'Restore all heroes to full HP/MP and cure all ailments'
           });
         }
@@ -540,6 +601,7 @@ function registerApp() {
         const mapName = this.currentMap?.name || 'Realm of Avalon';
         this.appendLog(`Party embarked into ${mapName}.`);
       }
+      this.syncMusic();
     },
 
     notify(msg) {
@@ -700,6 +762,7 @@ function registerApp() {
         this.appendLog(res.log);
         if (res.exitedDungeon) {
           this.syncDocumentTitle();
+          this.syncMusic();
           const dlg = document.querySelector('#inventory-dialog');
           if (dlg) dlg.close();
         } else {
@@ -789,12 +852,19 @@ function registerApp() {
       this.persist(res.log);
       if (res.ok) {
         this.appendLog(res.log);
+        this.syncMusic();
         this.refreshDungeonCanvas();
         if (res.recalled || res.unlocked) {
           const dlg = document.querySelector('#spell-dialog');
           if (dlg) dlg.close();
         }
       }
+    },
+
+    isLowHp(hero) {
+      const hp = hero?.derived?.hp ?? 0;
+      const maxHp = hero?.derived?.maxHp || 1;
+      return hp / maxHp <= 0.15;
     },
 
     getStatusBadgeClass(status) {
@@ -1044,6 +1114,47 @@ function registerApp() {
       this.appendLog(msg);
     },
 
+    openHarborModal(trigger = null) {
+      this.harborName = trigger?.name || 'Moon Harbor Dock & Skiff Charter';
+      const dlg = document.querySelector('#harbor-dialog');
+      if (dlg) dlg.showModal();
+    },
+
+    charterSkiffAtHarbor() {
+      if (this.state.flags?.has_skiff) {
+        this.notify('Your party has already chartered a shallow-draft Skiff!');
+        return;
+      }
+      const cost = 150;
+      if ((this.state.gold || 0) < cost) {
+        this.notify(`Chartering a shallow-draft Skiff requires ${cost} GP.`);
+        return;
+      }
+      this.state.gold -= cost;
+      if (!this.state.flags) this.state.flags = {};
+      this.state.flags.has_skiff = true;
+      const msg = `Harbor Master Corwin hands you the brass helm-key (-${cost} GP)! Your party can now sail across Shallow Waters (=) on the Overworld to reach the three Island Shrines!`;
+      this.persist(msg);
+      this.appendLog(msg);
+    },
+
+    openAtlasModal() {
+      const dlg = document.querySelector('#atlas-dialog');
+      if (dlg) dlg.showModal();
+    },
+
+    get overworldAtlas() {
+      return buildOverworldAtlasData(this.maps?.avalon, this.tiles, this.state);
+    },
+
+    get isPartyAfloat() {
+      return Boolean(
+        this.currentMap?.mode === 'overworld' &&
+          this.currentTile?.code === '=' &&
+          this.state.flags?.has_skiff
+      );
+    },
+
     // --- Overworld, Town & Dungeon Exploration Computed & Actions ---
     get currentMap() {
       return getMapById(this.maps, this.state.location?.mapId);
@@ -1258,6 +1369,7 @@ function registerApp() {
         stepNotes = tick.notes || [];
       }
       this.persist();
+      this.syncMusic();
       if (result.log) {
         this.appendLog(result.log);
       }
@@ -1296,6 +1408,7 @@ function registerApp() {
 
       this.screen = 'combat';
       this.syncDocumentTitle();
+      this.syncMusic();
 
       const groupNames = this.combat.groups
         .map(g => `${g.units.length} ${g.units.length === 1 ? g.name : g.pluralName}`)
@@ -1332,6 +1445,7 @@ function registerApp() {
 
       this.screen = 'combat';
       this.syncDocumentTitle();
+      this.syncMusic();
 
       const groupNames = this.combat.groups
         .map(g => `${g.units.length} ${g.units.length === 1 ? g.name : g.pluralName}`)
@@ -1717,6 +1831,7 @@ function registerApp() {
         }
       }
       this.persist();
+      this.syncMusic();
       this.refreshDungeonCanvas();
     },
 
@@ -1740,6 +1855,7 @@ function registerApp() {
       this.combat = null;
       this.screen = 'overworld';
       this.syncDocumentTitle();
+      this.syncMusic();
       this.persist();
       this.appendLog(
         `Acolytes of the Triad carried your fallen party to Oakhaven Temple and revived you (Tithe: ${tithe} GP).`
@@ -1758,6 +1874,7 @@ function registerApp() {
           this.justLootedChestFlag = this.currentTrigger?.flag || null;
         }
         this.persist();
+        this.syncMusic();
         if (dRes.log) {
           this.appendLog(dRes.log);
         }
@@ -1772,12 +1889,13 @@ function registerApp() {
         return;
       }
 
-      const result = attemptEnterLocation(this.state, this.maps);
+      const result = attemptEnterLocation(this.state, this.maps, this.gameDataBundle);
       if (result.service === 'guild') {
         this.appendLog("Entering the Adventurers' Guild Roster...");
         this.persist();
         this.screen = 'tavern';
         this.syncDocumentTitle();
+        this.syncMusic();
         return;
       }
       if (result.service === 'shop') {
@@ -1792,10 +1910,15 @@ function registerApp() {
         this.openTempleModal(result.trigger);
         return;
       }
+      if (result.service === 'harbor') {
+        this.openHarborModal(result.trigger);
+        return;
+      }
       if (result.enteredDungeon && this.currentMap) {
         markDungeonTileExplored(this.state, this.currentMap.id, this.state.location.x, this.state.location.y);
       }
       this.persist();
+      this.syncMusic();
       if (result.log) {
         this.appendLog(result.log);
       }
@@ -1816,6 +1939,7 @@ function registerApp() {
       }
       const result = exitTownToOverworld(this.state, this.maps);
       this.persist();
+      this.syncMusic();
       if (result.log) {
         this.appendLog(result.log);
       }
@@ -2199,7 +2323,7 @@ function registerApp() {
         const dlg = document.querySelector('#save-dialog');
         if (dlg) dlg.close();
       } catch (err) {
-        this.importError = 'Invalid JSON payload. Check syntax and try again.';
+        this.importError = 'Invalid save data format. Check the pasted text and try again.';
       }
     },
 

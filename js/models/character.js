@@ -106,7 +106,8 @@ export function computeDerivedStats(
   classDef,
   level = 1,
   equipment = null,
-  itemsById = {}
+  itemsById = {},
+  shrineBonuses = null
 ) {
   const eqBonuses = getEquipmentBonuses(equipment, itemsById);
   const effStr = (stats.str || 10) + eqBonuses.str;
@@ -117,19 +118,22 @@ export function computeDerivedStats(
   const strMod = getStatMod(effStr);
   const dexMod = getStatMod(effDex);
 
+  const shrineHp = shrineBonuses?.maxHp || 0;
+  const shrineMp = shrineBonuses?.maxMp || 0;
+
   const levelOneHp = Math.max(4, classDef.baseHp + strMod + (raceDef.bonuses?.hp || 0));
   const extraLevelsHp = (level - 1) * Math.max(2, classDef.hpPerLevel + strMod);
-  const maxHp = Math.max(1, levelOneHp + extraLevelsHp + eqBonuses.maxHp);
+  const maxHp = Math.max(1, levelOneHp + extraLevelsHp + eqBonuses.maxHp + shrineHp);
 
   let maxMp = 0;
   if (classDef.magicSchool === 'arcane') {
-    maxMp = Math.max(1, Math.floor(effInt * classDef.mpRate) + (level - 1) * 3 + eqBonuses.maxMp);
+    maxMp = Math.max(1, Math.floor(effInt * classDef.mpRate) + (level - 1) * 3 + eqBonuses.maxMp + shrineMp);
   } else if (classDef.magicSchool === 'divine') {
     const baseCasting = Math.floor(effWis * classDef.mpRate);
     const perLevel = classDef.mpRate < 1 ? 2 : 3;
     maxMp = Math.max(
       classDef.mpRate < 1 ? 0 : 1,
-      baseCasting + (level - 1) * perLevel + eqBonuses.maxMp
+      baseCasting + (level - 1) * perLevel + eqBonuses.maxMp + shrineMp
     );
   }
 
@@ -182,7 +186,8 @@ export function syncCharacterDerivedStats(
     classDef,
     char.level || 1,
     char.equipment,
-    itemsById
+    itemsById,
+    char.shrineBonuses
   );
 
   const prevHp = char.derived?.hp ?? computed.maxHp;
@@ -246,7 +251,8 @@ export function applyXpAndLevelUp(char, xpGained, racesById = {}, classesById = 
       classDef,
       char.level,
       char.equipment,
-      itemsById
+      itemsById,
+      char.shrineBonuses
     );
     const hpGain = Math.max(1, nextDerived.maxHp - oldMaxHp);
     const mpGain = Math.max(0, nextDerived.maxMp - oldMaxMp);

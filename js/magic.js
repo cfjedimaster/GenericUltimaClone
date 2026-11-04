@@ -1,6 +1,7 @@
 import { dice } from './dice.js';
 import { getStatMod, getEffectiveStats } from './models/character.js';
 import { attemptUnlockDungeonDoor } from './dungeon.js';
+import { revealOverworldArea } from './overworld.js';
 
 export const PERSISTENT_AILMENTS = ['Poison', 'Dead', 'Ashes'];
 export const COMBAT_TEMP_AILMENTS = ['Sleep', 'Paralysis', 'Silence'];
@@ -30,9 +31,10 @@ export function getRequiredLevelForTier(classDef, tier) {
     if (tier === 1) return 1;
     if (tier === 2) return 4;
     if (tier === 3) return 7;
-    return null; // Tier 4 is exclusive to pure casters
+    if (tier === 4) return 10;
+    return null; // Tier 5 is exclusive to pure casters
   }
-  // Pure caster (Wizard, Cleric): Tier 1 @ Lv 1, Tier 2 @ Lv 3, Tier 3 @ Lv 5, Tier 4 @ Lv 7
+  // Pure caster (Wizard, Cleric): Tier 1 @ Lv 1, Tier 2 @ Lv 3, Tier 3 @ Lv 5, Tier 4 @ Lv 7, Tier 5 @ Lv 9
   return 1 + (tier - 1) * 2;
 }
 
@@ -42,7 +44,7 @@ export function getMaxUnlockedSpellTier(hero, classesById = {}) {
   if (!classDef || !classDef.magicSchool) return 0;
   const level = hero.level || 1;
   let maxTier = 0;
-  for (let t = 1; t <= 4; t++) {
+  for (let t = 1; t <= 5; t++) {
     const req = getRequiredLevelForTier(classDef, t);
     if (req !== null && level >= req) {
       maxTier = t;
@@ -58,8 +60,12 @@ export function formatSpellSummary(spell) {
     const undeadTag = spell.undeadMultiplier ? ' (1.5x vs Undead)' : '';
     return `${spell.dice} + ${statLabel} mod single target${undeadTag}`;
   }
+  if (spell.effect === 'damage_and_status') {
+    return `${spell.dice} + ${statLabel} mod + ${spell.status} (${spell.duration || 2} rds)`;
+  }
   if (spell.effect === 'damage_group') {
-    return `${spell.dice} + ${statLabel} mod to Enemy Group`;
+    const undeadTag = spell.undeadMultiplier ? ' (1.5x vs Undead)' : '';
+    return `${spell.dice} + ${statLabel} mod to Enemy Group${undeadTag}`;
   }
   if (spell.effect === 'damage_all') {
     return `${spell.dice} + ${statLabel} mod to ALL Enemies`;
@@ -76,6 +82,12 @@ export function formatSpellSummary(spell) {
     if (spell.hitBonus) parts.push(`+${spell.hitBonus} Hit`);
     return `Party Buff: ${parts.join(', ')} for battle`;
   }
+  if (spell.effect === 'buff_and_cure_party') {
+    const parts = [];
+    if (spell.acBonus) parts.push(`+${spell.acBonus} AC`);
+    if (spell.hitBonus) parts.push(`+${spell.hitBonus} Hit`);
+    return `Party Buff (${parts.join(', ')}) & Cures Ailments`;
+  }
   if (spell.effect === 'heal_hp') {
     return `Restores ${spell.dice} + ${statLabel} mod HP`;
   }
@@ -91,11 +103,20 @@ export function formatSpellSummary(spell) {
   if (spell.effect === 'revive_ally') {
     return `Revives Dead ally with ${spell.dice} + ${statLabel} mod HP`;
   }
+  if (spell.effect === 'resurrect_ashes') {
+    return `Resurrects Dead or Ashes ally with ${spell.dice} + ${statLabel} mod HP`;
+  }
+  if (spell.effect === 'miracle_party') {
+    return `Revives Dead/Ashes, cures all & heals party ${spell.dice} + ${statLabel} mod HP`;
+  }
   if (spell.effect === 'field_light') {
     return `Mage-Light (${spell.durationSteps || 30} steps)`;
   }
   if (spell.effect === 'field_detect') {
     return `Reveals traps, chests & stairs (${spell.durationSteps || 35} steps)`;
+  }
+  if (spell.effect === 'field_omnisight') {
+    return `Mage-Light + Trap Sight (${spell.durationSteps || 60} steps) + Atlas Reveal`;
   }
   if (spell.effect === 'field_open') {
     return `Unlocks barred dungeon door ahead or disarms chest`;
@@ -313,7 +334,7 @@ export function castFieldSpell({
     if (targetHero.status === 'Ashes') {
       return {
         ok: false,
-        log: `${targetHero.name} has been reduced to Ashes! Only the High Priests at a Temple can restore Ashes.`
+        log: `${targetHero.name} has been reduced to Ashes! Cast Miracle of Rebirth, Celestial Miracle, or visit a Temple.`
       };
     }
     if (!isHeroDead(targetHero)) {
@@ -327,6 +348,69 @@ export function castFieldSpell({
     return {
       ok: true,
       log: `${caster.name} casts ${spell.name} (-${spell.mpCost} MP)! ${targetHero.name} returns to life with ${targetHero.derived.hp}/${targetHero.derived.maxHp} HP!`
+    };
+  }
+
+  // High-Tier Resurrect (Dead or Ashes)
+  if (spell.effect === 'resurrect_ashes') {
+    if (!targetHero) return { ok: false, log: 'Select a fallen party member to resurrect.' };
+    if (!isHeroDead(targetHero)) {
+      return { ok: false, log: `${targetHero.name} is still alive and does not need resurrection.` };
+    }
+
+    const oldState = targetHero.status;
+    caster.derived.mp -= spell.mpCost;
+    const amount = Math.max(1, dice.roll(spell.dice || '4d6+8') + statMod);
+    targetHero.status = 'OK';
+    targetHero.derived.hp = Math.min(targetHero.derived.maxHp, amount);
+    return {
+      ok: true,
+      log: `${caster.name} invokes ${spell.name} (-${spell.mpCost} MP)! ${targetHero.name} rises from ${oldState} with ${targetHero.derived.hp}/${targetHero.derived.maxHp} HP!`
+    };
+  }
+
+  // Supreme Party Miracle (Revive Dead/Ashes + Cure All + Heal All)
+  if (spell.effect === 'miracle_party') {
+    const partyHeroes = state.party
+      .map(p => state.roster.find(c => c.id === p.charId))
+      .filter(Boolean);
+
+    if (partyHeroes.length === 0) {
+      return { ok: false, log: 'No party members present.' };
+    }
+
+    const cures = spell.cures || ['Poison', 'Sleep', 'Paralysis', 'Silence'];
+    const anyNeedsMiracle = partyHeroes.some(
+      h => isHeroDead(h) || h.derived.hp < h.derived.maxHp || cures.includes(h.status)
+    );
+    if (!anyNeedsMiracle) {
+      return { ok: false, log: 'The entire party is already alive, healthy, and at full HP.' };
+    }
+
+    caster.derived.mp -= spell.mpCost;
+    const results = [];
+    for (const member of partyHeroes) {
+      const amount = Math.max(1, dice.roll(spell.dice || '4d6+10') + statMod);
+      if (isHeroDead(member)) {
+        const prev = member.status;
+        member.status = 'OK';
+        member.derived.hp = Math.min(member.derived.maxHp, amount);
+        results.push(`${member.name} (risen from ${prev}, ${member.derived.hp} HP)`);
+      } else {
+        const before = member.derived.hp;
+        member.derived.hp = Math.min(member.derived.maxHp, before + amount);
+        const gained = member.derived.hp - before;
+        const cured = cures.includes(member.status) ? member.status : null;
+        if (cured) member.status = 'OK';
+        if (gained > 0 || cured) {
+          results.push(`${member.name} (+${gained} HP${cured ? `, cured ${cured}` : ''})`);
+        }
+      }
+    }
+
+    return {
+      ok: true,
+      log: `${caster.name} calls down ${spell.name} (-${spell.mpCost} MP)! ${results.join(', ')}.`
     };
   }
 
@@ -351,6 +435,26 @@ export function castFieldSpell({
     return {
       ok: true,
       log: `${caster.name} invokes ${spell.name} (-${spell.mpCost} MP)! Traps, chests, and stairs are revealed for ${state.location.detectSteps} steps (+5 Disarm bonus).`
+    };
+  }
+
+  // Field Omnisight (All-Seeing Eye: Mage-Light + Trap Sight + Overworld Atlas Reveal)
+  if (spell.effect === 'field_omnisight') {
+    caster.derived.mp -= spell.mpCost;
+    const steps = (spell.durationSteps || 60) + statMod * 5;
+    if (!state.location) state.location = {};
+    state.location.lightSteps = Math.max(state.location.lightSteps || 0, steps);
+    state.location.detectSteps = Math.max(state.location.detectSteps || 0, steps);
+    const owX = state.location.mode === 'overworld'
+      ? state.location.x
+      : (state.location.returnOverworld?.x ?? 16);
+    const owY = state.location.mode === 'overworld'
+      ? state.location.y
+      : (state.location.returnOverworld?.y ?? 14);
+    revealOverworldArea(state, owX, owY, 8);
+    return {
+      ok: true,
+      log: `${caster.name} opens the ${spell.name} (-${spell.mpCost} MP)! Radiant light and trap sight active for ${steps} steps, and surrounding lands are charted on your Overworld Atlas ([M])!`
     };
   }
 

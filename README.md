@@ -9,14 +9,16 @@ Assemble a roster of heroes at Gilgamesh's Tavern, form an active party of 4 to 
 ## Key Features
 
 - **Roster & Party Management**: Create up to 20 characters across 4 races (Human, Elf, Dwarf, Halfling) and 6 classes (Fighter, Paladin, Thief, Ranger, Cleric, Wizard) with point-buy stat allocation (`STR`, `DEX`, `INT`, `WIS`) or spin up a ready-made default party.
-- **Tile-Based Overworld & Town Exploration**: Navigate an 11×11 viewport over the Realm of Avalon and three towns (Oakhaven, Yew, Moon), complete with terrain passability, NPC conversations, and location triggers.
-- **First-Person 3D Dungeon Exploration**: Descend into multi-floor dungeons (**Cavern of Despise** B1–B2 and **Abyss of Doom** B1–B3) rendered in a classic first-person perspective `<canvas>` with a 7×7 local automap sensor, torch/mage-light visibility, locked doors, trapped treasure chests, mystic fountains, stairs, and dungeon bosses.
+- **Tile-Based Overworld, Skiff Sailing & World Atlas**: Navigate an 11×11 viewport over the 32×32 Realm of Avalon and three towns (Oakhaven, Yew, Moon), chart your discoveries in the **Overworld Atlas (`[M]`)**, and charter a **Shallow-Draft Skiff** at Port of Moon to sail across shallow waters to three offshore **Island Shrines of the Triad**.
+- **First-Person 3D Dungeon Exploration**: Descend into multi-floor dungeons (**Cavern of Despise** Floors 1–2 and **Abyss of Doom** Floors 1–3) rendered in a classic first-person perspective `<canvas>` with a 7×7 local automap sensor, torch/mage-light visibility, locked doors, trapped treasure chests, mystic fountains, stairs, and dungeon bosses.
 - **Town Services**:
-  - **The Royal Armory & Provisions**: Buy and sell weapons, armor, accessories, and consumables (including dungeon utility items like **Pitch Torches**, **Skeleton Keys**, and **Angelic Feathers**) with clear class eligibility tags.
+  - **The Royal Armory & Provisions**: Buy and sell regional weapons, armor, accessories, and consumables (including dungeon utility items like **Pitch Torches**, **Skeleton Keys**, and **Angelic Feathers**) with live equipped-gear comparisons.
   - **The Wayfarer's Inn**: Rest to restore party HP and MP and save your progress.
   - **Temple of the Triad**: Cure status ailments (Poison, Sleep, Paralysis, Silence) and resurrect fallen (`Dead` or `Ashes`) heroes.
+  - **Moon Harbor Dock**: Charter a Skiff in the Coastal Port of Moon to sail shallow coastal waters and track your Island Shrine blessings.
 - **Menu-Driven Group Combat**: *Bard's Tale*-style round-based encounters with surprise checks, darkness ambush penalties, per-depth stat scaling, front/back row positioning rules, initiative order resolution, status effects, XP/leveling, gold, and item drops.
-- **Arcane & Divine Magic**: Single-pool MP casting system supporting both combat spells (single-target, group AoE, healing, buffs, status) and field spells (*Lumina Orb*, *Triad Sight*, *Arcane Knock*, *Sanctuary Touch*, *Purify Spirit*, *Greater Mend*, *Hymn of Dawn*, *Breath of Life*, *Ethereal Recall*).
+- **Arcane & Divine Magic (Tiers 1–5)**: Single-pool MP casting system supporting 26 combat and field spells across Tiers 1–5—including *Glacial Lance*, *Chronos Veil*, *All-Seeing Eye*, *Void Singularity*, *Solar Pillar*, *Bulwark of the Triad*, *Miracle of Rebirth* (restoring `Ashes`), and *Celestial Miracle*.
+- **Retro Chiptune Background Music**: Procedural Web Audio API background music across four distinct themes (*Overworld*, *Town/Tavern*, spooky *Dungeon*, and thrilling *Combat*) with a persistent header toggle.
 - **Save & Export System**: Automatic persistence via `localStorage` plus full JSON save export and import.
 
 ## Running Locally

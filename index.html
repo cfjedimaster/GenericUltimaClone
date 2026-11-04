@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chronicles of the Triad — Ultima III–Style RPG</title>
+  <title>Chronicles of the Triad</title>
   <link rel="stylesheet" href="./css/style.css">
   <script type="module" src="./js/app.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
@@ -14,13 +14,20 @@
     <header class="top-bar">
       <div class="brand-title">
         <h1>Chronicles of the Triad</h1>
-        <span class="step-badge">Step 8: First-Person Dungeons &amp; Bosses</span>
       </div>
       <div class="top-stats">
         <span>Roster: <strong x-text="`${state.roster.length}/${maxRosterSize}`"></strong></span>
         <span>Party: <strong x-text="`${state.party.length}/${maxPartySize}`"></strong></span>
-        <span>Pack: <strong x-text="totalPackItemCount"></strong></span>
-        <span>Gold: <strong x-text="state.gold"></strong> GP</span>
+        <span>Gold: <strong x-text="state.gold"></strong></span>
+        <button
+          type="button"
+          class="btn-sm"
+          :disabled="state.roster.length === 0 || screen === 'combat'"
+          @click="openAtlasModal()"
+          title="Open Overworld Atlas (M)"
+        >
+          [M] Atlas
+        </button>
         <button
           type="button"
           class="btn-sm"
@@ -37,7 +44,15 @@
         >
           [I] Pack &amp; Gear
         </button>
-        <button type="button" class="btn-sm" @click="openSaveModal()">Save / JSON</button>
+        <button
+          type="button"
+          class="btn-sm"
+          :aria-pressed="musicEnabled ? 'true' : 'false'"
+          @click="toggleMusic()"
+          title="Toggle background music"
+          x-text="musicEnabled ? '♫ Music: ON' : '♫ Music: OFF'"
+        ></button>
+        <button type="button" class="btn-sm" @click="openSaveModal()">Save</button>
       </div>
     </header>
 
@@ -75,8 +90,8 @@
   \_____||_| |_||_|  \___/|_| |_|_|\___|_|\___||___/ \___/|_|    \__|_| |_|\___|   |_||_|  |_|\__,_|\__,_|
       </pre>
       <p class="title-subtitle">
-        A classic party-based CRPG inspired by <em>Ultima III: Exodus</em>, <em>The Bard's Tale</em>, and <em>Wasteland</em>.
-        Form your roster of up to 20 heroes, organize a party of 4–6 into front and back rows, and venture forth.
+        Darkness stirs beneath the Realm of Avalon. Assemble a roster of up to 20 heroes at Gilgamesh's Tavern,
+        form an active party of 4 to 6 adventurers across front and back rows, and venture forth.
       </p>
 
       <div class="save-summary-box">
@@ -98,11 +113,11 @@
         <button type="button" class="btn-primary" @click="goToScreen('tavern')">
           Enter Gilgamesh's Tavern (Manage Roster &amp; Party)
         </button>
-        <button type="button" class="btn-success" :disabled="!canEmbark" @click="goToScreen('overworld_stub')">
+        <button type="button" class="btn-success" :disabled="!canEmbark" @click="goToScreen('overworld')">
           Embark to Overworld
         </button>
         <button type="button" @click="openSaveModal()">
-          Import / Export Save
+          Save &amp; Backup
         </button>
         <button type="button" class="btn-danger" @click="document.querySelector('#wipe-dialog').showModal()">
           Wipe Save Data
@@ -119,7 +134,7 @@
           <div style="display: flex; gap: 0.4rem;">
             <button type="button" class="btn-sm" x-show="state.roster.length > 0" @click="openInventoryModal()">Pack &amp; Gear</button>
             <button type="button" class="btn-sm" x-show="state.party.length > 0" @click="disbandParty()">Disband</button>
-            <button type="button" class="btn-sm btn-success" :disabled="!canEmbark" @click="goToScreen('overworld_stub')">
+            <button type="button" class="btn-sm btn-success" :disabled="!canEmbark" @click="goToScreen('overworld')">
               Embark &rarr;
             </button>
           </div>
@@ -145,7 +160,7 @@
                   <div class="char-name-line" x-text="member.name"></div>
                   <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className} • ${getItemName(member.equipment?.weapon, 'Unarmed')} / ${getItemName(member.equipment?.armor, 'Unarmored')}`"></div>
                   <div class="char-vitals">
-                    <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
+                    <span class="vital-hp" :class="{ 'vital-hp-low': isLowHp(member) }" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
                     <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
                     <span class="vital-ac" x-text="`AC ${member.derived.ac}`"></span>
                   </div>
@@ -177,7 +192,7 @@
                   <div class="char-name-line" x-text="member.name"></div>
                   <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className} • ${getItemName(member.equipment?.weapon, 'Unarmed')} / ${getItemName(member.equipment?.armor, 'Unarmored')}`"></div>
                   <div class="char-vitals">
-                    <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
+                    <span class="vital-hp" :class="{ 'vital-hp-low': isLowHp(member) }" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
                     <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
                     <span class="vital-ac" x-text="`AC ${member.derived.ac}`"></span>
                   </div>
@@ -250,7 +265,7 @@
                   <span x-text="`${getItemName(char.equipment?.weapon, 'Unarmed')} | ${getItemName(char.equipment?.armor, 'Unarmored')}`"></span>
                 </div>
                 <div class="char-vitals">
-                  <span class="vital-hp" x-text="`HP ${char.derived.hp}/${char.derived.maxHp}`"></span>
+                  <span class="vital-hp" :class="{ 'vital-hp-low': isLowHp(char) }" x-text="`HP ${char.derived.hp}/${char.derived.maxHp}`"></span>
                   <span class="vital-mp" x-text="`MP ${char.derived.mp}/${char.derived.maxMp}`"></span>
                   <span class="vital-ac" x-text="`AC ${char.derived.ac}`"></span>
                 </div>
@@ -475,6 +490,9 @@
               <template x-if="(state.location?.detectSteps || 0) > 0">
                 <span class="badge-party" style="border-color: var(--accent-gold); color: var(--accent-gold);" x-text="`◈ Triad Sight (${state.location.detectSteps} steps)`"></span>
               </template>
+              <template x-if="!isDungeonMode && state.flags?.has_skiff">
+                <span class="badge-party" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" x-text="isPartyAfloat ? '⛵ Skiff Afloat' : '⛵ Skiff Chartered'"></span>
+              </template>
             </div>
           </div>
           <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
@@ -483,7 +501,7 @@
               class="btn-sm btn-primary"
               x-show="currentTrigger"
               @click="enterOrInteract()"
-              x-text="currentTrigger?.type === 'town' || currentTrigger?.type === 'castle' || currentTrigger?.type === 'dungeon' ? `Enter ${currentTrigger.name} [E]` : `Activate [E]`"
+              x-text="currentTrigger?.type === 'town' || currentTrigger?.type === 'castle' || currentTrigger?.type === 'dungeon' ? `Enter ${currentTrigger.name} [E]` : currentTrigger?.type === 'shrine' ? `Kneel at Shrine [E]` : `Activate [E]`"
             ></button>
             <button
               type="button"
@@ -509,6 +527,7 @@
             >
               Leave Town [X]
             </button>
+            <button type="button" class="btn-sm" x-show="!isDungeonMode" @click="openAtlasModal()">Atlas [M]</button>
             <button type="button" class="btn-sm" @click="openSpellModal()">Spells [C]</button>
             <button type="button" class="btn-sm" @click="openInventoryModal()">Pack [I]</button>
             <button type="button" class="btn-sm" x-show="!isDungeonMode" @click="goToScreen('tavern')">Tavern Roster</button>
@@ -536,7 +555,7 @@
                     :style="`background-color: ${cell.tile.bg}; color: ${cell.isParty ? '#ffffff' : cell.tile.fg};`"
                     :title="describeCell(cell)"
                   >
-                    <span class="tile-glyph" :title="describeCell(cell)" x-text="cell.isParty ? '@' : cell.tile.glyph"></span>
+                    <span class="tile-glyph" :title="describeCell(cell)" x-text="cell.isParty ? (isPartyAfloat ? '⛵' : '@') : cell.tile.glyph"></span>
                   </div>
                 </template>
               </div>
@@ -566,10 +585,11 @@
             <div class="legend-card">
               <h3>Map Legend</h3>
               <ul class="legend-list" role="list">
-                <li><span class="legend-glyph" style="color: #fff;">@</span> Your Party</li>
+                <li><span class="legend-glyph" style="color: #fff;">@</span> Your Party (⛵ on Skiff)</li>
                 <li><span class="legend-glyph" style="color: #f0c45a;">⌂</span> Town Gate [E]</li>
                 <li><span class="legend-glyph" style="color: #5ce1e6;">♜</span> Royal Castle [E]</li>
                 <li><span class="legend-glyph" style="color: #f25f5c;">Ω</span> Dungeon Maw [E]</li>
+                <li><span class="legend-glyph" style="color: #ffd875;">☼</span> Island Shrine [E]</li>
                 <li><span class="legend-glyph" style="color: #f0c45a;">G</span> Guild / Roster [E]</li>
                 <li><span class="legend-glyph" style="color: #5ce1e6;">I</span> Wayfarer's Inn [E]</li>
                 <li><span class="legend-glyph" style="color: #52d681;">S</span> Armory Shop [E]</li>
@@ -672,7 +692,7 @@
         <div class="log-panel">
           <div class="log-header">
             <span>Chronicle Log</span>
-            <small x-show="!isDungeonMode">WASD/Arrows move, [E] Enter, [C] Cast Spell, [I] Pack &amp; Gear, [T] Talk, [X] Exit Town</small>
+            <small x-show="!isDungeonMode">WASD/Arrows move, [E] Enter, [M] Atlas, [C] Cast, [I] Pack &amp; Gear, [T] Talk, [X] Exit Town</small>
             <small x-show="isDungeonMode">W/S Forward/Back, A/D Turn 90&deg;, [E] Stairs/Chest, [O] Unlock Door, [F] Search/Disarm, [C] Cast</small>
           </div>
           <div id="exploration-log" class="log-entries" role="log" aria-live="polite">
@@ -757,6 +777,13 @@
             <button
               type="button"
               x-show="!isDungeonMode"
+              @click="openAtlasModal()"
+            >
+              [M] World Atlas
+            </button>
+            <button
+              type="button"
+              x-show="!isDungeonMode"
               :disabled="adjacentTriggers.length === 0 && !currentTrigger"
               @click="talkNearby()"
             >
@@ -790,7 +817,7 @@
                   </div>
                   <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className}${doesHeroHaveMagic(member) ? ' • ' + getHeroMagicSchoolLabel(member) : ''}`"></div>
                   <div class="char-vitals">
-                    <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
+                    <span class="vital-hp" :class="{ 'vital-hp-low': isLowHp(member) }" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
                     <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
                     <span class="vital-ac" x-text="`AC ${member.derived.ac}`"></span>
                   </div>
@@ -1211,7 +1238,7 @@
                     </div>
                     <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className} • ${getItemName(member.equipment?.weapon, 'Unarmed')}`"></div>
                     <div class="char-vitals">
-                      <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
+                      <span class="vital-hp" :class="{ 'vital-hp-low': isLowHp(member) }" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
                       <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
                       <span class="vital-ac" x-text="`AC ${member.derived.ac}`"></span>
                     </div>
@@ -1709,6 +1736,171 @@
       </form>
     </dialog>
 
+    <!-- Moon Harbor Dock & Skiff Charter Dialog -->
+    <dialog id="harbor-dialog" closedby="any" aria-labelledby="harbor-dialog-title">
+      <div class="panel-header">
+        <h2 id="harbor-dialog-title" x-text="harborName"></h2>
+        <span style="color: var(--accent-gold); font-weight: 700;" x-text="`${state.gold} GP`"></span>
+      </div>
+      <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0;">
+        Harbor Master Corwin looks out across the eastern reefs: "The shallow coastal waters of Avalon conceal three ancient Island Shrines of the Triad. Charter a shallow-draft Skiff and your party can sail across any Shallow Water (<code>~</code>) tile on the Overworld!"
+      </p>
+
+      <div class="service-options-list">
+        <div class="service-option-card">
+          <div>
+            <strong style="color: var(--accent-cyan);">Shallow-Draft Skiff Charter (150 GP)</strong>
+            <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+              Permanent maritime deed allowing your party to sail across all Shallow Water tiles on the Realm of Avalon Overworld.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn-sm btn-primary"
+            :disabled="state.flags?.has_skiff || state.gold < 150"
+            @click="charterSkiffAtHarbor()"
+            x-text="state.flags?.has_skiff ? '⛵ Chartered' : 'Charter Skiff (150 GP)'"
+          ></button>
+        </div>
+
+        <div class="service-option-card">
+          <div>
+            <strong style="color: var(--accent-gold);">Sanctuary Isle — Shrine of Valor (South Bay: 20, 25)</strong>
+            <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+              Grants +1 STR and +4 Max HP permanently to all active party members.
+            </p>
+          </div>
+          <span
+            class="status-pill"
+            :class="state.flags?.shrine_valor_blessed ? 'status-ok' : 'status-silence'"
+            x-text="state.flags?.shrine_valor_blessed ? '★ BLESSED' : 'UNVISITED'"
+          ></span>
+        </div>
+
+        <div class="service-option-card">
+          <div>
+            <strong style="color: var(--accent-gold);">Starlight Atoll — Shrine of Wisdom (North Sea: 16, 2)</strong>
+            <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+              Grants +1 INT, +1 WIS, and +4 Max MP permanently to all active party members.
+            </p>
+          </div>
+          <span
+            class="status-pill"
+            :class="state.flags?.shrine_wisdom_blessed ? 'status-ok' : 'status-silence'"
+            x-text="state.flags?.shrine_wisdom_blessed ? '★ BLESSED' : 'UNVISITED'"
+          ></span>
+        </div>
+
+        <div class="service-option-card">
+          <div>
+            <strong style="color: var(--accent-gold);">Tempest Reef — Shrine of Swift Grace (East Coast: 29, 14)</strong>
+            <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+              Grants +1 DEX, +2 Max HP, and +2 Max MP permanently to all active party members.
+            </p>
+          </div>
+          <span
+            class="status-pill"
+            :class="state.flags?.shrine_grace_blessed ? 'status-ok' : 'status-silence'"
+            x-text="state.flags?.shrine_grace_blessed ? '★ BLESSED' : 'UNVISITED'"
+          ></span>
+        </div>
+      </div>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" autofocus>Depart Dock</button>
+      </form>
+    </dialog>
+
+    <!-- Overworld Atlas Dialog ([M]) -->
+    <dialog id="atlas-dialog" class="dialog-wide" closedby="any" aria-labelledby="atlas-dialog-title">
+      <div class="panel-header">
+        <div>
+          <h2 id="atlas-dialog-title">Cartographer's Atlas of Avalon</h2>
+          <small style="color: var(--text-muted);">
+            32&times;32 Overworld Survey &bull;
+            <span x-text="`${overworldAtlas.exploredCount} / ${overworldAtlas.totalTiles} Tiles Charted (${overworldAtlas.percent}%)`"></span>
+          </small>
+        </div>
+        <span
+          class="badge-party"
+          :style="state.flags?.has_skiff ? 'border-color: var(--accent-cyan); color: var(--accent-cyan);' : ''"
+          x-text="state.flags?.has_skiff ? '⛵ Skiff Chartered' : 'No Vessel (Visit Port of Moon)'"
+        ></span>
+      </div>
+
+      <div class="atlas-modal-grid">
+        <!-- Left: 32x32 World Map Grid -->
+        <div class="atlas-map-wrap">
+          <div class="atlas-grid" role="grid" aria-label="32 by 32 Overworld Atlas of Avalon">
+            <template x-for="row in overworldAtlas.rows" :key="row.rowKey">
+              <div class="atlas-row" role="row">
+                <template x-for="cell in row.cells" :key="cell.key">
+                  <div
+                    class="atlas-cell"
+                    role="gridcell"
+                    :class="{
+                      'is-party': cell.isParty,
+                      'is-landmark': cell.isLandmark,
+                      'unexplored': !cell.explored
+                    }"
+                    :style="`background-color: ${cell.bg}; color: ${cell.fg};`"
+                    :title="cell.title"
+                  >
+                    <span x-text="cell.glyph"></span>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+          <div class="atlas-legend-strip">
+            <span><strong style="color: #ffe680;">@ / ⛵</strong> Party</span>
+            <span><strong style="color: #f0c45a;">⌂</strong> Town</span>
+            <span><strong style="color: #5ce1e6;">♜</strong> Castle</span>
+            <span><strong style="color: #f25f5c;">Ω</strong> Dungeon</span>
+            <span><strong style="color: #ffd875;">☼</strong> Island Shrine</span>
+            <span><strong style="color: #4da6db;">~</strong> Shallows (Skiff)</span>
+          </div>
+        </div>
+
+        <!-- Right: Charted Landmarks & Shrines -->
+        <div class="atlas-landmarks-column">
+          <div class="subpanel-title">
+            <span>Charted Landmarks</span>
+            <span x-text="`${overworldAtlas.landmarks.length} Discovered`"></span>
+          </div>
+          <div class="pack-item-list">
+            <template x-if="overworldAtlas.landmarks.length === 0">
+              <div class="empty-box">
+                Explore the Realm of Avalon to chart towns, dungeons, and island shrines.
+              </div>
+            </template>
+            <template x-for="lm in overworldAtlas.landmarks" :key="`${lm.x}_${lm.y}`">
+              <div class="slot-card" style="padding: 0.55rem 0.7rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
+                  <strong style="color: var(--accent-gold); font-size: 0.85rem;" x-text="lm.name"></strong>
+                  <span class="badge-party" x-text="`(${lm.x}, ${lm.y})`"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.25rem; font-size: 0.76rem; color: var(--text-muted);">
+                  <span x-text="lm.type.toUpperCase()"></span>
+                  <template x-if="lm.type === 'shrine'">
+                    <span
+                      class="status-pill"
+                      :class="lm.blessed ? 'status-ok' : 'status-silence'"
+                      x-text="lm.blessed ? '★ BLESSED' : 'UNBLESSED'"
+                    ></span>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" autofocus>Close Atlas [Esc]</button>
+      </form>
+    </dialog>
+
     <!-- Spellbook & Field Magic Dialog -->
     <dialog id="spell-dialog" class="dialog-wide" closedby="any" aria-labelledby="spell-dialog-title">
       <div class="panel-header">
@@ -1912,22 +2104,22 @@
       </div>
     </dialog>
 
-    <!-- Save / Import / Export JSON Dialog -->
+    <!-- Save / Backup Dialog -->
     <dialog id="save-dialog" closedby="any" aria-labelledby="save-dialog-title">
       <div class="panel-header">
-        <h2 id="save-dialog-title">Save Data &amp; JSON Backup</h2>
+        <h2 id="save-dialog-title">Save &amp; Backup</h2>
       </div>
       <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0;">
-        Your progress is automatically saved to browser <code>localStorage</code>. You can also export or paste a save JSON below.
+        Your progress is saved automatically. You can also export a backup file or paste saved data below to restore a chronicle.
       </p>
       <div class="field-group">
-        <label for="save-json-textarea">Save State JSON</label>
+        <label for="save-json-textarea">Saved Chronicle Data</label>
         <textarea id="save-json-textarea" rows="9" x-model="importJsonText"></textarea>
         <p x-show="importError" style="color: var(--accent-red); font-size: 0.8rem;" x-text="importError"></p>
       </div>
       <div class="dialog-actions">
         <button type="button" @click="downloadSaveFile()">Export File</button>
-        <button type="button" class="btn-primary" @click="importSaveFromModal()">Import JSON</button>
+        <button type="button" class="btn-primary" @click="importSaveFromModal()">Restore Save</button>
         <form method="dialog">
           <button type="submit" value="close" autofocus>Close</button>
         </form>
@@ -1939,7 +2131,7 @@
       <div class="panel-header">
         <h2 id="wipe-dialog-title">Wipe All Save Data?</h2>
       </div>
-      <p>This will erase your entire roster, active party, and gold from <code>localStorage</code>.</p>
+      <p>This will permanently erase your entire roster, active party, and gold.</p>
       <div class="dialog-actions">
         <form method="dialog">
           <button type="submit" value="cancel" autofocus>Cancel</button>

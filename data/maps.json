@@ -264,6 +264,16 @@
       "bg": "#181d29",
       "passable": true,
       "encounterRate": 0
+    },
+    "H": {
+      "id": "shrine",
+      "code": "H",
+      "name": "Shrine of the Triad",
+      "glyph": "☼",
+      "fg": "#ffd875",
+      "bg": "#2b2110",
+      "passable": true,
+      "encounterRate": 0
     }
   },
   "maps": {
@@ -276,10 +286,10 @@
       "defaultSpawn": { "x": 16, "y": 14 },
       "grid": [
         "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-        "~~========~~~~~~~~~~~~~=======~~",
-        "~==......===~~~~~~~~~===.....==~",
-        "~=..tttt...==~~~~~~~==..^^^...=~",
-        "~=..tttttt..==~~~~~==..^^MM^..=~",
+        "~~========~~~~=====~~~~=======~~",
+        "~==......===~~=.H.=~~===.....==~",
+        "~=..tttt...==~~===~~==..^^^...=~",
+        "~=..tttttt..==~===~==..^^MM^..=~",
         "~=.ttttttttt.=======..^MMMMM^.=~",
         "~=.ttt...tttt.......^^MMMMMMM.=~",
         "~=.tt..T..ttt:::::::^^^^^DMMM.=~",
@@ -288,9 +298,9 @@
         "~=...tt:ttt..:.....:...^^^^...=~",
         "~==....:.....:..C..:.........==~",
         "~~==...:.....:..:..:........==~~",
-        "~~~=...:.....:..T..:.......=~~~~",
-        "~~~=...:::::::..:..:::::...=~~~~",
-        "~~~=............:.....:....=~~~~",
+        "~~~=...:.....:..T..:.......====~",
+        "~~~=...:::::::..:..:::::...==H=~",
+        "~~~=............:.....:....====~",
         "~~==......^^^.........:....==~~~",
         "~==......^^M^^........:.....==~~",
         "~=......^^MMM^^.......:..T...==~",
@@ -300,7 +310,7 @@
         "~=...ttt......==~~~~~~~~~==...=~",
         "~==.........===~~~=====~~~==.==~",
         "~~==...^^^^^==~~~==...==~~~===~~",
-        "~~~=..^MM^MM^=~~==..t..==~~~=~~~",
+        "~~~=..^MM^MM^=~~==..H..==~~~=~~~",
         "~~~=..^MM^D^^=~~=..ttt..=~~~=~~~",
         "~~~=..^MMMMM^====...t...====~~~~",
         "~~~==..^^^^^...............=~~~~",
@@ -370,6 +380,39 @@
           "targetY": 11,
           "targetFacing": "N",
           "message": "Sulfurous smoke billows from the Abyss of Doom (Recommended Lv 4–7). Press [E] to enter the citadel!"
+        },
+        {
+          "x": 20,
+          "y": 25,
+          "type": "shrine",
+          "flag": "shrine_valor_blessed",
+          "name": "Shrine of Valor (Sanctuary Isle)",
+          "statBonuses": { "str": 1 },
+          "hpBonus": 4,
+          "mpBonus": 0,
+          "message": "An ancient monolith of crimson granite rises above Sanctuary Isle. Press [E] to kneel for the Blessing of Valor (+1 STR, +4 Max HP to all party heroes)."
+        },
+        {
+          "x": 16,
+          "y": 2,
+          "type": "shrine",
+          "flag": "shrine_wisdom_blessed",
+          "name": "Shrine of Wisdom (Starlight Atoll)",
+          "statBonuses": { "int": 1, "wis": 1 },
+          "hpBonus": 0,
+          "mpBonus": 4,
+          "message": "Crystalline spires hum with astral harmony on Starlight Atoll. Press [E] to meditate for the Blessing of Wisdom (+1 INT, +1 WIS, +4 Max MP to all party heroes)."
+        },
+        {
+          "x": 29,
+          "y": 14,
+          "type": "shrine",
+          "flag": "shrine_grace_blessed",
+          "name": "Shrine of Swift Grace (Tempest Reef)",
+          "statBonuses": { "dex": 1 },
+          "hpBonus": 2,
+          "mpBonus": 2,
+          "message": "Wind-carved coral pillars sing in the sea breeze on Tempest Reef. Press [E] to receive the Blessing of Swift Grace (+1 DEX, +2 Max HP, +2 Max MP to all party heroes)."
         }
       ]
     },
@@ -555,7 +598,7 @@
       "grid": [
         "~~~~~~~~~~~~~~~",
         "~~===B===B===~~",
-        "~==.._..._..==~",
+        "~==.._.B._..==~",
         "~=.####_####.=~",
         "~=.#G.+_+.S#.=~",
         "~=.####_####.=~",
@@ -570,6 +613,14 @@
         "......._......."
       ],
       "triggers": [
+        {
+          "x": 7,
+          "y": 2,
+          "type": "service",
+          "service": "harbor",
+          "name": "Moon Harbor Dock & Skiff Charter",
+          "message": "Harbor Master Corwin waves from the pier: 'Press [E] to charter a shallow-draft Skiff (150 GP) to sail the coastal shallows and reach the Island Shrines!'"
+        },
         {
           "x": 4,
           "y": 4,
