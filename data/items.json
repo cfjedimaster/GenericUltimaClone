@@ -437,5 +437,33 @@
     "dice": "2d6+4",
     "price": 85,
     "description": "Sacred temple salts that revive a fallen (Dead) hero or heal a living ally for 6–16 HP."
+  },
+  {
+    "id": "dungeon_torch",
+    "name": "Pitch Torch",
+    "slot": "consumable",
+    "category": "utility",
+    "effect": "field_light",
+    "durationSteps": 35,
+    "price": 15,
+    "description": "Resin-soaked pine torch that illuminates dark dungeon corridors for 35 steps."
+  },
+  {
+    "id": "master_key",
+    "name": "Skeleton Key",
+    "slot": "consumable",
+    "category": "utility",
+    "effect": "unlock_door",
+    "price": 40,
+    "description": "Forged masterwork lockpick-key that unlocks any barred dungeon door or disarms a chest lock."
+  },
+  {
+    "id": "angelic_feather",
+    "name": "Angelic Feather",
+    "slot": "consumable",
+    "category": "utility",
+    "effect": "exit_dungeon",
+    "price": 45,
+    "description": "Iridescent pinion blessed by the Triad that lifts the entire party out of a dungeon to its surface entrance."
   }
 ]

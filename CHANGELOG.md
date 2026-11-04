@@ -2,6 +2,27 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.2.0] - 2026-11-04
+
+### Added
+
+- **First-Person Dungeon Mode (`js/dungeon.js`, `data/maps.json`)**:
+  - Built a first-person 3D perspective `<canvas>` renderer displaying corridors, archways, locked iron doors, ascending/descending stairs, treasure chests, fountains, floor traps, and boss altars up to 3 tiles deep.
+  - Added a 7×7 local Automap Sensor grid that tracks explored tiles per dungeon floor and reveals concealed traps and features when *Triad Sight* is active.
+  - Implemented 5 handcrafted dungeon floors across two multi-level dungeons: **Cavern of Despise** (Levels B1–B2) and **Abyss of Doom** (Levels B1–B3).
+  - Added directional turning (`A`/`D` or Left/Right Arrows), forward/backward stepping (`W`/`S` or Up/Down Arrows), lockpicking/door unlocking (`[O]`), trap searching and disarming (`[F]`), and chest/stair/fountain activation (`[E]`).
+- **Expanded Bestiary, Encounter Tables & Depth Scaling (`data/monsters.json`, `data/encounters.json`, `js/combat.js`)**:
+  - Added 13 new dungeon monsters and bosses: *Crypt Ghoul*, *Hobgoblin Vanguard*, *Cave Wyvernling*, *Shadow Warlock*, *Stone Gargoyle*, *Barrow Wight*, *Ogre Crusher*, *Abyssal Chanter*, *Infernal Hellhound*, *Deep Cave Troll*, *Dread Death Knight*, **Malakor the Lich Lord** (Despise B2 Boss), and **Pyrothrax the Abyssal Wyrm** (Doom B3 Boss).
+  - Created depth-tiered encounter tables (`despise_b1`, `despise_b2`, `doom_b1`, `doom_b2`, `doom_b3`) and per-depth monster stat/reward scaling in `createEncounter`.
+  - Added darkness visibility limits (1 tile ahead) and a `-4` Surprise roll penalty when exploring dungeons without active light.
+- **New Dungeon Utility Spells & Items (`data/spells.json`, `data/items.json`)**:
+  - Added **Arcane Knock** (`arc_open`) to unlock barred dungeon doors or disarm chest wards, and **Triad Sight** (`div_detect`) to reveal dungeon traps and grant a disarm bonus.
+  - Added **Pitch Torch** (`dungeon_torch`) for 35 steps of torchlight, **Skeleton Key** (`master_key`) to unbar locked doors, and **Angelic Feather** (`angelic_feather`) to teleport the party from any dungeon level back to the surface entrance.
+- **UI & Inventory Polish (`index.html`, `js/app.js`, `js/items.js`, `js/dungeon.js`)**:
+  - Sorted the Party Pack's **Gear** filter by `ARMOR -> WEAPON -> ACCESSORY` (and alphabetically within each category).
+  - Updated equipment restriction buttons in the shop and pack to explicitly list the allowed classes (e.g., `Wizard / Cleric Only`) and hid non-caster magic school labels on party cards.
+  - Streamlined the dungeon viewport HUD and kept surprise roll modifiers hidden under the hood.
+
 ## [0.1.0] - 2026-11-03
 
 ### Added

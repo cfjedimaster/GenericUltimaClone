@@ -14,13 +14,15 @@ export function createDefaultState() {
     gold: 200,
     // Shared party pack: Array of { itemId: string, qty: number }
     inventory: [
-      { itemId: 'healing_draught', qty: 2 }
+      { itemId: 'healing_draught', qty: 2 },
+      { itemId: 'dungeon_torch', qty: 1 }
     ],
     location: {
       mode: 'overworld',
       mapId: 'avalon',
       x: 16,
       y: 14,
+      facing: 'N',
       steps: 0,
       returnOverworld: {
         mapId: 'avalon',

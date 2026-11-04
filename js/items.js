@@ -37,6 +37,22 @@ export function removeItemFromPack(state, itemId, qty = 1) {
   return true;
 }
 
+const CLASS_LABELS = {
+  fighter: 'Fighter',
+  paladin: 'Paladin',
+  thief: 'Thief',
+  ranger: 'Ranger',
+  cleric: 'Cleric',
+  wizard: 'Wizard'
+};
+
+export function formatAllowedClasses(allowedClasses) {
+  if (!Array.isArray(allowedClasses) || allowedClasses.length === 0 || allowedClasses.length >= 6) {
+    return 'All Classes';
+  }
+  return allowedClasses.map(c => CLASS_LABELS[c] || c).join(' / ');
+}
+
 export function canHeroEquipItem(hero, itemDef) {
   if (!hero || !itemDef) return { ok: false, reason: 'Invalid item.' };
   if (!EQUIPMENT_SLOTS.includes(itemDef.slot)) {
@@ -49,7 +65,7 @@ export function canHeroEquipItem(hero, itemDef) {
   ) {
     return {
       ok: false,
-      reason: `Cannot be equipped by ${hero.className}`
+      reason: `${formatAllowedClasses(itemDef.allowedClasses)} Only`
     };
   }
   return { ok: true, reason: '' };
@@ -80,6 +96,9 @@ export function formatItemSummary(itemDef) {
     if (itemDef.effect === 'restore_mp') return `Restores ${itemDef.dice} MP`;
     if (itemDef.effect === 'cure_status') return `Cures Poison / Sleep / Paralysis / Silence (+${itemDef.dice} HP)`;
     if (itemDef.effect === 'revive_or_heal') return `Revives Dead / Heals ${itemDef.dice} HP`;
+    if (itemDef.effect === 'field_light') return `Torchlight for ${itemDef.durationSteps || 35} steps`;
+    if (itemDef.effect === 'unlock_door') return `Unlocks any barred dungeon door ([O] in Dungeon)`;
+    if (itemDef.effect === 'exit_dungeon') return `Teleports party out of a dungeon to its surface entrance`;
   }
   return itemDef.description || '';
 }
@@ -305,6 +324,57 @@ export function useConsumableOnHero(state, itemId, targetHero, itemsById = {}) {
         log: `${itemDef.name} restores ${actual} HP to ${targetHero.name} (${targetHero.derived.hp}/${targetHero.derived.maxHp} HP).`
       };
     }
+  }
+
+  if (itemDef.effect === 'field_light') {
+    removeItemFromPack(state, itemId, 1);
+    const steps = itemDef.durationSteps || 35;
+    if (!state.location) state.location = {};
+    state.location.lightSteps = Math.max(state.location.lightSteps || 0, steps);
+    return {
+      ok: true,
+      amount: state.location.lightSteps,
+      log: `${targetHero.name} lights a ${itemDef.name}! Warm torchlight illuminates the party for ${state.location.lightSteps} steps.`
+    };
+  }
+
+  if (itemDef.effect === 'unlock_door') {
+    return {
+      ok: false,
+      log: `Face a locked dungeon door and press [O] (Unlock Door) to automatically use a ${itemDef.name}.`
+    };
+  }
+
+  if (itemDef.effect === 'exit_dungeon') {
+    if (state.location?.mode !== 'dungeon') {
+      return {
+        ok: false,
+        log: `${itemDef.name} can only be used inside a dungeon to return to the surface.`
+      };
+    }
+    removeItemFromPack(state, itemId, 1);
+    const mapIdStr = String(state.location.mapId || '');
+    let dest = { mapId: 'avalon', x: 16, y: 14 };
+    if (state.location.returnOverworld && state.location.returnOverworld.mapId) {
+      dest = { ...state.location.returnOverworld };
+    } else if (mapIdStr.includes('doom')) {
+      dest = { mapId: 'avalon', x: 10, y: 26 };
+    } else if (mapIdStr.includes('despise')) {
+      dest = { mapId: 'avalon', x: 25, y: 7 };
+    }
+
+    state.location.mode = 'overworld';
+    state.location.mapId = dest.mapId;
+    state.location.x = dest.x;
+    state.location.y = dest.y;
+    state.location.lightSteps = 0;
+    state.location.detectSteps = 0;
+
+    return {
+      ok: true,
+      exitedDungeon: true,
+      log: `${targetHero.name} raises the ${itemDef.name}! Golden wings of light lift the party out of the depths and set you down at the surface entrance!`
+    };
   }
 
   return { ok: false, log: 'Nothing happens.' };

@@ -1,5 +1,6 @@
 import { dice } from './dice.js';
 import { getStatMod, getEffectiveStats } from './models/character.js';
+import { attemptUnlockDungeonDoor } from './dungeon.js';
 
 export const PERSISTENT_AILMENTS = ['Poison', 'Dead', 'Ashes'];
 export const COMBAT_TEMP_AILMENTS = ['Sleep', 'Paralysis', 'Silence'];
@@ -91,7 +92,13 @@ export function formatSpellSummary(spell) {
     return `Revives Dead ally with ${spell.dice} + ${statLabel} mod HP`;
   }
   if (spell.effect === 'field_light') {
-    return `Mage-Light (${spell.durationSteps || 30} steps, +Surprise bonus)`;
+    return `Mage-Light (${spell.durationSteps || 30} steps)`;
+  }
+  if (spell.effect === 'field_detect') {
+    return `Reveals traps, chests & stairs (${spell.durationSteps || 35} steps)`;
+  }
+  if (spell.effect === 'field_open') {
+    return `Unlocks barred dungeon door ahead or disarms chest`;
   }
   if (spell.effect === 'recall') {
     return `Teleports party to Oakhaven gates / escapes battle`;
@@ -157,7 +164,8 @@ export function castFieldSpell({
   caster,
   spell,
   targetHero = null,
-  itemsById = {}
+  itemsById = {},
+  maps = {}
 }) {
   if (!state || !caster || !spell) {
     return { ok: false, log: 'Invalid spell invocation.' };
@@ -330,7 +338,38 @@ export function castFieldSpell({
     state.location.lightSteps = Math.max(state.location.lightSteps || 0, steps);
     return {
       ok: true,
-      log: `${caster.name} conjures ${spell.name} (-${spell.mpCost} MP)! A radiant orb illuminates the party for ${state.location.lightSteps} steps (+Surprise bonus).`
+      log: `${caster.name} conjures ${spell.name} (-${spell.mpCost} MP)! A radiant orb illuminates the party for ${state.location.lightSteps} steps.`
+    };
+  }
+
+  // Field Detect Peril (Triad Sight)
+  if (spell.effect === 'field_detect') {
+    caster.derived.mp -= spell.mpCost;
+    const steps = (spell.durationSteps || 35) + statMod * 5;
+    if (!state.location) state.location = {};
+    state.location.detectSteps = Math.max(state.location.detectSteps || 0, steps);
+    return {
+      ok: true,
+      log: `${caster.name} invokes ${spell.name} (-${spell.mpCost} MP)! Traps, chests, and stairs are revealed for ${state.location.detectSteps} steps (+5 Disarm bonus).`
+    };
+  }
+
+  // Field Open / Unlock (Arcane Knock)
+  if (spell.effect === 'field_open') {
+    const res = attemptUnlockDungeonDoor({
+      state,
+      maps,
+      viaSpell: true,
+      casterName: caster.name
+    });
+    if (!res.ok) {
+      return res;
+    }
+    caster.derived.mp -= spell.mpCost;
+    return {
+      ok: true,
+      unlocked: true,
+      log: res.log
     };
   }
 
@@ -371,7 +410,14 @@ export function tickOverworldStepEffects(state) {
   if (state.location && typeof state.location.lightSteps === 'number' && state.location.lightSteps > 0) {
     state.location.lightSteps = Math.max(0, state.location.lightSteps - 1);
     if (state.location.lightSteps === 0) {
-      notes.push('Your Lumina Orb flickers and fades into darkness.');
+      notes.push('Your light source flickers and fades into darkness!');
+    }
+  }
+
+  if (state.location && typeof state.location.detectSteps === 'number' && state.location.detectSteps > 0) {
+    state.location.detectSteps = Math.max(0, state.location.detectSteps - 1);
+    if (state.location.detectSteps === 0) {
+      notes.push('Your Triad Sight fades.');
     }
   }
 

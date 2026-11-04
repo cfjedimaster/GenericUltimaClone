@@ -183,5 +183,318 @@
       { "itemId": "boar_spear", "chance": 0.07 },
       { "itemId": "studded_leather", "chance": 0.05 }
     ]
+  },
+  {
+    "id": "crypt_ghoul",
+    "name": "Crypt Ghoul",
+    "pluralName": "Crypt Ghouls",
+    "glyph": "z",
+    "color": "#9be564",
+    "undead": true,
+    "hp": "2d6+4",
+    "ac": 12,
+    "dex": 11,
+    "attackName": "Carrion Claws",
+    "damageDice": "1d6+1",
+    "specialAttack": {
+      "name": "Cadaverous Grip",
+      "chance": 0.3,
+      "damageDice": "1d4+1",
+      "status": "Paralysis",
+      "statusChance": 0.55
+    },
+    "xp": 48,
+    "gold": "2d8+6",
+    "drops": [
+      { "itemId": "antidote_herb", "chance": 0.2 },
+      { "itemId": "greater_healing_draught", "chance": 0.15 },
+      { "itemId": "iron_mace", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "hobgoblin_vanguard",
+    "name": "Hobgoblin Vanguard",
+    "pluralName": "Hobgoblin Vanguards",
+    "glyph": "H",
+    "color": "#ff924c",
+    "hp": "2d8+4",
+    "ac": 13,
+    "dex": 11,
+    "attackName": "Notched Broadsword",
+    "damageDice": "1d6+2",
+    "xp": 52,
+    "gold": "3d6+8",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.18 },
+      { "itemId": "dungeon_torch", "chance": 0.22 },
+      { "itemId": "broadsword", "chance": 0.06 },
+      { "itemId": "chain_hauberk", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "wyvernling",
+    "name": "Cave Wyvernling",
+    "pluralName": "Cave Wyvernlings",
+    "glyph": "v",
+    "color": "#7ae582",
+    "hp": "2d8+3",
+    "ac": 12,
+    "dex": 13,
+    "attackName": "Barbed Talons",
+    "damageDice": "1d6+1",
+    "specialAttack": {
+      "name": "Venomous Tail Whip",
+      "chance": 0.35,
+      "damageDice": "1d6+1",
+      "status": "Poison",
+      "statusChance": 0.72
+    },
+    "xp": 55,
+    "gold": "2d8+9",
+    "drops": [
+      { "itemId": "antidote_herb", "chance": 0.3 },
+      { "itemId": "shadow_cloak_armor", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "shadow_warlock",
+    "name": "Shadow Warlock",
+    "pluralName": "Shadow Warlocks",
+    "glyph": "W",
+    "color": "#d08bff",
+    "hp": "2d6+4",
+    "ac": 12,
+    "dex": 12,
+    "attackName": "Eldritch Lance",
+    "damageDice": "1d6+2",
+    "specialAttack": {
+      "name": "Void Silence Hex",
+      "chance": 0.38,
+      "damageDice": "1d6",
+      "status": "Silence",
+      "statusChance": 0.68,
+      "isSpell": true
+    },
+    "xp": 58,
+    "gold": "3d6+10",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.28 },
+      { "itemId": "master_key", "chance": 0.12 },
+      { "itemId": "starweave_robe", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "stone_gargoyle",
+    "name": "Stone Gargoyle",
+    "pluralName": "Stone Gargoyles",
+    "glyph": "G",
+    "color": "#a3b1c6",
+    "hp": "3d6+6",
+    "ac": 14,
+    "dex": 11,
+    "attackName": "Obsidian Claws",
+    "damageDice": "1d8+2",
+    "xp": 75,
+    "gold": "3d8+12",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.22 },
+      { "itemId": "steel_halberd", "chance": 0.06 },
+      { "itemId": "templar_scale", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "barrow_wight",
+    "name": "Barrow Wight",
+    "pluralName": "Barrow Wights",
+    "glyph": "B",
+    "color": "#5ce1e6",
+    "undead": true,
+    "hp": "3d6+5",
+    "ac": 13,
+    "dex": 12,
+    "attackName": "Tomb-Forged Greatsword",
+    "damageDice": "1d8+2",
+    "specialAttack": {
+      "name": "Soul-Freeze Grasp",
+      "chance": 0.32,
+      "damageDice": "1d6+2",
+      "status": "Paralysis",
+      "statusChance": 0.6
+    },
+    "xp": 82,
+    "gold": "3d8+14",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.22 },
+      { "itemId": "sunburst_mace", "chance": 0.06 },
+      { "itemId": "talisman_triad", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "ogre_crusher",
+    "name": "Ogre Crusher",
+    "pluralName": "Ogre Crushers",
+    "glyph": "O",
+    "color": "#e07a5f",
+    "hp": "4d6+8",
+    "ac": 13,
+    "dex": 9,
+    "attackName": "Ironbound Greatmaul",
+    "damageDice": "2d4+3",
+    "xp": 88,
+    "gold": "4d6+16",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.25 },
+      { "itemId": "bracers_might", "chance": 0.08 },
+      { "itemId": "avalon_greatsword", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "abyssal_chanter",
+    "name": "Abyssal Chanter",
+    "pluralName": "Abyssal Chanters",
+    "glyph": "A",
+    "color": "#ff6bcb",
+    "hp": "3d6+4",
+    "ac": 13,
+    "dex": 13,
+    "attackName": "Psychic Lash",
+    "damageDice": "1d8+1",
+    "specialAttack": {
+      "name": "Black Lotus Slumber",
+      "chance": 0.38,
+      "damageDice": "1d6+1",
+      "status": "Sleep",
+      "statusChance": 0.65,
+      "isSpell": true
+    },
+    "xp": 90,
+    "gold": "3d8+16",
+    "drops": [
+      { "itemId": "ether_tonic", "chance": 0.3 },
+      { "itemId": "ring_arcana", "chance": 0.07 },
+      { "itemId": "archmage_rod", "chance": 0.06 }
+    ]
+  },
+  {
+    "id": "hellhound",
+    "name": "Infernal Hellhound",
+    "pluralName": "Infernal Hellhounds",
+    "glyph": "h",
+    "color": "#ff595e",
+    "hp": "4d6+6",
+    "ac": 14,
+    "dex": 14,
+    "attackName": "Molten Fangs",
+    "damageDice": "2d4+2",
+    "specialAttack": {
+      "name": "Brimstone Breath",
+      "chance": 0.35,
+      "damageDice": "2d6+1"
+    },
+    "xp": 110,
+    "gold": "3d8+18",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.25 },
+      { "itemId": "phoenix_salts", "chance": 0.1 }
+    ]
+  },
+  {
+    "id": "cave_troll",
+    "name": "Deep Cave Troll",
+    "pluralName": "Deep Cave Trolls",
+    "glyph": "T",
+    "color": "#6bcb77",
+    "hp": "4d8+10",
+    "ac": 14,
+    "dex": 10,
+    "attackName": "Boulder Smash",
+    "damageDice": "2d6+2",
+    "xp": 120,
+    "gold": "4d8+20",
+    "drops": [
+      { "itemId": "greater_healing_draught", "chance": 0.28 },
+      { "itemId": "heartstone_amulet", "chance": 0.08 },
+      { "itemId": "knight_plate", "chance": 0.05 }
+    ]
+  },
+  {
+    "id": "death_knight",
+    "name": "Dread Death Knight",
+    "pluralName": "Dread Death Knights",
+    "glyph": "K",
+    "color": "#ff4d6d",
+    "undead": true,
+    "hp": "5d6+10",
+    "ac": 15,
+    "dex": 12,
+    "attackName": "Runeblade Cleave",
+    "damageDice": "2d6+3",
+    "specialAttack": {
+      "name": "Abyssal Decree",
+      "chance": 0.35,
+      "damageDice": "1d8+2",
+      "status": "Silence",
+      "statusChance": 0.65,
+      "isSpell": true
+    },
+    "xp": 140,
+    "gold": "5d8+25",
+    "drops": [
+      { "itemId": "phoenix_salts", "chance": 0.16 },
+      { "itemId": "knight_plate", "chance": 0.08 },
+      { "itemId": "avalon_greatsword", "chance": 0.08 }
+    ]
+  },
+  {
+    "id": "boss_malakor",
+    "name": "Malakor the Lich Lord",
+    "pluralName": "Malakor the Lich Lord",
+    "glyph": "L",
+    "color": "#e298ff",
+    "undead": true,
+    "hp": "8d8+22",
+    "ac": 15,
+    "dex": 13,
+    "attackName": "Scepter of Oblivion",
+    "damageDice": "2d6+3",
+    "specialAttack": {
+      "name": "Soul-Shackle Nova",
+      "chance": 0.42,
+      "damageDice": "2d6+2",
+      "status": "Paralysis",
+      "statusChance": 0.6,
+      "isSpell": true
+    },
+    "xp": 320,
+    "gold": "8d10+80",
+    "drops": [
+      { "itemId": "archmage_rod", "chance": 0.85 },
+      { "itemId": "starweave_robe", "chance": 0.65 },
+      { "itemId": "phoenix_salts", "chance": 0.9 }
+    ]
+  },
+  {
+    "id": "boss_pyrothrax",
+    "name": "Pyrothrax the Abyssal Wyrm",
+    "pluralName": "Pyrothrax the Abyssal Wyrm",
+    "glyph": "D",
+    "color": "#ff4d4d",
+    "hp": "10d8+32",
+    "ac": 16,
+    "dex": 14,
+    "attackName": "Cataclysmic Jaws",
+    "damageDice": "2d8+4",
+    "specialAttack": {
+      "name": "Hellfire Cataclysm",
+      "chance": 0.45,
+      "damageDice": "3d6+3"
+    },
+    "xp": 500,
+    "gold": "10d12+120",
+    "drops": [
+      { "itemId": "avalon_greatsword", "chance": 0.9 },
+      { "itemId": "knight_plate", "chance": 0.85 },
+      { "itemId": "heartstone_amulet", "chance": 0.9 }
+    ]
   }
 ]

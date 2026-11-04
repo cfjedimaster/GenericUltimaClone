@@ -116,5 +116,161 @@
         { "monsterId": "kobold", "count": "1d2" }
       ]
     }
+  ],
+  "despise_b1": [
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "hobgoblin_vanguard", "count": "1d2" },
+        { "monsterId": "orc", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "crypt_ghoul", "count": "1d2" },
+        { "monsterId": "skeleton", "count": "1d2+1" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "wyvernling", "count": "1d2" },
+        { "monsterId": "giant_spider", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "hobgoblin_vanguard", "count": "1d2" },
+        { "monsterId": "shadow_warlock", "count": "1" },
+        { "monsterId": "dark_acolyte", "count": "1d2" }
+      ]
+    }
+  ],
+  "despise_b2": [
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "stone_gargoyle", "count": "1d2" },
+        { "monsterId": "hobgoblin_vanguard", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "barrow_wight", "count": "1d2" },
+        { "monsterId": "crypt_ghoul", "count": "1d2+1" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "ogre_crusher", "count": "1d2" },
+        { "monsterId": "shadow_warlock", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "barrow_wight", "count": "1d2" },
+        { "monsterId": "shadow_warlock", "count": "1d2" },
+        { "monsterId": "skeleton", "count": "1d3" }
+      ]
+    }
+  ],
+  "doom_b1": [
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "stone_gargoyle", "count": "1d2" },
+        { "monsterId": "wyvernling", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "ogre_crusher", "count": "1d2" },
+        { "monsterId": "hobgoblin_vanguard", "count": "1d2+1" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "barrow_wight", "count": "1d2" },
+        { "monsterId": "shadow_warlock", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "stone_gargoyle", "count": "1d2" },
+        { "monsterId": "abyssal_chanter", "count": "1" },
+        { "monsterId": "crypt_ghoul", "count": "1d2" }
+      ]
+    }
+  ],
+  "doom_b2": [
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "ogre_crusher", "count": "1d2+1" },
+        { "monsterId": "abyssal_chanter", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "hellhound", "count": "1d2" },
+        { "monsterId": "stone_gargoyle", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "cave_troll", "count": "1d2" },
+        { "monsterId": "barrow_wight", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "hellhound", "count": "1d2" },
+        { "monsterId": "abyssal_chanter", "count": "1d2" },
+        { "monsterId": "shadow_warlock", "count": "1d2" }
+      ]
+    }
+  ],
+  "doom_b3": [
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "cave_troll", "count": "1d2" },
+        { "monsterId": "hellhound", "count": "1d2+1" }
+      ]
+    },
+    {
+      "weight": 30,
+      "groups": [
+        { "monsterId": "death_knight", "count": "1d2" },
+        { "monsterId": "barrow_wight", "count": "1d2+1" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "death_knight", "count": "1d2" },
+        { "monsterId": "abyssal_chanter", "count": "1d2" },
+        { "monsterId": "hellhound", "count": "1d2" }
+      ]
+    },
+    {
+      "weight": 20,
+      "groups": [
+        { "monsterId": "cave_troll", "count": "1d2+1" },
+        { "monsterId": "death_knight", "count": "1" },
+        { "monsterId": "abyssal_chanter", "count": "1d2" }
+      ]
+    }
   ]
 }

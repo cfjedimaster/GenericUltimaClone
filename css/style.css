@@ -1462,3 +1462,54 @@ dialog.dialog-wide {
   border-color: var(--border-dim);
   color: var(--text-muted);
 }
+
+/* ==================== STEP 8: FIRST-PERSON DUNGEON & AUTOMAP ==================== */
+.dungeon-canvas-wrap {
+  display: inline-flex;
+  border: 3px solid var(--border-gold);
+  box-shadow: 0 0 0 2px #000, 0 8px 24px rgba(0, 0, 0, 0.8);
+  background: #04060a;
+  margin: 0 auto;
+}
+
+#dungeon-canvas {
+  display: block;
+  width: 420px;
+  max-width: 100%;
+  height: auto;
+  image-rendering: crisp-edges;
+}
+
+.dungeon-minimap {
+  display: inline-flex;
+  flex-direction: column;
+  border: 2px solid var(--border-dim);
+  background: #05070c;
+  user-select: none;
+}
+
+.minimap-row {
+  display: flex;
+}
+
+.minimap-cell {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.minimap-cell.is-party {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: -2px;
+  z-index: 2;
+}
+
+.minimap-cell.unexplored {
+  opacity: 0.35;
+}
+

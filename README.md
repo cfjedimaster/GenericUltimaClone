@@ -9,13 +9,14 @@ Assemble a roster of heroes at Gilgamesh's Tavern, form an active party of 4 to 
 ## Key Features
 
 - **Roster & Party Management**: Create up to 20 characters across 4 races (Human, Elf, Dwarf, Halfling) and 6 classes (Fighter, Paladin, Thief, Ranger, Cleric, Wizard) with point-buy stat allocation (`STR`, `DEX`, `INT`, `WIS`) or spin up a ready-made default party.
-- **Tile-Based Overworld & Town Exploration**: Navigate an 11×11 viewport over the Realm of Avalon and the town of Oakhaven, complete with terrain passability, NPC conversations, and location triggers.
+- **Tile-Based Overworld & Town Exploration**: Navigate an 11×11 viewport over the Realm of Avalon and three towns (Oakhaven, Yew, Moon), complete with terrain passability, NPC conversations, and location triggers.
+- **First-Person 3D Dungeon Exploration**: Descend into multi-floor dungeons (**Cavern of Despise** B1–B2 and **Abyss of Doom** B1–B3) rendered in a classic first-person perspective `<canvas>` with a 7×7 local automap sensor, torch/mage-light visibility, locked doors, trapped treasure chests, mystic fountains, stairs, and dungeon bosses.
 - **Town Services**:
-  - **The Royal Armory & Provisions**: Buy and sell weapons, armor, shields, accessories, and consumables with class/stat eligibility checks.
+  - **The Royal Armory & Provisions**: Buy and sell weapons, armor, accessories, and consumables (including dungeon utility items like **Pitch Torches**, **Skeleton Keys**, and **Angelic Feathers**) with clear class eligibility tags.
   - **The Wayfarer's Inn**: Rest to restore party HP and MP and save your progress.
   - **Temple of the Triad**: Cure status ailments (Poison, Sleep, Paralysis, Silence) and resurrect fallen (`Dead` or `Ashes`) heroes.
-- **Menu-Driven Group Combat**: *Bard's Tale*-style round-based encounters with surprise checks, front/back row positioning rules, initiative order resolution, status effects, XP/leveling, gold, and item drops.
-- **Arcane & Divine Magic**: Single-pool MP casting system supporting both combat spells (single-target, group AoE, healing, buffs, status) and field spells (*Light*, *Heal*, *Detect*, *Open*, *Recall*).
+- **Menu-Driven Group Combat**: *Bard's Tale*-style round-based encounters with surprise checks, darkness ambush penalties, per-depth stat scaling, front/back row positioning rules, initiative order resolution, status effects, XP/leveling, gold, and item drops.
+- **Arcane & Divine Magic**: Single-pool MP casting system supporting both combat spells (single-target, group AoE, healing, buffs, status) and field spells (*Lumina Orb*, *Triad Sight*, *Arcane Knock*, *Sanctuary Touch*, *Purify Spirit*, *Greater Mend*, *Hymn of Dawn*, *Breath of Life*, *Ethereal Recall*).
 - **Save & Export System**: Automatic persistence via `localStorage` plus full JSON save export and import.
 
 ## Running Locally
@@ -36,8 +37,9 @@ Then open `http://localhost:8000` (or the port shown) in your browser.
 - `css/style.css` — Retro CRT/fantasy interface styling
 - `js/`
   - `app.js` — Main Alpine.js application controller, UI state, and keyboard shortcuts
-  - `overworld.js` — Viewport rendering, movement, collision, and town/overworld transitions
-  - `combat.js` — Encounter generation, enemy AI, initiative sorting, and round resolution
+  - `overworld.js` — Viewport rendering, movement, collision, and town/overworld/dungeon entry transitions
+  - `dungeon.js` — First-person 3D dungeon `<canvas>` renderer, 7×7 automap sensor, directional turning/stepping, lockpicking, trap disarming, and chests/stairs
+  - `combat.js` — Encounter generation, depth scaling, enemy AI, initiative sorting, and round resolution
   - `magic.js` — Spellbook unlocking, field spell casting, and status effect helpers
   - `items.js` — Inventory pack management, equipment rules, and consumables
   - `state.js` — Save state normalization and `localStorage` persistence

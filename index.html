@@ -14,7 +14,7 @@
     <header class="top-bar">
       <div class="brand-title">
         <h1>Chronicles of the Triad</h1>
-        <span class="step-badge">Step 5: Magic, Grimoire &amp; Status Effects</span>
+        <span class="step-badge">Step 8: First-Person Dungeons &amp; Bosses</span>
       </div>
       <div class="top-stats">
         <span>Roster: <strong x-text="`${state.roster.length}/${maxRosterSize}`"></strong></span>
@@ -455,7 +455,7 @@
       </div>
     </section>
 
-    <!-- ==================== SCREEN 4: OVERWORLD & TOWN EXPLORATION ==================== -->
+    <!-- ==================== SCREEN 4: OVERWORLD, TOWN & DUNGEON EXPLORATION ==================== -->
     <div class="exploration-grid" x-show="!loading && !loadError && screen === 'overworld'">
       <!-- Left Column: Viewport Map + Message Log -->
       <section class="rpg-panel gold-frame">
@@ -464,9 +464,16 @@
             <h2 x-text="currentMap?.name || 'Realm of Avalon'"></h2>
             <div class="location-subline">
               <span class="mode-pill" x-text="(currentMap?.mode || 'overworld').toUpperCase()"></span>
-              <span x-text="`Terrain: ${currentTrigger ? currentTrigger.name : (currentTile?.name || 'Grasslands')}`"></span>
+              <span x-show="!isDungeonMode" x-text="`Terrain: ${currentTrigger ? currentTrigger.name : (currentTile?.name || 'Grasslands')}`"></span>
+              <span x-show="isDungeonMode" x-text="`Facing: ${partyFacingArrow} ${partyFacingLabel} (${state.location?.x ?? 1}, ${state.location?.y ?? 1})`"></span>
               <template x-if="(state.location?.lightSteps || 0) > 0">
-                <span class="badge-party" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" x-text="`☼ Lumina (${state.location.lightSteps} steps)`"></span>
+                <span class="badge-party" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" x-text="`☼ Light (${state.location.lightSteps} steps)`"></span>
+              </template>
+              <template x-if="isDungeonMode && !(state.location?.lightSteps > 0)">
+                <span class="badge-party" style="border-color: var(--accent-red); color: var(--accent-red);">DARKNESS</span>
+              </template>
+              <template x-if="(state.location?.detectSteps || 0) > 0">
+                <span class="badge-party" style="border-color: var(--accent-gold); color: var(--accent-gold);" x-text="`◈ Triad Sight (${state.location.detectSteps} steps)`"></span>
               </template>
             </div>
           </div>
@@ -476,8 +483,24 @@
               class="btn-sm btn-primary"
               x-show="currentTrigger"
               @click="enterOrInteract()"
-              x-text="currentTrigger?.type === 'town' || currentTrigger?.type === 'castle' ? `Enter ${currentTrigger.name} [E]` : `Interact [E]`"
+              x-text="currentTrigger?.type === 'town' || currentTrigger?.type === 'castle' || currentTrigger?.type === 'dungeon' ? `Enter ${currentTrigger.name} [E]` : `Activate [E]`"
             ></button>
+            <button
+              type="button"
+              class="btn-sm btn-primary"
+              x-show="isDungeonMode && canUnlockAhead"
+              @click="unlockDoorAhead()"
+            >
+              Unlock Door [O]
+            </button>
+            <button
+              type="button"
+              class="btn-sm"
+              x-show="isDungeonMode"
+              @click="searchAndDisarmDungeon()"
+            >
+              Search / Disarm [F]
+            </button>
             <button
               type="button"
               class="btn-sm"
@@ -488,12 +511,12 @@
             </button>
             <button type="button" class="btn-sm" @click="openSpellModal()">Spells [C]</button>
             <button type="button" class="btn-sm" @click="openInventoryModal()">Pack [I]</button>
-            <button type="button" class="btn-sm" @click="goToScreen('tavern')">Tavern Roster</button>
+            <button type="button" class="btn-sm" x-show="!isDungeonMode" @click="goToScreen('tavern')">Tavern Roster</button>
           </div>
         </div>
 
-        <!-- 11x11 Centered Tile Viewport -->
-        <div class="viewport-stage">
+        <!-- OVERWORLD / TOWN: 11x11 Centered Tile Viewport -->
+        <div class="viewport-stage" x-show="!isDungeonMode">
           <div
             class="tile-viewport"
             role="grid"
@@ -546,7 +569,7 @@
                 <li><span class="legend-glyph" style="color: #fff;">@</span> Your Party</li>
                 <li><span class="legend-glyph" style="color: #f0c45a;">⌂</span> Town Gate [E]</li>
                 <li><span class="legend-glyph" style="color: #5ce1e6;">♜</span> Royal Castle [E]</li>
-                <li><span class="legend-glyph" style="color: #f25f5c;">Ω</span> Dungeon Maw</li>
+                <li><span class="legend-glyph" style="color: #f25f5c;">Ω</span> Dungeon Maw [E]</li>
                 <li><span class="legend-glyph" style="color: #f0c45a;">G</span> Guild / Roster [E]</li>
                 <li><span class="legend-glyph" style="color: #5ce1e6;">I</span> Wayfarer's Inn [E]</li>
                 <li><span class="legend-glyph" style="color: #52d681;">S</span> Armory Shop [E]</li>
@@ -557,11 +580,100 @@
           </div>
         </div>
 
+        <!-- DUNGEON MODE: First-Person 3D Canvas + Automap Sensor Sidebar -->
+        <div class="viewport-stage" x-show="isDungeonMode">
+          <div class="dungeon-canvas-wrap">
+            <canvas
+              id="dungeon-canvas"
+              width="420"
+              height="300"
+              role="img"
+              :aria-label="`First-person dungeon view of ${currentMap?.name || 'Dungeon'} facing ${partyFacingLabel}`"
+            ></canvas>
+          </div>
+
+          <div class="viewport-sidebar">
+            <!-- Underfoot Dungeon Feature Callout -->
+            <template x-if="currentTrigger">
+              <div class="poi-callout">
+                <strong x-text="currentTrigger.name"></strong>
+                <p
+                  x-text="currentTrigger.type === 'chest' && isTriggerConsumed(currentTrigger) ? 'This chest has already been opened and emptied.' : currentTrigger.message"
+                ></p>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                  <template x-if="currentTrigger.type === 'chest' && !isTriggerConsumed(currentTrigger) && currentTrigger.trap && !isChestTrapSafe(currentTrigger)">
+                    <button type="button" class="btn-sm" @click="searchAndDisarmDungeon()">
+                      [F] Disarm Trap
+                    </button>
+                  </template>
+                  <template x-if="currentTrigger.type !== 'chest' || !isTriggerConsumed(currentTrigger)">
+                    <button type="button" class="btn-sm btn-primary" @click="enterOrInteract()">
+                      [E] <span x-text="currentTrigger.type === 'stairs_up' ? 'Climb Up' : currentTrigger.type === 'stairs_down' ? 'Descend' : currentTrigger.type === 'chest' ? 'Open Chest' : 'Activate'"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+            <!-- Ahead Locked Door / Trap Callout -->
+            <template x-if="!currentTrigger && triggerAhead">
+              <div class="poi-callout">
+                <strong x-text="`Ahead (${triggerAhead.direction}): ${triggerAhead.name}`"></strong>
+                <p x-text="triggerAhead.message"></p>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                  <template x-if="canUnlockAhead">
+                    <button type="button" class="btn-sm btn-primary" @click="unlockDoorAhead()">
+                      [O] Pick Lock / Use Key
+                    </button>
+                  </template>
+                  <button type="button" class="btn-sm" @click="searchAndDisarmDungeon()">
+                    [F] Search / Disarm
+                  </button>
+                </div>
+              </div>
+            </template>
+
+            <!-- 7x7 Local Automap Sensor Grid -->
+            <div class="legend-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+                <h3 style="margin: 0;">Automap Sensor</h3>
+                <small style="color: var(--text-muted);" x-text="`${partyFacingArrow} ${partyFacingLabel}`"></small>
+              </div>
+              <div class="dungeon-minimap" role="grid" aria-label="Explored Dungeon Automap">
+                <template x-for="row in dungeonMinimapRows" :key="row.rowKey">
+                  <div class="minimap-row" role="row">
+                    <template x-for="cell in row.cells" :key="cell.key">
+                      <div
+                        class="minimap-cell"
+                        role="gridcell"
+                        :class="{ 'is-party': cell.isParty, 'unexplored': !cell.explored }"
+                        :style="`background-color: ${cell.bg}; color: ${cell.fg};`"
+                        :title="cell.title"
+                      >
+                        <span x-text="cell.glyph"></span>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.45rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <span><strong style="color: #5ce1e6;">▲</strong> Up</span>
+                <span><strong style="color: #f0c45a;">▼</strong> Down</span>
+                <span><strong style="color: #f25f5c;">⊞</strong> Locked</span>
+                <span><strong style="color: #f0c45a;">▣</strong> Chest</span>
+                <span><strong style="color: #5ce1e6;">Ψ</strong> Font</span>
+                <span><strong style="color: #e298ff;">Ω</strong> Boss</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Scrolling Adventure Log -->
         <div class="log-panel">
           <div class="log-header">
             <span>Chronicle Log</span>
-            <small>WASD/Arrows move, [E] Enter, [C] Cast Spell, [I] Pack &amp; Gear, [T] Talk, [X] Exit Town</small>
+            <small x-show="!isDungeonMode">WASD/Arrows move, [E] Enter, [C] Cast Spell, [I] Pack &amp; Gear, [T] Talk, [X] Exit Town</small>
+            <small x-show="isDungeonMode">W/S Forward/Back, A/D Turn 90&deg;, [E] Stairs/Chest, [O] Unlock Door, [F] Search/Disarm, [C] Cast</small>
           </div>
           <div id="exploration-log" class="log-entries" role="log" aria-live="polite">
             <template x-for="item in messageLog" :key="item.id">
@@ -576,10 +688,12 @@
         <!-- Compass & Command Deck -->
         <section class="rpg-panel">
           <div class="panel-header">
-            <h3>Command Deck</h3>
+            <h3 x-text="isDungeonMode ? 'Dungeon Deck' : 'Command Deck'"></h3>
+            <span x-show="isDungeonMode" class="badge-party" x-text="`${partyFacingArrow} ${partyFacingLabel}`"></span>
           </div>
 
-          <div class="compass-pad" aria-label="Movement Controls">
+          <!-- Overworld / Town Cardinal Movement Pad -->
+          <div class="compass-pad" aria-label="Overworld Movement Controls" x-show="!isDungeonMode">
             <div></div>
             <button type="button" @click="moveParty('N')" title="Move North (W or Up Arrow)">&uarr; N</button>
             <div></div>
@@ -591,14 +705,42 @@
             <div></div>
           </div>
 
+          <!-- Dungeon First-Person Step & Turn Pad -->
+          <div class="compass-pad" aria-label="Dungeon Navigation Controls" x-show="isDungeonMode">
+            <div></div>
+            <button type="button" @click="stepPartyDungeon('forward')" title="Step Forward (W or Up Arrow)">&uarr; Fwd</button>
+            <div></div>
+            <button type="button" @click="turnParty('left')" title="Turn 90° Left (A or Left Arrow)">&circlearrowleft; Turn L</button>
+            <button type="button" class="btn-sm" @click="waitTurn()" title="Wait / Pass Turn (Space or P)">Pass</button>
+            <button type="button" @click="turnParty('right')" title="Turn 90° Right (D or Right Arrow)">Turn R &circlearrowright;</button>
+            <div></div>
+            <button type="button" @click="stepPartyDungeon('back')" title="Step Backward (S or Down Arrow)">&darr; Back</button>
+            <div></div>
+          </div>
+
           <div class="command-btn-grid">
             <button
               type="button"
               class="btn-primary"
-              :disabled="!currentTrigger"
+              :disabled="!currentTrigger && !canUnlockAhead"
               @click="enterOrInteract()"
             >
-              [E] Enter / Use
+              [E] <span x-text="isDungeonMode ? 'Stairs / Open' : 'Enter / Use'"></span>
+            </button>
+            <button
+              type="button"
+              x-show="isDungeonMode"
+              :disabled="!canUnlockAhead"
+              @click="unlockDoorAhead()"
+            >
+              [O] Unlock Door
+            </button>
+            <button
+              type="button"
+              x-show="isDungeonMode"
+              @click="searchAndDisarmDungeon()"
+            >
+              [F] Search / Trap
             </button>
             <button
               type="button"
@@ -614,6 +756,7 @@
             </button>
             <button
               type="button"
+              x-show="!isDungeonMode"
               :disabled="adjacentTriggers.length === 0 && !currentTrigger"
               @click="talkNearby()"
             >
@@ -645,7 +788,7 @@
                     <span class="badge-party" x-text="member.row.toUpperCase()"></span>
                     <span class="status-pill" :class="getStatusBadgeClass(member.status)" x-text="member.status"></span>
                   </div>
-                  <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className} • ${getHeroMagicSchoolLabel(member)}`"></div>
+                  <div class="char-meta-line" x-text="`Lv ${member.level} ${member.raceName} ${member.className}${doesHeroHaveMagic(member) ? ' • ' + getHeroMagicSchoolLabel(member) : ''}`"></div>
                   <div class="char-vitals">
                     <span class="vital-hp" x-text="`HP ${member.derived.hp}/${member.derived.maxHp}`"></span>
                     <span class="vital-mp" x-text="`MP ${member.derived.mp}/${member.derived.maxMp}`"></span>
@@ -1292,7 +1435,7 @@
                         type="button"
                         class="btn-sm btn-success"
                         @click="usePackConsumable(entry.itemId)"
-                        x-text="`Use on ${activeGearHero.name}`"
+                        x-text="entry.item.category === 'utility' ? `Use ${entry.item.name}` : `Use on ${activeGearHero.name}`"
                       ></button>
                     </template>
                   </div>
@@ -1377,8 +1520,9 @@
                     type="button"
                     class="btn-sm btn-primary"
                     :disabled="state.gold < item.price || !canHeroEquip(shopTargetHero, item).ok"
+                    :title="canHeroEquip(shopTargetHero, item).reason || `Buy and equip on ${shopTargetHero.name}`"
                     @click="buyAndEquipItem(item.id)"
-                    x-text="canHeroEquip(shopTargetHero, item).ok ? `Buy & Equip (${shopTargetHero.name})` : `Restricted (${shopTargetHero.className})`"
+                    x-text="canHeroEquip(shopTargetHero, item).ok ? `Buy & Equip (${shopTargetHero.name})` : canHeroEquip(shopTargetHero, item).reason"
                   ></button>
                 </template>
               </div>
@@ -1571,7 +1715,7 @@
               <strong x-text="hero.name"></strong>
               <span class="status-pill" :class="getStatusBadgeClass(hero.status)" x-text="hero.status"></span>
             </div>
-            <span x-text="`Lv ${hero.level} ${hero.className} • ${getHeroMagicSchoolLabel(hero)}`"></span>
+            <span x-text="`Lv ${hero.level} ${hero.className}${doesHeroHaveMagic(hero) ? ' • ' + getHeroMagicSchoolLabel(hero) : ''}`"></span>
             <span style="color: var(--accent-cyan);" x-text="`MP ${hero.derived.mp}/${hero.derived.maxMp} • HP ${hero.derived.hp}/${hero.derived.maxHp}`"></span>
           </button>
         </template>

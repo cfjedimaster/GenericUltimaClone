@@ -132,12 +132,25 @@ export function createEncounter({
   encounters = {},
   partyMembers = [],
   itemsById = {},
-  lightActive = false
+  lightActive = false,
+  dungeonDepth = 0,
+  fixedGroups = null,
+  isDarkness = false,
+  onVictoryFlag = null,
+  victoryTitle = null,
+  bonusLoot = null
 }) {
   const table = encounters[terrainId] || encounters.grass || [];
-  const formation = pickWeightedFormation(table) || {
-    groups: [{ monsterId: 'goblin', min: 1, max: 2 }]
-  };
+  const formation = Array.isArray(fixedGroups) && fixedGroups.length > 0
+    ? { groups: fixedGroups }
+    : (pickWeightedFormation(table) || {
+        groups: [{ monsterId: 'goblin', min: 1, max: 2 }]
+      });
+
+  const depthTier = Math.max(0, Number(dungeonDepth || 0) - 1);
+  const hpMultiplier = 1 + depthTier * 0.15;
+  const acDepthBonus = Math.floor(depthTier / 2);
+  const rewardMultiplier = 1 + depthTier * 0.15;
 
   const groups = [];
   formation.groups.slice(0, 3).forEach((spec, idx) => {
@@ -148,7 +161,9 @@ export function createEncounter({
     const letter = GROUP_LETTERS[idx] || String(idx + 1);
     const units = [];
     for (let i = 1; i <= count; i++) {
-      const rolledHp = Math.max(1, dice.roll(monsterDef.hp || '1d4'));
+      const baseHp = Math.max(1, dice.roll(monsterDef.hp || '1d4'));
+      const rolledHp = Math.max(1, Math.ceil(baseHp * hpMultiplier));
+      const baseGold = Math.max(0, dice.roll(monsterDef.gold || '1d6'));
       units.push({
         id: `${monsterDef.id}_${letter}_${i}`,
         number: i,
@@ -158,7 +173,7 @@ export function createEncounter({
         alive: true,
         status: 'OK',
         statusDuration: 0,
-        goldRoll: Math.max(0, dice.roll(monsterDef.gold || '1d6'))
+        goldRoll: Math.ceil(baseGold * rewardMultiplier)
       });
     }
 
@@ -172,18 +187,18 @@ export function createEncounter({
       glyph: monsterDef.glyph || 'm',
       color: monsterDef.color || '#f25f5c',
       undead: Boolean(monsterDef.undead),
-      ac: monsterDef.ac ?? 10,
+      ac: (monsterDef.ac ?? 10) + acDepthBonus,
       dex: monsterDef.dex ?? 10,
       attackName: monsterDef.attackName || 'Attack',
       damageDice: monsterDef.damageDice || '1d4',
       specialAttack: monsterDef.specialAttack || null,
-      xpEach: monsterDef.xp ?? 15,
+      xpEach: Math.ceil((monsterDef.xp ?? 15) * rewardMultiplier),
       drops: Array.isArray(monsterDef.drops) ? monsterDef.drops : [],
       units
     });
   });
 
-  // Surprise check (DEX based, +2 if Lumina Orb is active)
+  // Surprise check (DEX based, +2 if Lumina/Torch is active, -4 if in pitch-dark dungeon)
   const livingHeroes = partyMembers.filter(isHeroAlive);
   const partyAvgDex = livingHeroes.length > 0
     ? livingHeroes.reduce((sum, h) => sum + getEffectiveStats(h, itemsById).dex, 0) / livingHeroes.length
@@ -192,7 +207,8 @@ export function createEncounter({
     ? groups.reduce((sum, g) => sum + g.dex, 0) / groups.length
     : 10;
 
-  const partySurpriseRoll = partyAvgDex + (lightActive ? 2 : 0) + rollDie(10);
+  const lightBonus = lightActive ? 2 : (isDarkness ? -4 : 0);
+  const partySurpriseRoll = partyAvgDex + lightBonus + rollDie(10);
   const enemySurpriseRoll = enemyAvgDex + rollDie(10);
   const diff = partySurpriseRoll - enemySurpriseRoll;
 
@@ -213,6 +229,10 @@ export function createEncounter({
     round: 1,
     terrainId,
     terrainName,
+    dungeonDepth,
+    onVictoryFlag,
+    victoryTitle,
+    bonusLoot: Array.isArray(bonusLoot) ? bonusLoot : [],
     surprise,
     phase: 'input', // 'input' | 'victory' | 'defeat' | 'fled'
     recalledToTown: false,
@@ -1049,9 +1069,22 @@ export function resolveCombatRound(combatState, state, gameData) {
   if (remainingGroups.length === 0) {
     clearCombatTemporaryStatuses(state);
     combatState.phase = 'victory';
+    if (combatState.onVictoryFlag) {
+      if (!state.flags) state.flags = {};
+      state.flags[combatState.onVictoryFlag] = true;
+    }
+
     let xpTotal = 0;
     let goldTotal = 0;
     const dropCounts = new Map();
+
+    if (Array.isArray(combatState.bonusLoot)) {
+      for (const itemId of combatState.bonusLoot) {
+        if (itemId && itemsById[itemId]) {
+          dropCounts.set(itemId, (dropCounts.get(itemId) || 0) + 1);
+        }
+      }
+    }
 
     for (const grp of combatState.groups) {
       for (const u of grp.units) {

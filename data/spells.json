@@ -38,7 +38,19 @@
     "effect": "field_light",
     "durationSteps": 30,
     "statKey": "int",
-    "description": "Conjures a hovering globe of mage-light for 30 steps, warding off ambushes."
+    "description": "Conjures a hovering globe of mage-light for 30 steps, illuminating dark dungeons and warding off ambushes."
+  },
+  {
+    "id": "arc_open",
+    "name": "Arcane Knock",
+    "school": "arcane",
+    "tier": 2,
+    "mpCost": 3,
+    "usableIn": ["field"],
+    "targetType": "party",
+    "effect": "field_open",
+    "statKey": "int",
+    "description": "Resonates with iron tumblers to unbar a locked dungeon door ahead or disarm and unseal a chest."
   },
   {
     "id": "arc_fireball",
@@ -146,6 +158,19 @@
     "cures": ["Poison", "Sleep", "Paralysis", "Silence"],
     "statKey": "wis",
     "description": "Cleanses Poison, Sleep, Paralysis, and Silence from an ally and restores 1d4 HP."
+  },
+  {
+    "id": "div_detect",
+    "name": "Triad Sight",
+    "school": "divine",
+    "tier": 1,
+    "mpCost": 2,
+    "usableIn": ["field"],
+    "targetType": "party",
+    "effect": "field_detect",
+    "durationSteps": 35,
+    "statKey": "wis",
+    "description": "Grants divine foresight for 35 steps, revealing floor traps, chests, and stairs in dungeons."
   },
   {
     "id": "div_smite",

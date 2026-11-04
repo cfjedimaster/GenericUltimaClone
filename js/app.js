@@ -70,6 +70,22 @@ import {
   castFieldSpell,
   tickOverworldStepEffects
 } from './magic.js';
+import {
+  FACING_META,
+  normalizeFacing,
+  turnFacing,
+  markDungeonTileExplored,
+  isDoorUnlocked,
+  isFeatureConsumed,
+  isChestTrapDisarmed,
+  buildDungeonMinimapRows,
+  getTriggerAhead,
+  stepDungeon,
+  attemptUnlockDungeonDoor,
+  attemptSearchAndDisarm,
+  attemptDungeonInteract,
+  renderDungeonViewport
+} from './dungeon.js';
 
 function initLightDismissFallbacks() {
   if (!('closedBy' in HTMLDialogElement.prototype)) {
@@ -240,6 +256,7 @@ function registerApp() {
           mapId: 'avalon',
           x: 16,
           y: 14,
+          facing: 'N',
           steps: 0,
           returnOverworld: { mapId: 'avalon', x: 16, y: 13 }
         };
@@ -248,10 +265,17 @@ function registerApp() {
       if (map) {
         this.state.location.mapId = map.id;
         this.state.location.mode = map.mode || 'overworld';
+        this.state.location.facing = normalizeFacing(
+          this.state.location.facing || map.defaultSpawn?.facing || 'N'
+        );
         const tile = getTileDefAt(map, this.tiles, this.state.location.x, this.state.location.y);
-        if (!tile.passable) {
+        if (!tile.passable && tile.code !== 'L') {
           this.state.location.x = map.defaultSpawn?.x ?? 16;
           this.state.location.y = map.defaultSpawn?.y ?? 14;
+        }
+        if (map.mode === 'dungeon') {
+          markDungeonTileExplored(this.state, map.id, this.state.location.x, this.state.location.y);
+          this.refreshDungeonCanvas();
         }
       }
     },
@@ -330,6 +354,38 @@ function registerApp() {
 
         if (this.screen !== 'overworld') return;
 
+        // First-Person Dungeon Mode Controls
+        if (this.isDungeonMode) {
+          if (key === 'ArrowUp' || key === 'w' || key === 'W') {
+            e.preventDefault();
+            this.stepPartyDungeon('forward');
+          } else if (key === 'ArrowDown' || key === 's' || key === 'S') {
+            e.preventDefault();
+            this.stepPartyDungeon('back');
+          } else if (key === 'ArrowLeft' || key === 'a' || key === 'A') {
+            e.preventDefault();
+            this.turnParty('left');
+          } else if (key === 'ArrowRight' || key === 'd' || key === 'D') {
+            e.preventDefault();
+            this.turnParty('right');
+          } else if (key === 'e' || key === 'E' || key === 'Enter') {
+            if (key === 'Enter' && activeTag === 'BUTTON') return;
+            e.preventDefault();
+            this.enterOrInteract();
+          } else if (key === 'o' || key === 'O') {
+            e.preventDefault();
+            this.unlockDoorAhead();
+          } else if (key === 'f' || key === 'F') {
+            e.preventDefault();
+            this.searchAndDisarmDungeon();
+          } else if (key === ' ' || key === 'p' || key === 'P') {
+            if (key === ' ' && activeTag === 'BUTTON') return;
+            e.preventDefault();
+            this.waitTurn();
+          }
+          return;
+        }
+
         if (key === 'ArrowUp' || key === 'w' || key === 'W') {
           e.preventDefault();
           this.moveParty('N');
@@ -367,11 +423,32 @@ function registerApp() {
             console.warn('cheat.pickFight(): Assemble a valid party of 4-6 heroes first.');
             return;
           }
-          const tile = terrainId
-            ? { id: terrainId, name: terrainId.toUpperCase() }
-            : (this.currentMap?.mode === 'overworld' ? this.currentTile : { id: 'grass', name: 'Grasslands' });
+          const defaultKey = this.isDungeonMode
+            ? (this.currentMap?.encounterTable || 'despise_b1')
+            : (this.currentMap?.mode === 'overworld' ? this.currentTile?.id : 'grass');
+          const key = terrainId || defaultKey || 'grass';
+          const tile = { id: key, name: key.toUpperCase() };
           this.startCombatEncounter(tile);
           return `Encounter started in ${tile.name}!`;
+        },
+        teleport: (mapId = 'dungeon_despise_b1', x = null, y = null, facing = null) => {
+          const dest = getMapById(this.maps, mapId);
+          if (!dest) {
+            console.warn(`Unknown mapId "${mapId}". Valid maps:`, Object.keys(this.maps));
+            return null;
+          }
+          this.state.location.mode = dest.mode || 'overworld';
+          this.state.location.mapId = dest.id;
+          this.state.location.x = typeof x === 'number' ? x : dest.defaultSpawn.x;
+          this.state.location.y = typeof y === 'number' ? y : dest.defaultSpawn.y;
+          if (dest.mode === 'dungeon') {
+            this.state.location.facing = normalizeFacing(facing || dest.defaultSpawn?.facing || 'N');
+            markDungeonTileExplored(this.state, dest.id, this.state.location.x, this.state.location.y);
+          }
+          this.screen = 'overworld';
+          this.persist(`Cheat: Teleported party to ${dest.name} (${this.state.location.x}, ${this.state.location.y}).`);
+          this.refreshDungeonCanvas();
+          return `${dest.name} (${this.state.location.x}, ${this.state.location.y})`;
         },
         gold: (amount = 500) => {
           this.state.gold = Math.max(0, (this.state.gold || 0) + Number(amount || 0));
@@ -425,7 +502,8 @@ function registerApp() {
         },
         help: () => {
           console.table({
-            'cheat.pickFight(terrainId?)': 'Start a combat encounter (e.g., "grass", "forest", "hills")',
+            'cheat.pickFight(terrainId?)': 'Start a combat encounter (e.g., "grass", "despise_b1", "doom_b3")',
+            'cheat.teleport(mapId, x?, y?, facing?)': 'Teleport to any map (e.g., "dungeon_despise_b1", "dungeon_doom_b1", "avalon")',
             'cheat.gold(amount = 500)': 'Add gold to the party',
             'cheat.xp(amount = 200)': 'Grant XP to active party members',
             'cheat.give(itemId, qty = 1)': 'Add an item to the shared Party Pack',
@@ -553,7 +631,15 @@ function registerApp() {
     get filteredPackEntries() {
       const all = this.packEntriesDetailed;
       if (this.packFilter === 'equipment') {
-        return all.filter(e => e.item.slot !== 'consumable');
+        const slotOrder = { armor: 0, weapon: 1, accessory: 2 };
+        return all
+          .filter(e => e.item.slot !== 'consumable')
+          .sort((a, b) => {
+            const rankA = slotOrder[a.item.slot] ?? 99;
+            const rankB = slotOrder[b.item.slot] ?? 99;
+            if (rankA !== rankB) return rankA - rankB;
+            return a.item.name.localeCompare(b.item.name);
+          });
       }
       if (this.packFilter === 'consumable') {
         return all.filter(e => e.item.slot === 'consumable');
@@ -611,6 +697,13 @@ function registerApp() {
       this.persist(res.log);
       if (res.ok && this.screen === 'overworld') {
         this.appendLog(res.log);
+        if (res.exitedDungeon) {
+          this.syncDocumentTitle();
+          const dlg = document.querySelector('#inventory-dialog');
+          if (dlg) dlg.close();
+        } else {
+          this.refreshDungeonCanvas();
+        }
       }
     },
 
@@ -688,13 +781,15 @@ function registerApp() {
         caster,
         spell: entry.spell,
         targetHero,
-        itemsById: this.itemsById
+        itemsById: this.itemsById,
+        maps: this.maps
       });
 
       this.persist(res.log);
       if (res.ok) {
         this.appendLog(res.log);
-        if (res.recalled) {
+        this.refreshDungeonCanvas();
+        if (res.recalled || res.unlocked) {
           const dlg = document.querySelector('#spell-dialog');
           if (dlg) dlg.close();
         }
@@ -916,9 +1011,63 @@ function registerApp() {
       this.appendLog(msg);
     },
 
-    // --- Overworld & Town Exploration Computed & Actions ---
+    // --- Overworld, Town & Dungeon Exploration Computed & Actions ---
     get currentMap() {
       return getMapById(this.maps, this.state.location?.mapId);
+    },
+
+    get isDungeonMode() {
+      return this.currentMap?.mode === 'dungeon';
+    },
+
+    get partyFacing() {
+      return normalizeFacing(this.state.location?.facing);
+    },
+
+    get partyFacingLabel() {
+      return FACING_META[this.partyFacing].label;
+    },
+
+    get partyFacingArrow() {
+      return FACING_META[this.partyFacing].arrow;
+    },
+
+    get dungeonMinimapRows() {
+      return buildDungeonMinimapRows(this.currentMap, this.tiles, this.state);
+    },
+
+    get triggerAhead() {
+      return getTriggerAhead(this.state, this.maps);
+    },
+
+    get canUnlockAhead() {
+      return Boolean(
+        this.triggerAhead &&
+          this.triggerAhead.type === 'locked_door' &&
+          !isDoorUnlocked(this.state, this.triggerAhead)
+      );
+    },
+
+    isTriggerConsumed(trigger) {
+      return isFeatureConsumed(this.state, trigger);
+    },
+
+    isChestTrapSafe(trigger) {
+      return isChestTrapDisarmed(this.state, trigger);
+    },
+
+    refreshDungeonCanvas() {
+      if (!this.isDungeonMode) return;
+      queueMicrotask(() => {
+        const canvas = document.querySelector('#dungeon-canvas');
+        if (canvas) {
+          renderDungeonViewport(canvas, {
+            map: this.currentMap,
+            tiles: this.tiles,
+            state: this.state
+          });
+        }
+      });
     },
 
     get currentTile() {
@@ -969,8 +1118,104 @@ function registerApp() {
       return terrainLabel;
     },
 
+    turnParty(turnDir = 'right') {
+      if (!this.isDungeonMode) return;
+      this.state.location.facing = turnFacing(this.partyFacing, turnDir);
+      this.persist(`Turned to face ${this.partyFacingLabel} (${this.partyFacingArrow}).`);
+      this.refreshDungeonCanvas();
+    },
+
+    stepPartyDungeon(stepDir = 'forward') {
+      if (!this.canEmbark || !this.isDungeonMode) return;
+      const result = stepDungeon(
+        this.state,
+        this.maps,
+        this.tiles,
+        stepDir,
+        this.partyMembersDetailed,
+        this.itemsById
+      );
+
+      let stepNotes = [];
+      if (result.moved) {
+        const tick = tickOverworldStepEffects(this.state);
+        stepNotes = tick.notes || [];
+      }
+
+      this.persist();
+      this.refreshDungeonCanvas();
+
+      if (result.log) {
+        this.appendLog(result.log);
+      }
+      for (const note of stepNotes) {
+        this.appendLog(note);
+      }
+
+      // Check if a lethal floor trap wiped out the entire party
+      if (result.trapSprung && !this.partyMembersDetailed.some(isHeroAlive)) {
+        this.revivePartyAfterDefeat();
+        return;
+      }
+
+      // Trigger Fixed / Boss Encounter immediately if stepped onto
+      if (result.fixedEncounter) {
+        this.startFixedCombatEncounter(result.fixedEncounter);
+        return;
+      }
+
+      // Roll random dungeon encounter on normal floor movement
+      if (result.moved && !result.trigger) {
+        const floorRate = typeof this.currentMap?.encounterRate === 'number'
+          ? this.currentMap.encounterRate
+          : 0.10;
+        if (Math.random() < floorRate) {
+          this.startCombatEncounter({
+            id: this.currentMap?.encounterTable || 'despise_b1',
+            name: this.currentMap?.name || 'Dungeon Corridor'
+          });
+        }
+      }
+    },
+
+    unlockDoorAhead() {
+      if (!this.isDungeonMode) return;
+      const res = attemptUnlockDungeonDoor({
+        state: this.state,
+        maps: this.maps,
+        partyMembers: this.partyMembersDetailed,
+        itemsById: this.itemsById
+      });
+      this.persist(res.log);
+      this.appendLog(res.log);
+      this.refreshDungeonCanvas();
+    },
+
+    searchAndDisarmDungeon() {
+      if (!this.isDungeonMode) return;
+      const res = attemptSearchAndDisarm({
+        state: this.state,
+        maps: this.maps,
+        partyMembers: this.partyMembersDetailed,
+        itemsById: this.itemsById
+      });
+      this.persist(res.log);
+      this.appendLog(res.log);
+      this.refreshDungeonCanvas();
+      if (res.trapSprung && !this.partyMembersDetailed.some(isHeroAlive)) {
+        this.revivePartyAfterDefeat();
+      }
+    },
+
     moveParty(dirKey) {
       if (!this.canEmbark) return;
+      if (this.isDungeonMode) {
+        if (dirKey === 'N') this.stepPartyDungeon('forward');
+        else if (dirKey === 'S') this.stepPartyDungeon('back');
+        else if (dirKey === 'W') this.turnParty('left');
+        else if (dirKey === 'E') this.turnParty('right');
+        return;
+      }
       const result = attemptMove(this.state, this.maps, this.tiles, dirKey);
       let stepNotes = [];
       if (result.moved) {
@@ -997,8 +1242,10 @@ function registerApp() {
     },
 
     startCombatEncounter(tileDef) {
-      const terrainId = tileDef?.id || 'grass';
-      const terrainName = tileDef?.name || 'Wilderness';
+      const terrainId = tileDef?.id || (this.isDungeonMode ? (this.currentMap?.encounterTable || 'despise_b1') : 'grass');
+      const terrainName = tileDef?.name || (this.isDungeonMode ? this.currentMap?.name : 'Wilderness');
+      const lightActive = (this.state.location?.lightSteps || 0) > 0;
+      const dungeonDepth = this.isDungeonMode ? (this.currentMap?.dungeonDepth || 1) : 0;
 
       this.combat = createEncounter({
         terrainId,
@@ -1007,7 +1254,9 @@ function registerApp() {
         encounters: this.encounters,
         partyMembers: this.partyMembersDetailed,
         itemsById: this.itemsById,
-        lightActive: (this.state.location?.lightSteps || 0) > 0
+        lightActive,
+        dungeonDepth,
+        isDarkness: this.isDungeonMode && !lightActive
       });
 
       this.screen = 'combat';
@@ -1017,6 +1266,42 @@ function registerApp() {
         .map(g => `${g.units.length} ${g.units.length === 1 ? g.name : g.pluralName}`)
         .join(', ');
       this.appendLog(`Battle joined in ${terrainName}: ${groupNames}!`);
+
+      if (this.combat.surprise === 'enemy') {
+        executeEnemyAmbushRound(this.combat, this.state);
+        this.persist();
+      }
+      this.scrollCombatLogToBottom();
+    },
+
+    startFixedCombatEncounter(trigger) {
+      if (!trigger) return;
+      const lightActive = (this.state.location?.lightSteps || 0) > 0;
+      const dungeonDepth = this.isDungeonMode ? (this.currentMap?.dungeonDepth || 1) : 0;
+
+      this.combat = createEncounter({
+        terrainId: this.currentMap?.encounterTable || 'despise_b1',
+        terrainName: trigger.name || this.currentMap?.name || 'Dungeon Chamber',
+        monstersById: this.monstersById,
+        encounters: this.encounters,
+        partyMembers: this.partyMembersDetailed,
+        itemsById: this.itemsById,
+        lightActive,
+        dungeonDepth,
+        fixedGroups: trigger.groups || [],
+        isDarkness: this.isDungeonMode && !lightActive,
+        onVictoryFlag: trigger.flag || null,
+        victoryTitle: trigger.victoryTitle || null,
+        bonusLoot: trigger.bonusLoot || []
+      });
+
+      this.screen = 'combat';
+      this.syncDocumentTitle();
+
+      const groupNames = this.combat.groups
+        .map(g => `${g.units.length} ${g.units.length === 1 ? g.name : g.pluralName}`)
+        .join(', ');
+      this.appendLog(`Guardian Battle — ${trigger.name}: ${groupNames}!`);
 
       if (this.combat.surprise === 'enemy') {
         executeEnemyAmbushRound(this.combat, this.state);
@@ -1095,7 +1380,7 @@ function registerApp() {
 
     get combatAvailableConsumables() {
       return this.packEntriesDetailed
-        .filter(e => e.item.slot === 'consumable')
+        .filter(e => e.item.slot === 'consumable' && e.item.category !== 'utility')
         .map(e => ({
           ...e,
           availableQty: this.getCombatAvailableQty(e.itemId)
@@ -1367,11 +1652,13 @@ function registerApp() {
       const phase = this.combat.phase;
       const rewards = this.combat.rewards;
       const recalledToTown = this.combat.recalledToTown;
+      const victoryTitle = this.combat.victoryTitle;
       this.combat = null;
       this.screen = 'overworld';
       this.syncDocumentTitle();
 
       if (phase === 'victory' && rewards) {
+        const titlePrefix = victoryTitle ? `[${victoryTitle}] ` : '';
         const lvlMsg = rewards.levelUps.length > 0
           ? ` Level Up: ${rewards.levelUps.map(u => `${u.charName} -> Lv ${u.newLevel}`).join(', ')}!`
           : '';
@@ -1379,7 +1666,7 @@ function registerApp() {
           ? ` Looted: ${rewards.lootDrops.map(d => `${d.name}${d.qty > 1 ? ` x${d.qty}` : ''}`).join(', ')}!`
           : '';
         this.appendLog(
-          `Victory! Gained ${rewards.xpEach} XP each and ${rewards.goldTotal} GP.${dropMsg}${lvlMsg}`
+          `${titlePrefix}Victory! Gained ${rewards.xpEach} XP each and ${rewards.goldTotal} GP.${dropMsg}${lvlMsg}`
         );
       } else if (phase === 'fled') {
         if (recalledToTown) {
@@ -1393,6 +1680,7 @@ function registerApp() {
         }
       }
       this.persist();
+      this.refreshDungeonCanvas();
     },
 
     revivePartyAfterDefeat() {
@@ -1422,6 +1710,28 @@ function registerApp() {
     },
 
     enterOrInteract() {
+      if (this.isDungeonMode) {
+        const dRes = attemptDungeonInteract({
+          state: this.state,
+          maps: this.maps,
+          partyMembers: this.partyMembersDetailed,
+          itemsById: this.itemsById
+        });
+        this.persist();
+        if (dRes.log) {
+          this.appendLog(dRes.log);
+        }
+        this.refreshDungeonCanvas();
+        if (dRes.fixedEncounter) {
+          this.startFixedCombatEncounter(dRes.fixedEncounter);
+          return;
+        }
+        if (!this.partyMembersDetailed.some(isHeroAlive)) {
+          this.revivePartyAfterDefeat();
+        }
+        return;
+      }
+
       const result = attemptEnterLocation(this.state, this.maps);
       if (result.service === 'guild') {
         this.appendLog("Entering the Adventurers' Guild Roster...");
@@ -1442,10 +1752,14 @@ function registerApp() {
         this.openTempleModal(result.trigger);
         return;
       }
+      if (result.enteredDungeon && this.currentMap) {
+        markDungeonTileExplored(this.state, this.currentMap.id, this.state.location.x, this.state.location.y);
+      }
       this.persist();
       if (result.log) {
         this.appendLog(result.log);
       }
+      this.refreshDungeonCanvas();
     },
 
     talkNearby() {
@@ -1475,6 +1789,7 @@ function registerApp() {
       for (const note of tick.notes || []) {
         this.appendLog(note);
       }
+      this.refreshDungeonCanvas();
     },
 
     // --- Party & Roster Computed Helpers ---

@@ -217,6 +217,29 @@ export function attemptEnterLocation(state, maps) {
   }
 
   if (trigger.type === 'dungeon') {
+    if (trigger.targetMapId) {
+      const destMap = getMapById(maps, trigger.targetMapId);
+      if (!destMap) {
+        return { ok: false, log: `Dungeon map ${trigger.targetMapId} not found.` };
+      }
+      state.location.returnOverworld = {
+        mapId: currentMap.id,
+        x: state.location.x,
+        y: state.location.y
+      };
+      state.location.mode = destMap.mode || 'dungeon';
+      state.location.mapId = destMap.id;
+      state.location.x = typeof trigger.targetX === 'number' ? trigger.targetX : destMap.defaultSpawn.x;
+      state.location.y = typeof trigger.targetY === 'number' ? trigger.targetY : destMap.defaultSpawn.y;
+      state.location.facing = trigger.targetFacing || destMap.defaultSpawn?.facing || 'N';
+
+      return {
+        ok: true,
+        transitioned: true,
+        enteredDungeon: true,
+        log: `You descend into ${destMap.name}! (W/S step forward/back, A/D turn 90°, [O] Unlock, [F] Search/Disarm, [E] Stairs/Chest).`
+      };
+    }
     return {
       ok: false,
       log: trigger.message
