@@ -40,6 +40,8 @@ import {
 import {
   getMapById,
   getTileDefAt,
+  getEffectiveSurfaceTileAt,
+  isSanctumUnlocked,
   getTriggerAt,
   getAdjacentTriggers,
   buildViewportRows,
@@ -190,6 +192,13 @@ function registerApp() {
     innName: "The Wayfarer's Inn",
     templeName: 'Temple of the Triad',
     harborName: 'Moon Harbor Dock & Skiff Charter',
+    queenModalData: {
+      title: 'Queen Romana — Sovereign of Avalon',
+      badge: 'ROYAL AUDIENCE',
+      badgeTone: 'decree',
+      paragraphs: [],
+      buttonLabel: 'Depart Audience'
+    },
     justLootedChestFlag: null,
     musicEnabled: retroMusic.enabled,
 
@@ -200,7 +209,7 @@ function registerApp() {
       }
       const mode = this.currentMap?.mode || 'overworld';
       if (mode === 'dungeon') return 'dungeon';
-      if (mode === 'town') return 'town';
+      if (mode === 'town' || mode === 'castle') return 'town';
       return 'overworld';
     },
 
@@ -298,7 +307,13 @@ function registerApp() {
         this.state.location.facing = normalizeFacing(
           this.state.location.facing || map.defaultSpawn?.facing || 'N'
         );
-        const tile = getTileDefAt(map, this.tiles, this.state.location.x, this.state.location.y);
+        const tile = getEffectiveSurfaceTileAt(
+          map,
+          this.tiles,
+          this.state,
+          this.state.location.x,
+          this.state.location.y
+        );
         if (!tile.passable && tile.code !== 'L') {
           this.state.location.x = map.defaultSpawn?.x ?? 16;
           this.state.location.y = map.defaultSpawn?.y ?? 14;
@@ -487,6 +502,9 @@ function registerApp() {
           this.state.location.mapId = dest.id;
           this.state.location.x = typeof x === 'number' ? x : dest.defaultSpawn.x;
           this.state.location.y = typeof y === 'number' ? y : dest.defaultSpawn.y;
+          if (dest.exitTo) {
+            this.state.location.returnOverworld = { ...dest.exitTo };
+          }
           if (dest.mode === 'dungeon') {
             this.state.location.facing = normalizeFacing(facing || dest.defaultSpawn?.facing || 'N');
             markDungeonTileExplored(this.state, dest.id, this.state.location.x, this.state.location.y);
@@ -498,6 +516,8 @@ function registerApp() {
           this.refreshDungeonCanvas();
           return `${dest.name} (${this.state.location.x}, ${this.state.location.y})`;
         },
+        toToCastle: () => window.cheat.teleport('castle_avalon'),
+        goToCastle: () => window.cheat.teleport('castle_avalon'),
         goDown: () => {
           if (!this.isDungeonMode || !this.currentMap) {
             console.warn('cheat.goDown(): You must be inside a dungeon first.');
@@ -612,10 +632,38 @@ function registerApp() {
           this.persist(`Cheat: ${hero.name} took ${dmg} HP damage (${hero.derived.hp}/${hero.derived.maxHp} HP).`);
           return `${hero.name}: ${hero.derived.hp}/${hero.derived.maxHp} HP (${hero.status})`;
         },
+        resetPrologue: () => {
+          if (!this.state.flags || typeof this.state.flags !== 'object') {
+            this.state.flags = {};
+          }
+          delete this.state.flags.boss_despise_malakor;
+          delete this.state.flags.boss_doom_pyrothrax;
+          delete this.state.flags.queen_romana_spoken;
+          delete this.state.flags.sanctum_unlocked;
+
+          if (
+            this.state.location?.mapId === 'castle_avalon' &&
+            this.state.location.y <= 5 &&
+            this.state.location.x >= 5 &&
+            this.state.location.x <= 13
+          ) {
+            this.state.location.x = 9;
+            this.state.location.y = 8;
+          }
+
+          const msg =
+            'Cheat: Prologue reset! Malakor and Pyrothrax have been revived, the Royal Sanctum is re-sealed, and Queen Romana will give her initial quest speech.';
+          this.persist(msg);
+          this.appendLog(msg);
+          this.refreshDungeonCanvas();
+          return msg;
+        },
         help: () => {
           const doc = {
+            'cheat.toToCastle() / cheat.goToCastle()': 'Teleport directly inside Castle Avalon',
+            'cheat.resetPrologue() / resetPrologue()': 'Revive Malakor & Pyrothrax and reset Queen Romana’s prologue quest & Royal Sanctum',
             'cheat.goDown()': 'Descend one floor in the current dungeon (places party on the stairs/ladder)',
-            'cheat.teleport(mapId, x?, y?, facing?)': 'Teleport to any map (e.g., "dungeon_despise_b8", "dungeon_doom_b12", "avalon")',
+            'cheat.teleport(mapId, x?, y?, facing?)': 'Teleport to any map (e.g., "castle_avalon", "dungeon_despise_b8", "dungeon_doom_b12", "avalon")',
             'cheat.pickFight(terrainId?)': 'Start a combat encounter (e.g., "grass", "shallows", "despise_b8", "doom_b12")',
             'cheat.gold(amount = 500)': 'Add gold to the party',
             'cheat.xp(amount = 200)': 'Grant XP to active party members',
@@ -629,6 +677,7 @@ function registerApp() {
           return 'Cheat commands printed above.';
         }
       };
+      window.resetPrologue = window.cheat.resetPrologue;
     },
 
     // --- Navigation ---
@@ -1208,6 +1257,132 @@ function registerApp() {
       if (dlg) dlg.showModal();
     },
 
+    get isSettlementMode() {
+      const mode = this.currentMap?.mode;
+      return mode === 'town' || mode === 'castle';
+    },
+
+    get isSanctumOpen() {
+      return isSanctumUnlocked(this.state);
+    },
+
+    openQueenModal() {
+      if (!this.state.flags || typeof this.state.flags !== 'object') {
+        this.state.flags = {};
+      }
+      const malakorSlain = Boolean(this.state.flags.boss_despise_malakor);
+      const pyrothraxSlain = Boolean(this.state.flags.boss_doom_pyrothrax);
+      const alreadySpoken = Boolean(this.state.flags.queen_romana_spoken);
+
+      let modalSnapshot;
+      let logLine;
+
+      if (malakorSlain && pyrothraxSlain) {
+        const firstUnseal = !this.state.flags.sanctum_unlocked;
+        this.state.flags.queen_romana_spoken = true;
+        this.state.flags.sanctum_unlocked = true;
+        modalSnapshot = {
+          title: 'Queen Romana — Sovereign of Avalon',
+          badge: 'HARBINGERS VANQUISHED • SANCTUM UNSEALED',
+          badgeTone: 'victory',
+          paragraphs: [
+            '“You have done the impossible, champions! Both Malakor the Lich Lord and Pyrothrax the Abyssal Wyrm lie vanquished. On behalf of every soul in Avalon, accept the eternal gratitude of the Crown.',
+            'Yet I fear our celebration must wait. At the very moment the second beast fell, the ancient wards beneath this castle shattered. My court sages now realize a chilling truth: those two abominations were never the true masters of this blight — they were merely harbingers of a far greater evil.',
+            'In the Royal Sanctum directly behind my throne, an arcane rift portal has torn open. Neither my scholars nor the Triad’s seers know where it leads, or what waits on the other side. I have unsealed the Sanctum door — steel yourselves and step through into what lies beyond.”'
+          ],
+          buttonLabel: 'Proceed to the Sanctum'
+        };
+        logLine = firstUnseal
+          ? 'Queen Romana thanks your party and unseals the Royal Sanctum behind her throne! A mysterious rift portal awaits inside.'
+          : 'Queen Romana gestures solemnly toward the unsealed Royal Sanctum and the rift portal beyond.';
+      } else if (malakorSlain && !pyrothraxSlain) {
+        this.state.flags.queen_romana_spoken = true;
+        modalSnapshot = {
+          title: 'Queen Romana — Sovereign of Avalon',
+          badge: '1 OF 2 UNIQUES SLAIN',
+          badgeTone: 'progress',
+          paragraphs: [
+            '“Well struck, heroes! Word has reached my court that Malakor the Lich Lord lies shattered upon his obsidian altar in the Cavern of Despise. Already the cold blight recedes from our northern woods.',
+            'Yet Avalon cannot know peace while the second scourge endures! Pyrothrax the Abyssal Wyrm still spreads fire and ruin from the Abyss of Doom — march southwest into the volcanic mountain peaks and fight into its deepest depths to end its reign!”'
+          ],
+          buttonLabel: 'Onward to the Abyss of Doom'
+        };
+        logLine =
+          'Queen Romana commends you for slaying Malakor and reminds you: Pyrothrax awaits in the Abyss of Doom in the southwestern mountains!';
+      } else if (!malakorSlain && pyrothraxSlain) {
+        this.state.flags.queen_romana_spoken = true;
+        modalSnapshot = {
+          title: 'Queen Romana — Sovereign of Avalon',
+          badge: '1 OF 2 UNIQUES SLAIN',
+          badgeTone: 'progress',
+          paragraphs: [
+            '“Astounding valor, heroes! The volcanic tremors in the south have ceased — Pyrothrax the Abyssal Wyrm has fallen within the Abyss of Doom!',
+            'Yet one dread scourge still spreads corruption across the realm! Malakor the Lich Lord festers at the bottom of the Cavern of Despise — journey northeast into the mountain peaks east of Yew and brave its dark depths to destroy him!”'
+          ],
+          buttonLabel: 'Onward to the Cavern of Despise'
+        };
+        logLine =
+          'Queen Romana praises Pyrothrax’s defeat and reminds you: Malakor still lurks in the Cavern of Despise in the northeastern peaks!';
+      } else if (!alreadySpoken) {
+        this.state.flags.queen_romana_spoken = true;
+        modalSnapshot = {
+          title: 'Queen Romana — Royal Decree',
+          badge: 'NEW QUEST • SLAY THE TWO HARBINGERS',
+          badgeTone: 'decree',
+          paragraphs: [
+            '“Welcome to Castle Avalon, adventurers. Dark tidings weigh heavy upon the Crown, and our realm stands upon the edge of ruin.',
+            'Two ancient beasts have awakened in the deep places of the world, spreading evil and monsters across every road and village: Malakor the Lich Lord, entrenched deep within the Cavern of Despise in the northeastern peaks, and Pyrothrax the Abyssal Wyrm, ruling the depths of the Abyss of Doom in the southwestern mountains.',
+            'While those two horrors draw breath, darkness will only grow bolder. Go forth, descend into both lairs, and slay them — then return to my throne when the deed is done.”'
+          ],
+          buttonLabel: 'Accept Royal Quest'
+        };
+        logLine =
+          'Queen Romana charges your party to slay Malakor in the Cavern of Despise and Pyrothrax in the Abyss of Doom!';
+      } else {
+        modalSnapshot = {
+          title: 'Queen Romana — The Crown Awaits',
+          badge: 'NO BEASTS SLAIN YET',
+          badgeTone: 'warn',
+          paragraphs: [
+            '“You return to my court, champions, yet my scouts bring no word of victory — neither of the two dread beasts has been slain.',
+            'Every hour we delay, their evil spreads deeper across Avalon! Seek Malakor the Lich Lord in the Cavern of Despise to the northeast, and Pyrothrax the Abyssal Wyrm in the Abyss of Doom to the southwest. Stock your packs and do not tarry!”'
+          ],
+          buttonLabel: 'We Depart at Once'
+        };
+        logLine =
+          'Queen Romana urges haste: neither Malakor in the Cavern of Despise nor Pyrothrax in the Abyss of Doom has been slain yet.';
+      }
+
+      this.queenModalData = modalSnapshot;
+      this.persist(logLine);
+      this.appendLog(logLine);
+
+      const dlg = document.querySelector('#queen-dialog');
+      if (dlg && !dlg.open) dlg.showModal();
+    },
+
+    openPortalModal() {
+      const msg = 'Eldritch Rift Portal — What Lies Beyond: COMING SOON!';
+      this.notify(msg);
+      this.appendLog(msg);
+      const dlg = document.querySelector('#portal-dialog');
+      if (dlg && !dlg.open) dlg.showModal();
+    },
+
+    onViewportCellClick(cell) {
+      if (!cell || !cell.trigger || this.isDungeonMode) return;
+      if (cell.trigger.type === 'portal' && this.isSanctumOpen) {
+        this.openPortalModal();
+        return;
+      }
+      const dist =
+        Math.abs(cell.x - (this.state.location?.x ?? 0)) +
+        Math.abs(cell.y - (this.state.location?.y ?? 0));
+      if (cell.trigger.type === 'queen' && dist <= 2) {
+        this.openQueenModal();
+      }
+    },
+
     get overworldAtlas() {
       return buildOverworldAtlasData(this.maps?.avalon, this.tiles, this.state);
     },
@@ -1304,9 +1479,10 @@ function registerApp() {
     },
 
     get currentTile() {
-      return getTileDefAt(
+      return getEffectiveSurfaceTileAt(
         this.currentMap,
         this.tiles,
+        this.state,
         this.state.location?.x ?? 16,
         this.state.location?.y ?? 14
       );
@@ -1316,7 +1492,8 @@ function registerApp() {
       return getTriggerAt(
         this.currentMap,
         this.state.location?.x ?? 16,
-        this.state.location?.y ?? 14
+        this.state.location?.y ?? 14,
+        this.state
       );
     },
 
@@ -1324,7 +1501,8 @@ function registerApp() {
       return getAdjacentTriggers(
         this.currentMap,
         this.state.location?.x ?? 16,
-        this.state.location?.y ?? 14
+        this.state.location?.y ?? 14,
+        this.state
       );
     },
 
@@ -1333,12 +1511,15 @@ function registerApp() {
         this.currentMap,
         this.tiles,
         this.state.location?.x ?? 16,
-        this.state.location?.y ?? 14
+        this.state.location?.y ?? 14,
+        undefined,
+        this.state
       );
     },
 
     describeCell(cell) {
       if (!cell || !cell.tile) return '';
+      if (cell.tile.shrouded) return 'Unknown';
       const terrainLabel = cell.tile.passable ? cell.tile.name : `${cell.tile.name} (Impassable)`;
       if (cell.isParty) {
         return cell.trigger
@@ -1451,6 +1632,10 @@ function registerApp() {
         return;
       }
       const result = attemptMove(this.state, this.maps, this.tiles, dirKey);
+      if (result.openQueenModal) {
+        this.openQueenModal();
+        return;
+      }
       let stepNotes = [];
       if (result.moved) {
         this.justLootedChestFlag = null;
@@ -1981,6 +2166,14 @@ function registerApp() {
       }
 
       const result = attemptEnterLocation(this.state, this.maps, this.gameDataBundle);
+      if (result.openQueenModal) {
+        this.openQueenModal();
+        return;
+      }
+      if (result.openPortalModal) {
+        this.openPortalModal();
+        return;
+      }
       if (result.service === 'guild') {
         this.appendLog("Entering the Adventurers' Guild Roster...");
         this.persist();
@@ -2018,13 +2211,17 @@ function registerApp() {
 
     talkNearby() {
       const result = attemptTalkNearby(this.state, this.maps);
+      if (result.openQueenModal) {
+        this.openQueenModal();
+        return;
+      }
       if (result.log) {
         this.appendLog(result.log);
       }
     },
 
     leaveCurrentTown() {
-      if (this.currentMap?.mode !== 'town') {
+      if (!this.isSettlementMode) {
         this.appendLog('You are already on the Overworld.');
         return;
       }
@@ -2063,8 +2260,11 @@ function registerApp() {
 
     campParty() {
       const mode = this.currentMap?.mode || 'overworld';
-      if (mode === 'town') {
-        const msg = 'Town guards frown on pitching tents in the street — rest at the local Inn or step outside town!';
+      if (mode === 'town' || mode === 'castle') {
+        const msg =
+          mode === 'castle'
+            ? "Queen Romana's Royal Guard frowns on pitching tents in Castle Avalon — rest at Oakhaven's Inn or step outside!"
+            : 'Town guards frown on pitching tents in the street — rest at the local Inn or step outside town!';
         this.notify(msg);
         if (this.screen === 'overworld') this.appendLog(msg);
         return;

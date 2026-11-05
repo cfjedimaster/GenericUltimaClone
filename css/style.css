@@ -100,7 +100,25 @@ body {
   color: var(--accent-cyan);
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: safe center;
+  gap: 0.85rem;
+}
+
+.status-banner-text {
+  flex: 1 1 0%;
+  min-inline-size: 0;
+}
+
+.status-banner-actions {
+  display: flex;
+  align-items: safe center;
+  gap: 0.4rem;
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+}
+
+.status-banner-actions button {
+  white-space: nowrap;
 }
 
 /* Classic RPG Framed Panels */
@@ -1642,5 +1660,171 @@ button[aria-pressed="true"] {
   border-color: var(--accent-cyan);
   color: var(--accent-cyan);
 }
+
+/* ==================== STEP 10: CASTLE AVALON, QUEEN ROMANA & RIFT PORTAL ==================== */
+.tile-cell.is-clickable-trigger {
+  cursor: pointer;
+}
+
+.tile-cell.is-shrouded {
+  border-color: transparent;
+  cursor: default;
+}
+
+dialog.dialog-royal {
+  max-width: 660px;
+  width: 94vw;
+  border: 2px solid var(--accent-gold);
+  box-shadow:
+    inset 0 0 0 2px #3b101d,
+    0 16px 44px rgba(0, 0, 0, 0.9);
+}
+
+.royal-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  border-bottom: 1px solid var(--border-gold);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.royal-crest {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  color: #ffd875;
+  background: #4a1220;
+  border: 2px solid var(--accent-gold);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+}
+
+.royal-modal-header h2 {
+  margin: 0 0 0.25rem;
+  color: #ffd875;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 1.15rem;
+}
+
+.royal-quest-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--border-gold);
+  color: var(--accent-gold);
+  background: rgba(240, 196, 90, 0.12);
+}
+
+.royal-quest-badge.tone-victory {
+  border-color: #c77dff;
+  color: #e298ff;
+  background: rgba(199, 125, 255, 0.16);
+}
+
+.royal-quest-badge.tone-progress {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  background: rgba(92, 225, 230, 0.14);
+}
+
+.royal-quest-badge.tone-warn {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+  background: rgba(242, 95, 92, 0.14);
+}
+
+.royal-speech-scroll {
+  background: linear-gradient(180deg, #1b111b 0%, #121522 100%);
+  border: 1px solid var(--border-gold);
+  border-left: 4px solid var(--accent-gold);
+  padding: 1rem 1.15rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.royal-speech-scroll p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: #f4f6fb;
+}
+
+.royal-quest-tracker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.6rem;
+}
+
+.royal-target-row {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.royal-target-row strong {
+  display: block;
+  font-size: 0.83rem;
+  color: var(--accent-gold);
+}
+
+.royal-target-row small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+dialog.dialog-portal {
+  max-width: 480px;
+  border-color: #c77dff;
+  box-shadow: 0 0 28px rgba(199, 125, 255, 0.25), 0 12px 36px rgba(0, 0, 0, 0.9);
+}
+
+.portal-coming-soon-box {
+  background: #170d26;
+  border: 1px solid #8a4fd1;
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+
+.portal-coming-soon-glyph {
+  font-size: 2.4rem;
+  line-height: 1;
+  color: #e298ff;
+  text-shadow: 0 0 12px rgba(226, 152, 255, 0.75);
+  margin-bottom: 0.5rem;
+}
+
+.portal-coming-soon-banner {
+  display: inline-block;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #ffd875;
+  background: rgba(240, 196, 90, 0.14);
+  border: 1px solid var(--accent-gold);
+  padding: 0.3rem 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.portal-coming-soon-box p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
 
 

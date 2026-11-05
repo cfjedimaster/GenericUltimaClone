@@ -58,8 +58,8 @@
 
     <!-- Status / Event Log Line -->
     <div class="status-banner" role="status" aria-live="polite">
-      <span x-text="`> ${statusBanner}`"></span>
-      <div style="display: flex; gap: 0.4rem;" x-show="screen !== 'combat'">
+      <span class="status-banner-text" x-text="`> ${statusBanner}`"></span>
+      <div class="status-banner-actions" x-show="screen !== 'combat'">
         <button type="button" class="btn-sm" x-show="screen !== 'title'" @click="goToScreen('title')">Title</button>
         <button type="button" class="btn-sm" x-show="screen !== 'tavern'" @click="goToScreen('tavern')">Tavern Roster</button>
         <button type="button" class="btn-sm btn-success" x-show="screen !== 'overworld' && canEmbark" @click="goToScreen('overworld')">Explore</button>
@@ -501,7 +501,7 @@
               class="btn-sm btn-primary"
               x-show="currentTrigger"
               @click="enterOrInteract()"
-              x-text="currentTrigger?.type === 'town' || currentTrigger?.type === 'castle' || currentTrigger?.type === 'dungeon' ? `Enter ${currentTrigger.name} [E]` : currentTrigger?.type === 'shrine' ? `Kneel at Shrine [E]` : `Activate [E]`"
+              x-text="currentTrigger?.type === 'town' || currentTrigger?.type === 'castle' || currentTrigger?.type === 'dungeon' ? `Enter ${currentTrigger.name} [E]` : currentTrigger?.type === 'portal' ? 'Enter Rift Portal [E]' : currentTrigger?.type === 'shrine' ? 'Kneel at Shrine [E]' : 'Activate [E]'"
             ></button>
             <button
               type="button"
@@ -522,16 +522,15 @@
             <button
               type="button"
               class="btn-sm"
-              x-show="currentMap?.mode === 'town'"
+              x-show="isSettlementMode"
               @click="leaveCurrentTown()"
-            >
-              Leave Town [X]
-            </button>
+              x-text="currentMap?.mode === 'castle' ? 'Leave Castle [X]' : 'Leave Town [X]'"
+            ></button>
             <button type="button" class="btn-sm" x-show="!isDungeonMode" @click="openAtlasModal()">Atlas [M]</button>
             <button
               type="button"
               class="btn-sm"
-              x-show="currentMap?.mode !== 'town'"
+              x-show="!isSettlementMode"
               :disabled="!canCamp"
               :title="tentCount > 0 ? 'Pitch a Canvas Camp Tent to restore full HP/MP (5% ambush risk)' : 'Requires a Canvas Camp Tent in your Party Pack'"
               @click="campParty()"
@@ -559,10 +558,13 @@
                     :class="{
                       'is-party': cell.isParty,
                       'has-trigger': !!cell.trigger,
+                      'is-clickable-trigger': cell.trigger?.type === 'portal' || cell.trigger?.type === 'queen',
+                      'is-shrouded': !!cell.tile.shrouded,
                       'out-of-bounds': !cell.inBounds
                     }"
                     :style="`background-color: ${cell.tile.bg}; color: ${cell.isParty ? '#ffffff' : cell.tile.fg};`"
                     :title="describeCell(cell)"
+                    @click="onViewportCellClick(cell)"
                   >
                     <span class="tile-glyph" :title="describeCell(cell)" x-text="cell.isParty ? (isPartyAfloat ? '⛵' : '@') : cell.tile.glyph"></span>
                   </div>
@@ -576,9 +578,12 @@
             <div class="poi-callout" x-show="currentTrigger">
               <strong x-text="currentTrigger?.name"></strong>
               <p x-text="currentTrigger?.message"></p>
-              <button type="button" class="btn-sm btn-primary" @click="enterOrInteract()">
-                Press [E] / Activate
-              </button>
+              <button
+                type="button"
+                class="btn-sm btn-primary"
+                @click="enterOrInteract()"
+                x-text="currentTrigger?.type === 'portal' ? 'Enter Rift Portal [E]' : 'Press [E] / Activate'"
+              ></button>
             </div>
 
             <div class="poi-callout" x-show="!currentTrigger && adjacentTriggers.length > 0">
@@ -599,6 +604,8 @@
                 <li><span class="legend-glyph" style="color: #5ce1e6;">♜</span> Royal Castle [E]</li>
                 <li><span class="legend-glyph" style="color: #f25f5c;">Ω</span> Dungeon Maw [E]</li>
                 <li><span class="legend-glyph" style="color: #ffd875;">☼</span> Island Shrine [E]</li>
+                <li x-show="currentMap?.mode === 'castle'"><span class="legend-glyph" style="color: #ffd875;">♛</span> Queen Romana [T]</li>
+                <li x-show="currentMap?.mode === 'castle' && isSanctumOpen"><span class="legend-glyph" style="color: #e298ff;">◎</span> Rift Portal [E]</li>
                 <li><span class="legend-glyph" style="color: #f0c45a;">G</span> Guild / Roster [E]</li>
                 <li><span class="legend-glyph" style="color: #5ce1e6;">I</span> Wayfarer's Inn [E]</li>
                 <li><span class="legend-glyph" style="color: #52d681;">S</span> Armory Shop [E]</li>
@@ -795,7 +802,7 @@
             </button>
             <button
               type="button"
-              x-show="currentMap?.mode !== 'town'"
+              x-show="!isSettlementMode"
               :disabled="!canCamp"
               :title="tentCount > 0 ? 'Pitch a Canvas Camp Tent to restore full HP/MP (5% ambush risk)' : 'Requires a Canvas Camp Tent in your Party Pack'"
               @click="campParty()"
@@ -819,11 +826,10 @@
             </button>
             <button
               type="button"
-              x-show="currentMap?.mode === 'town'"
+              x-show="isSettlementMode"
               @click="leaveCurrentTown()"
-            >
-              [X] Exit Town
-            </button>
+              x-text="currentMap?.mode === 'castle' ? '[X] Exit Castle' : '[X] Exit Town'"
+            ></button>
           </div>
         </section>
 
@@ -2166,6 +2172,76 @@
         </form>
         <button type="button" class="btn-danger" @click="confirmWipeSave()">Wipe Everything</button>
       </div>
+    </dialog>
+
+    <!-- Queen Romana Royal Audience Dialog -->
+    <dialog id="queen-dialog" class="dialog-royal" closedby="any" aria-labelledby="queen-dialog-title">
+      <div class="royal-modal-header">
+        <div class="royal-crest" aria-hidden="true">♛</div>
+        <div>
+          <h2 id="queen-dialog-title" x-text="queenModalData.title"></h2>
+          <span
+            class="royal-quest-badge"
+            :class="`tone-${queenModalData.badgeTone}`"
+            x-text="queenModalData.badge"
+          ></span>
+        </div>
+      </div>
+
+      <div class="royal-speech-scroll">
+        <template x-for="(para, idx) in queenModalData.paragraphs" :key="idx">
+          <p x-text="para"></p>
+        </template>
+      </div>
+
+      <div class="royal-quest-tracker">
+        <div class="royal-target-row">
+          <div>
+            <strong>Malakor the Lich Lord</strong>
+            <small>Cavern of Despise (Northeastern Peaks)</small>
+          </div>
+          <span
+            class="status-pill"
+            :class="state.flags?.boss_despise_malakor ? 'status-ok' : 'status-dead'"
+            x-text="state.flags?.boss_despise_malakor ? '★ SLAIN' : 'AT LARGE'"
+          ></span>
+        </div>
+        <div class="royal-target-row">
+          <div>
+            <strong>Pyrothrax the Abyssal Wyrm</strong>
+            <small>Abyss of Doom (Southwestern Mountains)</small>
+          </div>
+          <span
+            class="status-pill"
+            :class="state.flags?.boss_doom_pyrothrax ? 'status-ok' : 'status-dead'"
+            x-text="state.flags?.boss_doom_pyrothrax ? '★ SLAIN' : 'AT LARGE'"
+          ></span>
+        </div>
+      </div>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" class="btn-primary" autofocus x-text="queenModalData.buttonLabel"></button>
+      </form>
+    </dialog>
+
+    <!-- Eldritch Rift Portal ("COMING SOON") Dialog -->
+    <dialog id="portal-dialog" class="dialog-portal" closedby="any" aria-labelledby="portal-dialog-title">
+      <div class="panel-header">
+        <h2 id="portal-dialog-title" style="color: #e298ff;">◎ Eldritch Rift Portal</h2>
+        <span class="status-pill status-silence">WHAT LIES BEYOND</span>
+      </div>
+
+      <div class="portal-coming-soon-box">
+        <div class="portal-coming-soon-glyph" aria-hidden="true">◎</div>
+        <div class="portal-coming-soon-banner">COMING SOON</div>
+        <p>
+          Arcane starlight swirls beyond the threshold of the Royal Sanctum, leading toward an unknown realm and the greater evil behind the harbingers.
+        </p>
+      </div>
+
+      <form method="dialog" class="dialog-actions">
+        <button type="submit" value="close" class="btn-primary" autofocus>Step Back from the Rift</button>
+      </form>
     </dialog>
   </div>
 </body>

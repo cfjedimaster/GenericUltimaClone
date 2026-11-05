@@ -121,10 +121,24 @@ export function getMapById(maps, mapId) {
   return maps[normalizedId] || maps.avalon || Object.values(maps)[0] || null;
 }
 
+export function isSanctumUnlocked(state) {
+  return Boolean(
+    state?.flags?.boss_despise_malakor &&
+      state?.flags?.boss_doom_pyrothrax &&
+      state?.flags?.sanctum_unlocked
+  );
+}
+
+export function isSanctumInteriorShrouded(map, state, x, y) {
+  const b = map?.sanctumBounds;
+  if (!b || isSanctumUnlocked(state)) return false;
+  return x >= b.x1 && x <= b.x2 && y >= b.y1 && y <= b.y2;
+}
+
 export function getTileCodeAt(map, x, y) {
   if (!map || !Array.isArray(map.grid)) return '~';
   if (y < 0 || y >= map.height || x < 0 || x >= map.width) {
-    return map.mode === 'town' ? '.' : '~';
+    return map.mode === 'town' || map.mode === 'castle' ? '.' : '~';
   }
   const row = map.grid[y];
   if (!row || x >= row.length) return '~';
@@ -147,12 +161,81 @@ export function getTileDefAt(map, tiles, x, y) {
   );
 }
 
-export function getTriggerAt(map, x, y) {
-  if (!map || !Array.isArray(map.triggers)) return null;
-  return map.triggers.find(t => t.x === x && t.y === y) || null;
+export function getEffectiveSurfaceTileAt(map, tiles, state, x, y) {
+  const baseTile = getTileDefAt(map, tiles, x, y);
+  if (!map || !baseTile) return baseTile;
+
+  if (isSanctumInteriorShrouded(map, state, x, y)) {
+    return {
+      id: 'shrouded_sanctum',
+      code: ' ',
+      name: 'Unknown',
+      glyph: ' ',
+      fg: '#05070c',
+      bg: '#05070c',
+      passable: false,
+      shrouded: true,
+      encounterRate: 0
+    };
+  }
+
+  if (baseTile.code === 'V') {
+    if (isSanctumUnlocked(state)) {
+      return {
+        ...(tiles?.['+'] || baseTile),
+        id: 'sanctum_arch_open',
+        code: '+',
+        name: 'Unsealed Sanctum Archway',
+        glyph: 'Π',
+        fg: '#5ce1e6',
+        bg: '#162936',
+        passable: true,
+        encounterRate: 0
+      };
+    }
+    const bothSlain = Boolean(
+      state?.flags?.boss_despise_malakor && state?.flags?.boss_doom_pyrothrax
+    );
+    if (bothSlain) {
+      return {
+        ...baseTile,
+        blockReason:
+          'Strange energy hums beyond the door! Speak with Queen Romana upon her throne to unseal the Royal Sanctum.'
+      };
+    }
+    return baseTile;
+  }
+
+  if (baseTile.code === 'O' && !isSanctumUnlocked(state)) {
+    return {
+      ...(tiles?.['_'] || baseTile),
+      id: 'dormant_sanctum_floor',
+      code: '_',
+      name: 'Sanctum Runic Circle',
+      glyph: '·',
+      fg: '#8a96ad',
+      bg: '#181d29',
+      passable: true,
+      encounterRate: 0
+    };
+  }
+
+  return baseTile;
 }
 
-export function getAdjacentTriggers(map, x, y) {
+export function getTriggerAt(map, x, y, state = null) {
+  if (!map || !Array.isArray(map.triggers)) return null;
+  if (state && isSanctumInteriorShrouded(map, state, x, y)) {
+    return null;
+  }
+  const found = map.triggers.find(t => t.x === x && t.y === y) || null;
+  if (found && found.type === 'portal' && state && !isSanctumUnlocked(state)) {
+    return null;
+  }
+  return found;
+}
+
+export function getAdjacentTriggers(map, x, y, state = null) {
   if (!map || !Array.isArray(map.triggers)) return [];
   const coords = [
     { dir: 'North', x, y: y - 1 },
@@ -162,7 +245,7 @@ export function getAdjacentTriggers(map, x, y) {
   ];
   const results = [];
   for (const c of coords) {
-    const trig = getTriggerAt(map, c.x, c.y);
+    const trig = getTriggerAt(map, c.x, c.y, state);
     if (trig) {
       results.push({ ...trig, direction: c.dir });
     }
@@ -170,7 +253,7 @@ export function getAdjacentTriggers(map, x, y) {
   return results;
 }
 
-export function buildViewportRows(map, tiles, centerX, centerY, radius = VIEWPORT_RADIUS) {
+export function buildViewportRows(map, tiles, centerX, centerY, radius = VIEWPORT_RADIUS, state = null) {
   if (!map || !tiles) return [];
   const rows = [];
   for (let dy = -radius; dy <= radius; dy++) {
@@ -179,8 +262,8 @@ export function buildViewportRows(map, tiles, centerX, centerY, radius = VIEWPOR
     for (let dx = -radius; dx <= radius; dx++) {
       const wx = centerX + dx;
       const inBounds = wx >= 0 && wx < map.width && wy >= 0 && wy < map.height;
-      const tile = getTileDefAt(map, tiles, wx, wy);
-      const trigger = inBounds ? getTriggerAt(map, wx, wy) : null;
+      const tile = getEffectiveSurfaceTileAt(map, tiles, state, wx, wy);
+      const trigger = inBounds ? getTriggerAt(map, wx, wy, state) : null;
       const isParty = dx === 0 && dy === 0;
       rowCells.push({
         key: `vcell-${dx},${dy}-${wx},${wy}-${isParty ? 'party' : 'tile'}`,
@@ -225,12 +308,13 @@ export function attemptMove(state, maps, tiles, dirKey) {
   const currentMap = getMapById(maps, state.location.mapId);
   if (!currentMap) return { moved: false, log: 'No active map loaded.' };
 
+  const isSettlement = currentMap.mode === 'town' || currentMap.mode === 'castle';
   const nx = state.location.x + delta.dx;
   const ny = state.location.y + delta.dy;
 
-  // Stepping off the border of a town map exits back to the overworld
+  // Stepping off the border of a town or castle map exits back to the overworld
   if (nx < 0 || nx >= currentMap.width || ny < 0 || ny >= currentMap.height) {
-    if (currentMap.mode === 'town') {
+    if (isSettlement) {
       return exitTownToOverworld(state, maps);
     }
     return {
@@ -240,7 +324,17 @@ export function attemptMove(state, maps, tiles, dirKey) {
     };
   }
 
-  const triggerAtTarget = getTriggerAt(currentMap, nx, ny);
+  const triggerAtTarget = getTriggerAt(currentMap, nx, ny, state);
+  // Stepping into Queen Romana opens the Royal Audience modal
+  if (triggerAtTarget && triggerAtTarget.type === 'queen') {
+    return {
+      moved: false,
+      talked: true,
+      openQueenModal: true,
+      trigger: triggerAtTarget,
+      log: 'You step before the Golden Throne for an audience with Queen Romana.'
+    };
+  }
   // If an NPC stands on the target tile, converse with them instead of trampling them
   if (triggerAtTarget && triggerAtTarget.type === 'npc') {
     return {
@@ -251,7 +345,7 @@ export function attemptMove(state, maps, tiles, dirKey) {
     };
   }
 
-  const targetTile = getTileDefAt(currentMap, tiles, nx, ny);
+  const targetTile = getEffectiveSurfaceTileAt(currentMap, tiles, state, nx, ny);
   const canSailShallows = Boolean(
     currentMap.mode === 'overworld' &&
       targetTile.code === '=' &&
@@ -261,7 +355,9 @@ export function attemptMove(state, maps, tiles, dirKey) {
   if (!targetTile.passable && !canSailShallows) {
     const blockNote =
       targetTile.code === '='
-        ? 'The shallow waters are too deep to wade without a vessel. Charter a Skiff at the Coastal Port of Moon!'
+        ? currentMap.mode === 'castle'
+          ? 'The castle moat is deep and patrolled by armored pike-fish.'
+          : 'The shallow waters are too deep to wade without a vessel. Charter a Skiff at the Coastal Port of Moon!'
         : targetTile.blockReason || targetTile.name;
     return {
       moved: false,
@@ -280,9 +376,9 @@ export function attemptMove(state, maps, tiles, dirKey) {
     revealOverworldArea(state, nx, ny, VIEWPORT_RADIUS);
   }
 
-  // Check if stepping onto a Town border tile at the edge of town (optional convenience if walking out the gate row)
+  // Check if stepping onto a Town/Castle border tile at the edge of the map
   if (
-    currentMap.mode === 'town' &&
+    isSettlement &&
     (nx === 0 || nx === currentMap.width - 1 || ny === 0 || ny === currentMap.height - 1)
   ) {
     return exitTownToOverworld(state, maps);
@@ -308,11 +404,29 @@ export function attemptEnterLocation(state, maps, gameData = {}) {
   const currentMap = getMapById(maps, state.location.mapId);
   if (!currentMap) return { ok: false, log: 'No map active.' };
 
-  const trigger = getTriggerAt(currentMap, state.location.x, state.location.y);
+  const trigger = getTriggerAt(currentMap, state.location.x, state.location.y, state);
   if (!trigger) {
     return {
       ok: false,
       log: 'There is nothing to enter or activate on this tile.'
+    };
+  }
+
+  if (trigger.type === 'queen') {
+    return {
+      ok: true,
+      openQueenModal: true,
+      trigger,
+      log: 'You step before the Golden Throne for an audience with Queen Romana.'
+    };
+  }
+
+  if (trigger.type === 'portal') {
+    return {
+      ok: true,
+      openPortalModal: true,
+      trigger,
+      log: 'Eldritch Rift Portal: COMING SOON!'
     };
   }
 
@@ -398,10 +512,15 @@ export function attemptEnterLocation(state, maps, gameData = {}) {
     state.location.x = typeof trigger.targetX === 'number' ? trigger.targetX : destMap.defaultSpawn.x;
     state.location.y = typeof trigger.targetY === 'number' ? trigger.targetY : destMap.defaultSpawn.y;
 
+    const enterNote =
+      destMap.mode === 'castle'
+        ? `You cross the drawbridge into ${trigger.name}! (Walk out the southern gatehouse or press [X] to return to the Overworld).`
+        : `You pass through the gates into ${trigger.name}! (Walk to the town border or press [X] to return to the Overworld).`;
+
     return {
       ok: true,
       transitioned: true,
-      log: `You pass through the gates into ${trigger.name}! (Walk to the town border or press [X] to return to the Overworld).`
+      log: enterNote
     };
   }
 
@@ -464,7 +583,17 @@ export function attemptTalkNearby(state, maps) {
   const currentMap = getMapById(maps, state.location.mapId);
   if (!currentMap) return { ok: false, log: 'No map active.' };
 
-  const adjacent = getAdjacentTriggers(currentMap, state.location.x, state.location.y);
+  const adjacent = getAdjacentTriggers(currentMap, state.location.x, state.location.y, state);
+  const queenAdjacent = adjacent.find(t => t.type === 'queen');
+  if (queenAdjacent) {
+    return {
+      ok: true,
+      openQueenModal: true,
+      trigger: queenAdjacent,
+      log: 'You step before the Golden Throne for an audience with Queen Romana.'
+    };
+  }
+
   const npcOrService = adjacent.find(t => t.type === 'npc' || t.type === 'service');
   if (npcOrService) {
     return {
@@ -474,7 +603,15 @@ export function attemptTalkNearby(state, maps) {
     };
   }
 
-  const underfoot = getTriggerAt(currentMap, state.location.x, state.location.y);
+  const underfoot = getTriggerAt(currentMap, state.location.x, state.location.y, state);
+  if (underfoot && underfoot.type === 'queen') {
+    return {
+      ok: true,
+      openQueenModal: true,
+      trigger: underfoot,
+      log: 'You step before the Golden Throne for an audience with Queen Romana.'
+    };
+  }
   if (underfoot && (underfoot.type === 'npc' || underfoot.type === 'service')) {
     return {
       ok: true,

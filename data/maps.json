@@ -274,6 +274,80 @@
       "bg": "#2b2110",
       "passable": true,
       "encounterRate": 0
+    },
+    "R": {
+      "id": "royal_carpet",
+      "code": "R",
+      "name": "Crimson Royal Carpet",
+      "glyph": "░",
+      "fg": "#f0c45a",
+      "bg": "#4a1220",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "Q": {
+      "id": "queen_throne",
+      "code": "Q",
+      "name": "Royal Throne of Avalon",
+      "glyph": "♛",
+      "fg": "#ffd875",
+      "bg": "#5c1628",
+      "passable": true,
+      "encounterRate": 0
+    },
+    "Y": {
+      "id": "marble_pillar",
+      "code": "Y",
+      "name": "Fluted Marble Pillar",
+      "glyph": "║",
+      "fg": "#d0d8eb",
+      "bg": "#252d3d",
+      "passable": false,
+      "encounterRate": 0,
+      "blockReason": "A towering fluted marble pillar."
+    },
+    "K": {
+      "id": "royal_brazier",
+      "code": "K",
+      "name": "Gilded Brazier",
+      "glyph": "¥",
+      "fg": "#ff9f43",
+      "bg": "#2e1a10",
+      "passable": false,
+      "encounterRate": 0,
+      "blockReason": "A blazing gilded brazier warms the castle hall."
+    },
+    "Z": {
+      "id": "royal_banner",
+      "code": "Z",
+      "name": "Tapestry of the Triad",
+      "glyph": "⚑",
+      "fg": "#5ce1e6",
+      "bg": "#18283b",
+      "passable": false,
+      "encounterRate": 0,
+      "blockReason": "An embroidered silk tapestry bearing the royal crest of Avalon."
+    },
+    "V": {
+      "id": "sanctum_seal",
+      "code": "V",
+      "name": "Sealed Sanctum Door",
+      "glyph": "⊞",
+      "fg": "#f25f5c",
+      "bg": "#2d1114",
+      "passable": false,
+      "encounterRate": 0,
+      "blockReason": "The Royal Sanctum is sealed by Queen Romana's decree."
+    },
+    "O": {
+      "id": "rift_portal",
+      "code": "O",
+      "name": "Eldritch Rift Portal",
+      "glyph": "◎",
+      "fg": "#e298ff",
+      "bg": "#27103b",
+      "passable": true,
+      "encounterRate": 0
     }
   },
   "maps": {
@@ -337,10 +411,10 @@
           "y": 11,
           "type": "castle",
           "name": "Castle Avalon",
-          "targetMapId": "town_oakhaven",
-          "targetX": 8,
-          "targetY": 3,
-          "message": "The banners of Castle Avalon flutter overhead. Press [E] to enter the royal courtyard."
+          "targetMapId": "castle_avalon",
+          "targetX": 9,
+          "targetY": 17,
+          "message": "The banners of Castle Avalon flutter above its moat and drawbridge. Press [E] to enter the royal keep."
         },
         {
           "x": 7,
@@ -505,7 +579,7 @@
           "y": 2,
           "type": "npc",
           "name": "Royal Herald of Avalon",
-          "message": "Herald: 'Malakor the Lich Lord corrupts the Cavern of Despise, and Pyrothrax rules the Abyss of Doom!'"
+          "message": "Herald: 'Queen Romana holds court in Castle Avalon just north of Oakhaven along the King's Road! Seek an audience with Her Majesty!'"
         },
         {
           "x": 4,
@@ -527,6 +601,130 @@
           "type": "npc",
           "name": "Gate Guard",
           "message": "Guard: 'Step off the town's outer border or press [X] at any time to return to the Overworld.'"
+        }
+      ]
+    },
+    "castle_avalon": {
+      "id": "castle_avalon",
+      "name": "Castle Avalon",
+      "mode": "castle",
+      "width": 19,
+      "height": 21,
+      "defaultSpawn": {
+        "x": 9,
+        "y": 17
+      },
+      "exitTo": {
+        "mapId": "avalon",
+        "x": 16,
+        "y": 11
+      },
+      "sanctumBounds": {
+        "x1": 6,
+        "y1": 2,
+        "x2": 12,
+        "y2": 4
+      },
+      "grid": [
+        "===================",
+        "=#################=",
+        "=#tF.#K__Z__K#.Ft#=",
+        "=#...#___O___#...#=",
+        "=#t._#Y_____Y#_.t#=",
+        "=###+####V####+###=",
+        "=#Z_____RRR_____Z#=",
+        "=#####_KRQRK_#####=",
+        "=#Z__#_Y_R_YN#__Z#=",
+        "=#KN_#___R___#_NK#=",
+        "=#_R_+___R___+_R_#=",
+        "=#K__#_Y_R_Y_#__K#=",
+        "=#Z__#N__R___#__Z#=",
+        "=########+########=",
+        "=#t.._..KRK.._..t#=",
+        "=#.F.___RRR___.F.#=",
+        "=#..._...R.N._...#=",
+        "=#t.._.K_R_K._..t#=",
+        "=#######Z+Z#######=",
+        "=========B=========",
+        ".........:........."
+      ],
+      "triggers": [
+        {
+          "x": 9,
+          "y": 7,
+          "type": "queen",
+          "name": "Queen Romana",
+          "message": "Queen Romana sits upon the Golden Throne of Avalon. Walk up or press [T] for a royal audience."
+        },
+        {
+          "x": 9,
+          "y": 3,
+          "type": "portal",
+          "name": "Eldritch Rift Portal",
+          "message": "An arcane rift crackles with violet starlight inside the Royal Sanctum. Press [E] or click to step into What Lies Beyond!"
+        },
+        {
+          "x": 11,
+          "y": 16,
+          "type": "npc",
+          "name": "Royal Herald Cedric",
+          "message": "Cedric: 'Welcome to Castle Avalon! Follow the crimson carpet north into the Grand Hall to speak with Queen Romana.'"
+        },
+        {
+          "x": 6,
+          "y": 12,
+          "type": "npc",
+          "name": "Captain Vane, Royal Vanguard",
+          "message": "Captain Vane: 'The Royal Sanctum behind Her Majesty's throne has stood sealed under royal signet for generations.'"
+        },
+        {
+          "x": 12,
+          "y": 8,
+          "type": "npc",
+          "name": "Court Jester Pip",
+          "message": "Pip jingles his bells: 'I offered to juggle Lich skulls to cheer up the court, and got sentenced to polishing marble pillars instead!'"
+        },
+        {
+          "x": 3,
+          "y": 9,
+          "type": "npc",
+          "name": "Royal Chef Marcel",
+          "message": "Chef Marcel sighs: 'How am I supposed to glaze seven pheasants for the High Council when monsters keep raiding the spice caravans?!'"
+        },
+        {
+          "x": 15,
+          "y": 9,
+          "type": "npc",
+          "name": "Grand Chronicler Aldous",
+          "message": "Aldous peers over his spectacles: 'Our oldest Triad scrolls warn that Castle Avalon was built atop an ancient astral convergence...'"
+        },
+        {
+          "x": 3,
+          "y": 15,
+          "type": "fountain",
+          "name": "West Reflecting Pool",
+          "message": "Gilded koi dart beneath the water lilies of the royal courtyard pool."
+        },
+        {
+          "x": 15,
+          "y": 15,
+          "type": "fountain",
+          "name": "East Reflecting Pool",
+          "message": "Sunlight glints off carved marble swans in the courtyard fountain."
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "type": "fountain",
+          "name": "Queen's Rose Cloister Fountain",
+          "message": "Rose petals drift across cool spring water in the secluded northwest cloister."
+        },
+        {
+          "x": 15,
+          "y": 2,
+          "type": "fountain",
+          "name": "Starlight Cloister Fountain",
+          "message": "Silver chimes sing above the tranquil northeast cloister basin."
         }
       ]
     },
